@@ -24,3 +24,7 @@ _mac/
 keymaps/
 inspection/
 /*.xml # All xml files in root
+/bin/
+/build/
+.settings/
+.project
