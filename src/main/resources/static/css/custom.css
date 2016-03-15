@@ -1,0 +1,26 @@
+td.name {
+  width: 30%;
+}
+
+td.type {
+  width: 30%;
+}
+
+td.date,
+th.date {
+  width: 25%;
+  text-align: right;
+}
+
+ul.past-results {
+  list-style: none;
+  padding-left: 0;
+}
+
+.fail {
+  text-decoration: line-through;
+}
+
+.pass {
+  font-weight: bold;
+}
