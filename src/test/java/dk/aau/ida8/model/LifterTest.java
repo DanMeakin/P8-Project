@@ -1,4 +1,4 @@
-package dk.aau.ida8.data;
+package dk.aau.ida8.model;
 
 import dk.aau.ida8.model.Lift;
 import dk.aau.ida8.model.Lifter;
@@ -19,7 +19,7 @@ public class LifterTest {
 
     @Before
     public void setUp() throws Exception {
-        l = new Lifter("Jokum", "JAK", "M", 10, 60.00f, 120);
+        l = new Lifter("Jokum", "JAK", "M", 10, 60.00f, 120, 130);
 
     }
 
