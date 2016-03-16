@@ -1,7 +1,9 @@
 package dk.aau.ida8.data;
 
-/**
- * Created by nicklas on 15-03-16.
- */
-public class CompetitionRepository {
+
+import dk.aau.ida8.model.Competition;
+import org.springframework.data.repository.CrudRepository;
+
+public interface CompetitionRepository extends CrudRepository<Competition, Long> {
+
 }
