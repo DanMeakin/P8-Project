@@ -1,5 +1,7 @@
 package dk.aau.ida8.data;
 
+import dk.aau.ida8.model.Lift;
+import dk.aau.ida8.model.Lifter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

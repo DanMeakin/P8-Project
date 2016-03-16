@@ -1,26 +1,29 @@
-package dk.aau.ida8.data;
+package dk.aau.ida8.model;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.Arrays;
 import java.util.List;
 
 public class Lifter {
+    @Id
+    @GeneratedValue
     private long id;
     private String name;
     private String club;
     private String gender;
     private int lifterNumber;
     private float bodyWeight;
-    // private int startWeight;
     private int bestCj;
     private int bestSnatch;
-    private int totaltScore;
+    private int totalScore;
     private Double sinclairScore;
     private List<Lift> cleanJerks;
     private List<Lift> snatches;
     private boolean isDoneWithSnatch;
     private boolean isDoneWithCj;
 
-    public Lifter(String name, String club, String gender, int lifterNumber, float bodyWeight, int startWeight) {
+    public Lifter(String name, String club, String gender, int lifterNumber, float bodyWeight, int startWeightCj, int startWeightSnatch) {
         this.name = name;
         this.club = club;
         this.gender = gender;
@@ -28,15 +31,15 @@ public class Lifter {
         this.bodyWeight = bodyWeight;
         this.bestCj = 0;
         this.bestSnatch = 0;
-        this.totaltScore = 0;
+        this.totalScore = 0;
         this.sinclairScore = 0.0;
         this.cleanJerks = Arrays.asList(
-                new Lift(startWeight),
+                new Lift(startWeightCj),
                 new Lift(0),
                 new Lift(0)
         );
         this.snatches = Arrays.asList(
-                new Lift(startWeight),
+                new Lift(startWeightSnatch),
                 new Lift(0),
                 new Lift(0)
         );
@@ -124,12 +127,12 @@ public class Lifter {
         this.bestSnatch = bestSnatch;
     }
 
-    public int getTotaltScore() {
-        return totaltScore;
+    public int getTotalScore() {
+        return totalScore;
     }
 
-    public void setTotaltScore(int totaltScore) {
-        this.totaltScore = totaltScore;
+    public void setTotalScore(int totalScore) {
+        this.totalScore = totalScore;
     }
 
     public Double getSinclairScore() {

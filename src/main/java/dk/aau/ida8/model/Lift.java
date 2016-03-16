@@ -1,4 +1,4 @@
-package dk.aau.ida8.data;
+package dk.aau.ida8.model;
 
 public class Lift {
     private boolean isAccepted;

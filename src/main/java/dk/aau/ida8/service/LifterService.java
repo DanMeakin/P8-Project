@@ -3,6 +3,7 @@ package dk.aau.ida8.service;
 //This service layer will be used to grant explicit access to lifters
 //Service is a layer between database and controller
 
+import dk.aau.ida8.model.Lifter;
 import dk.aau.ida8.data.LifterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
