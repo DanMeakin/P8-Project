@@ -20,6 +20,7 @@ hs_err_pid*
 # IntelliJ Project files
 .idea/
 P7-Project.iml
+P8-Project.iml
 _mac/
 keymaps/
 inspection/
