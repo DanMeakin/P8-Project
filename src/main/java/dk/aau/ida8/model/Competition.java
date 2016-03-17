@@ -8,7 +8,7 @@ public class Competition {
     @Id
     @GeneratedValue
     private long id;
-    private CompetitionType type;
+    private ScoreStrategy scoreStrategy;
     private List<Participation> participations;
     private String competitionName;
     private Address location;
@@ -25,13 +25,13 @@ public class Competition {
      * @param competitionName the title/name of the competition
      * @param host            the club hosting the competition
      * @param location        the venue at which the competition takes place
-     * @param type            the type of competition, e.g. Sinclair, weight
-     *                        classes
+     * @param scoreStrategy     object encapsulating the win strategy of the
+     *                        competition, e.g. Sinclair, weight classes
      * @param date            the date on which the competition is to take place
      */
-    public Competition(String competitionName, Club host, Address location, CompetitionType type, Date date) {
+    public Competition(String competitionName, Club host, Address location, ScoreStrategy scoreStrategy, Date date) {
         this.competitionName = competitionName;
-        this.type = type;
+        this.scoreStrategy = scoreStrategy;
         this.location = location;
         this.date = date;
         this.host = host;
@@ -117,12 +117,8 @@ public class Competition {
         return getParticipations();
     }
 
-    public CompetitionType getType() {
-        return type;
-    }
-
-    public void setType(CompetitionType type) {
-        this.type = type;
+    public ScoreStrategy getScoreStrategy() {
+        return scoreStrategy;
     }
 
     public List<Participation> getParticipations() {
