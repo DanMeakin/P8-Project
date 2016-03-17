@@ -1,21 +1,20 @@
 package dk.aau.ida8.model;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class Competition {
 
+    @Id
+    @GeneratedValue
     private long id;
     private CompetitionType type;
-    private HashSet<Participation> participations;
+    private List<Participation> participations;
     private String competitionName;
     private Address location;
     private Club host;
     private Date date;
-    private boolean weightInCompleted;
-    private boolean snatchCompleted;
-    private boolean cleanAndJerkCompleted;
-    private boolean finished;
 
     /**
      * Creates a new Competition object.
@@ -37,7 +36,7 @@ public class Competition {
         this.location = location;
         this.date = date;
         this.host = host;
-        this.participations = new HashSet<>();
+        this.participations = new ArrayList<>();
     }
 
     /**
@@ -50,8 +49,8 @@ public class Competition {
      *
      * @param lifter the lifter to add to the competition
      */
-    public void addParticipant(Lifter lifter){
-        Participation p = new Participation(lifter, this);
+    public void addParticipant(Lifter lifter, int startingWeight){
+        Participation p = new Participation(lifter, this, startingWeight);
         participations.add(p);
     }
 
@@ -75,6 +74,20 @@ public class Competition {
     }
 
     /**
+     * Gets the participation object for the given lifter.
+     *
+     * @param lifter the lifter for which to obtain the participation
+     *               instance
+     * @return participation instance for the passed lifter
+     */
+    public Participation selectParticipationByLifter(Lifter lifter) {
+        List<Participation> ps = getParticipations().stream()
+                .filter(p -> p.getLifter().equals(lifter))
+                .collect(Collectors.toList());
+        return ps.get(0);
+    }
+
+    /**
      * Determines the next participant to carry out a lift.
      *
      * The identity of the next participant is calculated based on which
@@ -86,7 +99,11 @@ public class Competition {
      *         lift
      */
     public Participation determineNextParticipation() {
-        return Collections.min(getParticipations(), new Comparator<Participation>() {
+        return determineParticipationOrder().get(0);
+    }
+
+    public List<Participation> determineParticipationOrder() {
+        Collections.sort(getParticipations(), new Comparator<Participation>() {
             @Override
             public int compare(Participation p1, Participation p2) {
                 int weightComp = p1.getCurrentWeight() - p2.getCurrentWeight();
@@ -97,27 +114,8 @@ public class Competition {
                     return weightComp;
                 }
             }
-        }
-    }
-
-    public void ArrangeStartingOrderOfLifts(){
-        Collections.sort(getLifters(), new Comparator<Lifter>() {
-            @Override public int compare(Lifter l1, Lifter l2) {
-                return l1.nextLift(getSnatches()).getWeight - l2.nextLift(getSnatches).getWeight; // Ascending
-            }
         });
-    }
-
-
-    public ArrayList<Lifter> arrangeOrderOfLifts(){
-        //find the lowest startWeight
-
-
-        //find the order of the lifters based on weightTry
-
-
-
-        //arrange the
+        return getParticipations();
     }
 
     public CompetitionType getType() {
@@ -128,12 +126,14 @@ public class Competition {
         this.type = type;
     }
 
-    public HashSet<Participation> getParticipations() {
+    public List<Participation> getParticipations() {
         return participations;
     }
 
-    public TreeSet getLifters() {
-        return lifters;
+    public List<Lifter> getLifters() {
+        return getParticipations().stream()
+                .map(Participation::getLifter)
+                .collect(Collectors.toList());
     }
 
     public String getCompetitionName() {
@@ -166,37 +166,5 @@ public class Competition {
 
     public void setHost(Club host) {
         this.host = host;
-    }
-
-    public boolean isWeightInCompleted() {
-        return weightInCompleted;
-    }
-
-    public void setWeightInCompleted(boolean weightInCompleted) {
-        this.weightInCompleted = weightInCompleted;
-    }
-
-    public boolean isSnatchCompleted() {
-        return snatchCompleted;
-    }
-
-    public void setSnatchCompleted(boolean snatchCompleted) {
-        this.snatchCompleted = snatchCompleted;
-    }
-
-    public boolean isCleanAndJerkCompleted() {
-        return cleanAndJerkCompleted;
-    }
-
-    public void setCleanAndJerkCompleted(boolean cleanAndJerkCompleted) {
-        this.cleanAndJerkCompleted = cleanAndJerkCompleted;
-    }
-
-    public boolean isFinished() {
-        return finished;
-    }
-
-    public void setFinished(boolean finished) {
-        this.finished = finished;
     }
 }
