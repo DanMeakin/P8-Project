@@ -1,14 +1,19 @@
 package dk.aau.ida8.model;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Entity
 public class Lifter {
+
     @Id
     @GeneratedValue
     private long id;
+
     private String name;
     private String club;
     private String gender;
@@ -18,10 +23,14 @@ public class Lifter {
     private int bestSnatch;
     private int totalScore;
     private Double sinclairScore;
-    private List<Lift> cleanJerks;
-    private List<Lift> snatches;
+    private ArrayList<Lift> cleanJerks;
+    private ArrayList<Lift> snatches;
     private boolean isDoneWithSnatch;
     private boolean isDoneWithCj;
+
+    public Lifter() {
+
+    }
 
     public Lifter(String name, String club, String gender, int lifterNumber, float bodyWeight, int startWeightCj, int startWeightSnatch) {
         this.name = name;
@@ -33,16 +42,14 @@ public class Lifter {
         this.bestSnatch = 0;
         this.totalScore = 0;
         this.sinclairScore = 0.0;
-        this.cleanJerks = Arrays.asList(
-                new Lift(startWeightCj),
-                new Lift(0),
-                new Lift(0)
-        );
-        this.snatches = Arrays.asList(
-                new Lift(startWeightSnatch),
-                new Lift(0),
-                new Lift(0)
-        );
+        this.cleanJerks = new ArrayList<Lift>();
+        cleanJerks.add(new Lift(startWeightCj));
+        cleanJerks.add(new Lift(0));
+        cleanJerks.add(new Lift(0));
+        this.snatches = new ArrayList<Lift>();
+        snatches.add(new Lift(startWeightSnatch));
+        snatches.add(new Lift(0));
+        snatches.add(new Lift(0));
         this.isDoneWithCj = false;
         this.isDoneWithSnatch = false;
     }
@@ -147,7 +154,7 @@ public class Lifter {
         return cleanJerks;
     }
 
-    public void setCleanJerks(List<Lift> cleanJerks) {
+    public void setCleanJerks(ArrayList<Lift> cleanJerks) {
         this.cleanJerks = cleanJerks;
     }
 
@@ -155,7 +162,7 @@ public class Lifter {
         return snatches;
     }
 
-    public void setSnatches(List<Lift> snatches) {
+    public void setSnatches(ArrayList<Lift> snatches) {
         this.snatches = snatches;
     }
 

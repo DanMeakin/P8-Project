@@ -2,7 +2,6 @@ package dk.aau.ida8.model;
 
 import java.util.*;
 
-
 public class Competition {
 
     private long id;

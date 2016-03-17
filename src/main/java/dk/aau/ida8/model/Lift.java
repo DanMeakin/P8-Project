@@ -1,9 +1,24 @@
 package dk.aau.ida8.model;
 
-public class Lift {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import java.io.Serializable;
+
+@Entity
+public class Lift implements Serializable {
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
     private boolean isAccepted;
     private boolean isPerformed;
     private int weight;
+
+    public Lift() {
+
+    }
 
     public Lift(int weight) {
         this.isAccepted = false;
