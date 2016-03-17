@@ -7,7 +7,7 @@ public class Competition {
 
     private long id;
     private CompetitionType type;
-    private TreeSet<Lifter> lifters;
+    private ArrayList<Lifter> lifters;
     private String competitionName;
     private String address;
     private Date date;
@@ -32,11 +32,11 @@ public class Competition {
 
     /**
      * Adds a new lifter to the competition
-     * @param objectVariables of the lifter
+     *
      */
-    public void addLifterToCompetition(String objectVariables){
-        Lifter lifter = new Lifter(objectVariables);
-        getLifters().add(lifter);
+
+    public void addLifterToCompetition(int startWeightCj, int startWeightSnatch){
+        getLifters().add(new Lifter(startWeightCj, startWeightSnatch));
     }
 
     /**
@@ -50,7 +50,7 @@ public class Competition {
     /**
      * finds a lister based on his index in the ArrayList lifters
      * @param index in the lifters ArrayList
-     * @return
+     * @return 
      */
     public Lifter getLifter(int index){
         return getLifters().get(index);
@@ -59,7 +59,7 @@ public class Competition {
     public void ArrangeStartingOrderOfLifts(){
         Collections.sort(getLifters(), new Comparator<Lifter>() {
             @Override public int compare(Lifter l1, Lifter l2) {
-                return l1.nextLift(getSnatches()).getWeight - l2.nextLift(getSnatches).getWeight; // Ascending
+                return l1.nextLift(l1.getSnatches()).getWeight() - l2.nextLift(l2.getSnatches()).getWeight(); // Ascending
             }
         });
     }
@@ -94,11 +94,11 @@ public class Competition {
         this.type = type;
     }
 
-    public TreeSet getLifters() {
+    public ArrayList<Lifter> getLifters() {
         return lifters;
     }
 
-    public void setLifters(TreeSet lifters) {
+    public void setLifters(ArrayList lifters) {
         this.lifters = lifters;
     }
 
