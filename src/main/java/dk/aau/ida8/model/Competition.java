@@ -50,7 +50,7 @@ public class Competition {
     /**
      * finds a lister based on his index in the ArrayList lifters
      * @param index in the lifters ArrayList
-     * @return 
+     * @return
      */
     public Lifter getLifter(int index){
         return getLifters().get(index);
@@ -65,12 +65,11 @@ public class Competition {
     }
 
 
-    public ArrayList<Lifter> arrangeOrderOfLifts(){
+    public ArrayList<Lifter> arrangeOrderOfLifts() {
         //find the lowest startWeight
 
 
         //find the order of the lifters based on weightTry
-
 
 
         //arrange the
