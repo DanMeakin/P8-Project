@@ -23,6 +23,23 @@ public class Lifter {
     private boolean isDoneWithSnatch;
     private boolean isDoneWithCj;
 
+
+    public Lifter() {
+    }
+
+    public Lifter(int startWeightCj, int startWeightSnatch) {
+        this.cleanJerks = Arrays.asList(
+                new Lift(startWeightCj),
+                new Lift(0),
+                new Lift(0)
+        );
+        this.snatches = Arrays.asList(
+                new Lift(startWeightSnatch),
+                new Lift(0),
+                new Lift(0)
+        );
+    }
+
     public Lifter(String name, String club, String gender, int lifterNumber, float bodyWeight, int startWeightCj, int startWeightSnatch) {
         this.name = name;
         this.club = club;
