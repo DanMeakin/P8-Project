@@ -4,6 +4,7 @@ import org.omg.CORBA.DynAnyPackage.Invalid;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -86,6 +87,58 @@ public class Participation {
         this.currentWeight = newWeight;
     }
 
+    /**
+     * Calculates the total score for this participation.
+     *
+     * This method uses the ScoreStrategy associated with the Competition
+     * in which this participation takes place. The strategy calculates the
+     * proper score, and this method returns this score.
+     *
+     * @return the total score for this participation
+     */
+    public double getTotalScore() {
+        return getCompetition().getScoreStrategy().calculateScore(this);
+    }
+
+    /**
+     * Gets the best clean & jerk lift from this participation.
+     *
+     * @return the best clean & jerk lift
+     */
+    public Lift getBestCleanAndJerk() {
+        return getLifts().stream()
+                .filter(Lift::isCleanAndJerk)
+                .max(scoreComparator())
+                .get();
+    }
+
+    /**
+     * Gets the best snatch lift from this participation.
+     *
+     * @return the best snatch lift
+     */
+    public Lift getBestSnatch() {
+         return getLifts().stream()
+                .filter(Lift::isSnatch)
+                .max(scoreComparator())
+                .get();
+    }
+
+    /**
+     * Defines a comparator which is used to sort/select lifts based on their
+     * score.
+     *
+     * @return the lift comparator
+     */
+    private Comparator<Lift> scoreComparator() {
+        return new Comparator<Lift>() {
+            @Override
+            public int compare(Lift l1, Lift l2) {
+                return l1.getScore() - l2.getScore();
+            }
+        };
+    }
+
 
     /**
      * Creates and adds a lift to a participation instance.
@@ -97,9 +150,8 @@ public class Participation {
      * @param successful flag whether this particular lift was successful or
      *                   not
      */
-    public void addLift(String activity, boolean successful) throws InvalidParameterException {
-        Lift lift = new Lift(getCurrentWeight(), activity);
-        lift.setPerformed(true);
+    public void addLift(Lift.LiftType activity, boolean successful) throws InvalidParameterException {
+        Lift lift = new Lift(activity, getCurrentWeight());
         lift.setAccepted(successful);
         addLift(lift);
     }

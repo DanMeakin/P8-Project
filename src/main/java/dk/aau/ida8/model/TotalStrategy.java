@@ -5,6 +5,7 @@ public class TotalStrategy implements ScoreStrategy {
 
     @Override
     public double calculateScore(Participation participation) {
-        return participation.getLifter().getTotalScore();
+        return participation.getBestCleanAndJerk().getScore() +
+                participation.getBestSnatch().getScore();
     }
 }
