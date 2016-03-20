@@ -28,8 +28,8 @@ public class SinclairStrategy implements ScoreStrategy {
     @Override
     public double calculateScore(Participation participation){
         Lifter lifter = participation.getLifter();
-        int rawScore = participation.getBestCleanAndJerk().getScore() +
-                participation.getBestSnatch().getScore();
+        int rawScore = participation.getBestCleanAndJerk() +
+                participation.getBestSnatch();
         return rawScore * sinclairCoefficient(lifter);
     }
 

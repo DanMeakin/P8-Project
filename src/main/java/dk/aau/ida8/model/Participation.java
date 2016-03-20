@@ -2,6 +2,9 @@ package dk.aau.ida8.model;
 
 import org.omg.CORBA.DynAnyPackage.Invalid;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -20,7 +23,12 @@ import java.util.List;
  * It should not be possible to carry-out more than six lifts, and it should not
  * be possible to carry-out more than three lifts of each type.
  */
+@Entity
 public class Participation {
+
+    @Id
+    @GeneratedValue
+    private long id;
 
     private Lifter lifter;
     private Competition competition;
@@ -101,27 +109,31 @@ public class Participation {
     }
 
     /**
-     * Gets the best clean & jerk lift from this participation.
+     * Gets the weight of the best successful clean & jerk lift from this
+     * participation.
      *
-     * @return the best clean & jerk lift
+     * @return the best clean & jerk lift weight
      */
-    public Lift getBestCleanAndJerk() {
+    public int getBestCleanAndJerk() {
         return getLifts().stream()
                 .filter(Lift::isCleanAndJerk)
                 .max(scoreComparator())
-                .get();
+                .get()
+                .getScore();
     }
 
     /**
-     * Gets the best snatch lift from this participation.
+     * Gets the weight of the best successful snatch lift from this
+     * participation.
      *
-     * @return the best snatch lift
+     * @return the best snatch lift weight
      */
-    public Lift getBestSnatch() {
+    public int getBestSnatch() {
          return getLifts().stream()
-                .filter(Lift::isSnatch)
-                .max(scoreComparator())
-                .get();
+                 .filter(Lift::isSnatch)
+                 .max(scoreComparator())
+                 .get()
+                 .getScore();
     }
 
     /**
@@ -138,7 +150,6 @@ public class Participation {
             }
         };
     }
-
 
     /**
      * Creates and adds a lift to a participation instance.
