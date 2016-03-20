@@ -1,8 +1,12 @@
 package dk.aau.ida8.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Entity
 public class Competition {
 
     @Id
