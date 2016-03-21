@@ -39,7 +39,7 @@ public class Competition {
         this.location = location;
         this.date = date;
         this.host = host;
-        this.participations = new ArrayList<>();
+        this.participations = new ArrayList<Participation>();
     }
 
     /**
