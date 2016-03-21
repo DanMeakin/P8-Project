@@ -93,11 +93,6 @@ public class Competition {
     /**
      * Determines the next participant to carry out a lift.
      *
-     * The identity of the next participant is calculated based on which
-     * participant has chosen the lowest weight to lift. If two or more lifters
-     * are to be lifting the same weight, the next participant is determined
-     * by taking the lowest of these lifters' ID#.
-     *
      * @return the participation object containing the next lifter who is to
      *         lift
      */
@@ -105,6 +100,16 @@ public class Competition {
         return determineParticipationOrder().get(0);
     }
 
+    /**
+     * Sorts and returns the list of participations.
+     *
+     * The identity of the next participant is calculated based on which
+     * participant has chosen the lowest weight to lift. If two or more lifters
+     * are to be lifting the same weight, the next participant is determined
+     * by taking the lowest of these lifters' ID#.
+     *
+     * @return sorted list of participants
+     */
     public List<Participation> determineParticipationOrder() {
         Collections.sort(getParticipations(), new Comparator<Participation>() {
             @Override
@@ -121,7 +126,7 @@ public class Competition {
         return getParticipations();
     }
 
-    public ScoreStrategy getScoreStrategy() {
+    private ScoreStrategy getScoreStrategy() {
         return scoreStrategy;
     }
 
@@ -132,6 +137,34 @@ public class Competition {
     public List<Lifter> getLifters() {
         return getParticipations().stream()
                 .map(Participation::getLifter)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Calculates the score for a given participation.
+     *
+     * This methods refers to the encapsulated score strategy within a
+     * particular competition, and uses this to calculate the score for a
+     * participation.
+     *
+     * @param participation the participation for which to calculate the score
+     * @return the score for that participation
+     */
+    public double calculateScore(Participation participation) {
+        return getScoreStrategy().calculateScore(participation);
+    }
+
+    /**
+     * Calculates and returns the rankings for this competition.
+     *
+     * The ranking uses the score for each participation calculated using the
+     * associated ScoreStrategy.
+     *
+     * @return participations for this competition, ranked in order
+     */
+    public List<Participation> calculateRankings() {
+        return getParticipations().stream()
+                .sorted((p1, p2) -> (int) Math.round(p2.getTotalScore() - p1.getTotalScore()))
                 .collect(Collectors.toList());
     }
 
