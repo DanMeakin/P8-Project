@@ -35,14 +35,6 @@ public class Participation {
     private int currentWeight;
     private List<Lift> lifts;
 
-    /**
-     * Gets the list of all lifts undertaken during this participation.
-     *
-     * @return list of all lifts undertaken
-     */
-    public List<Lift> getLifts() {
-        return lifts;
-    }
 
     /**
      * Creates a participation instance.
@@ -68,6 +60,15 @@ public class Participation {
     }
 
     /**
+     * Gets the list of all lifts undertaken during this participation.
+     *
+     * @return list of all lifts undertaken
+     */
+    public List<Lift> getLifts() {
+        return lifts;
+    }
+
+    /**
      * Gets the current chosen weight to lift.
      *
      * @return current weight
@@ -86,7 +87,7 @@ public class Participation {
      * @param newWeight the weight this lifter will be lifting next
      */
     public void setCurrentWeight(int newWeight) throws IllegalArgumentException {
-        if (this.currentWeight >= newWeight) {
+        if (newWeight < getCurrentWeight()) {
             String msg = "unable to set new weight to " + newWeight + "kg; " +
                          "current weight of " + this.currentWeight + " kg " +
                          "is greater than new weight";
@@ -105,7 +106,7 @@ public class Participation {
      * @return the total score for this participation
      */
     public double getTotalScore() {
-        return getCompetition().getScoreStrategy().calculateScore(this);
+        return getCompetition().calculateScore(this);
     }
 
     /**
@@ -143,12 +144,7 @@ public class Participation {
      * @return the lift comparator
      */
     private Comparator<Lift> scoreComparator() {
-        return new Comparator<Lift>() {
-            @Override
-            public int compare(Lift l1, Lift l2) {
-                return l1.getScore() - l2.getScore();
-            }
-        };
+        return (l1, l2) -> l1.getScore() - l2.getScore();
     }
 
     /**
@@ -170,7 +166,7 @@ public class Participation {
     /**
      * Adds a lift to a participation instance.
      *
-     * @param lift
+     * @param lift the lift to add to the participation
      */
     private void addLift(Lift lift) throws InvalidParameterException {
         validateLiftConditions(lift);

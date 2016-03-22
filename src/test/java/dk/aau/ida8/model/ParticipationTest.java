@@ -16,11 +16,12 @@ public class ParticipationTest {
     private static List<Lift> lifts;
     private static Participation participation;
 
+    public static double expectedScore = 35.0;
+
     @BeforeClass
     public static void setUpClass() {
         lifter = mock(Lifter.class);
         competition = mock(Competition.class);
-        scoreStrat = mock(ScoreStrategy.class);
         participation = new Participation(lifter, competition, 10);
         participation.addLift(Lift.LiftType.CLEANANDJERK, true);
         participation.setCurrentWeight(15);
@@ -31,13 +32,12 @@ public class ParticipationTest {
         participation.setCurrentWeight(25);
         participation.addLift(Lift.LiftType.SNATCH, false);
         participation.addLift(Lift.LiftType.SNATCH, false);
-        when(scoreStrat.calculateScore(participation)).thenReturn(35.0);
-        when(competition.getScoreStrategy()).thenReturn(scoreStrat);
+        when(competition.calculateScore(participation)).thenReturn(expectedScore);
     }
 
     @Test
     public void testGetTotalScore() throws Exception {
-        assertEquals(35, participation.getTotalScore(), 0.001);
+        assertEquals(expectedScore, participation.getTotalScore(), 0.001);
     }
 
     @Test
