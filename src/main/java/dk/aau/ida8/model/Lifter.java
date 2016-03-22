@@ -1,73 +1,46 @@
 package dk.aau.ida8.model;
 
+import org.omg.PortableServer.POAPackage.ServantNotActiveHelper;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
+/**
+ * This class represents one weightlifter.
+ *
+ * Each weightlifter must be the member of a club to participate in a
+ * competition. Their gender, weight and name must be stored.
+ *
+ * Lifter objects are used in the {@link Participation Participation} class,
+ * representing an individual's participation within a particular competition.
+ */
 @Entity
 public class Lifter {
+
+    /**
+     * Defines genders options for a Lifter.
+     */
+    public enum Gender {
+        MALE, FEMALE
+    }
 
     @Id
     @GeneratedValue
     private long id;
 
-    private String name;
-    private String club;
-    private String gender;
-    private int lifterNumber;
-    private float bodyWeight;
-    private int bestCj;
-    private int bestSnatch;
-    private int totalScore;
-    private Double sinclairScore;
-    private ArrayList<Lift> cleanJerks;
-    private ArrayList<Lift> snatches;
-    private boolean isDoneWithSnatch;
-    private boolean isDoneWithCj;
+    private String forename;
+    private String surname;
+    private Club club;
+    private Gender gender;
+    private double bodyWeight;
 
-    public Lifter() {
-
-    }
-
-    public Lifter(String name, String club, String gender, int lifterNumber, float bodyWeight, int startWeightCj, int startWeightSnatch) {
-        this.name = name;
+    public Lifter(String forename, String surname, Club club, Gender gender, float bodyWeight) {
+        this.forename = forename;
+        this.surname = surname;
         this.club = club;
         this.gender = gender;
-        this.lifterNumber = lifterNumber;
         this.bodyWeight = bodyWeight;
-        this.bestCj = 0;
-        this.bestSnatch = 0;
-        this.totalScore = 0;
-        this.sinclairScore = 0.0;
-        this.cleanJerks = new ArrayList<Lift>();
-        cleanJerks.add(new Lift(startWeightCj));
-        cleanJerks.add(new Lift(0));
-        cleanJerks.add(new Lift(0));
-        this.snatches = new ArrayList<Lift>();
-        snatches.add(new Lift(startWeightSnatch));
-        snatches.add(new Lift(0));
-        snatches.add(new Lift(0));
-        this.isDoneWithCj = false;
-        this.isDoneWithSnatch = false;
-    }
-
-    public boolean isDoneWithSnatch() {
-        return isDoneWithSnatch;
-    }
-
-    public void setDoneWithSnatch(boolean doneWithSnatch) {
-        isDoneWithSnatch = doneWithSnatch;
-    }
-
-    public boolean isDoneWithCj() {
-        return isDoneWithCj;
-    }
-
-    public void setDoneWithCj(boolean doneWithCj) {
-        isDoneWithCj = doneWithCj;
     }
 
     public long getId() {
@@ -78,160 +51,47 @@ public class Lifter {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getForename() {
+        return forename;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setForename(String forename) {
+        this.forename = forename;
     }
 
-    public String getClub() {
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public String getFullName() {
+        return getForename() + " " + getSurname();
+    }
+
+    public Club getClub() {
         return club;
     }
 
-    public void setClub(String club) {
+    public void setClub(Club club) {
         this.club = club;
     }
 
-    public String getGender() {
+    public Gender getGender() {
         return gender;
     }
 
-    public void setGender(String gender) {
+    public void setGender(Gender gender) {
         this.gender = gender;
     }
 
-    public int getLifterNumber() {
-        return lifterNumber;
-    }
-
-    public void setLifterNumber(int lifterNumber) {
-        this.lifterNumber = lifterNumber;
-    }
-
-    public float getBodyWeight() {
+    public double getBodyWeight() {
         return bodyWeight;
     }
 
-    public void setBodyWeight(float bodyWeight) {
+    public void setBodyWeight(double bodyWeight) {
         this.bodyWeight = bodyWeight;
     }
-
-    public int getBestCj() {
-        return bestCj;
-    }
-
-    public void setBestCj(int bestCj) {
-        this.bestCj = bestCj;
-    }
-
-    public int getBestSnatch() {
-        return bestSnatch;
-    }
-
-    public void setBestSnatch(int bestSnatch) {
-        this.bestSnatch = bestSnatch;
-    }
-
-    public int getTotalScore() {
-        return totalScore;
-    }
-
-    public void setTotalScore(int totalScore) {
-        this.totalScore = totalScore;
-    }
-
-    public Double getSinclairScore() {
-        return sinclairScore;
-    }
-
-    public void setSinclairScore(Double sinclairScore) {
-        this.sinclairScore = sinclairScore;
-    }
-
-    public List<Lift> getCleanJerks() {
-        return cleanJerks;
-    }
-
-    public void setCleanJerks(ArrayList<Lift> cleanJerks) {
-        this.cleanJerks = cleanJerks;
-    }
-
-    public List<Lift> getSnatches() {
-        return snatches;
-    }
-
-    public void setSnatches(ArrayList<Lift> snatches) {
-        this.snatches = snatches;
-    }
-
-    /**
-     * This method returns the next lift that is to be performed by the lifter
-     * @param listOfLifts is the list containing the 3 lifts withing the lift categories
-     * @return the lift object
-     */
-    public Lift nextLift(List<Lift> listOfLifts){
-
-        for (Lift lift : listOfLifts) {
-            if (lift.isPerformed() == false){
-                return lift;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Sets if the chosen lift is accepted or rejected, and also marks the lift as performed.
-     * Assumes that the liftnumber stars from 1 in the category of CJ or Snatch
-     * @param listOfLift is the list containing the 3 lifts withing the lift categories
-     * @param numberOfLift is the number of the specific lift in the category
-     * @param isAccepted true if the lift is accepted, false otherwise
-     */
-    public void updateLiftStatus(List<Lift> listOfLift, int numberOfLift, boolean isAccepted){
-        Lift l = listOfLift.get(numberOfLift - 1);
-        l.setAccepted(isAccepted);
-        l.setPerformed(true);
-
-        // call methods to update state based on the lift performed
-        this.setNextWeightAutomatically(listOfLift, numberOfLift, isAccepted);
-        this.calculateIfDone();
-    }
-
-    private void calculateIfDone(){
-
-        if (snatches.get(snatches.size() - 1).isPerformed() == true) {
-            setDoneWithSnatch(true);
-        }
-
-        if (cleanJerks.get(cleanJerks.size() - 1).isPerformed() == true) {
-            setDoneWithCj(true);
-        }
-
-    }
-
-    private void setNextWeightAutomatically(List<Lift> listOfLifts, int numberOfPreviousLift, boolean isAccepted){
-
-        if(numberOfPreviousLift != 3) {
-            Lift nextLift = listOfLifts.get(numberOfPreviousLift);
-            if(isAccepted){
-                nextLift.setWeight(listOfLifts.get(numberOfPreviousLift - 1).getWeight() + 1);
-            } else {
-                nextLift.setWeight(listOfLifts.get(numberOfPreviousLift - 1).getWeight());
-            }
-
-        }
-    }
-
-    /**
-     * Updates the weight of the chosen lift
-     * @param listOfLift is the list containing the 3 lifts withing the lift categories
-     * @param numberOfLift is the number of the specific lift in the category
-     * @param weight the desired weight to update the lift with
-     */
-    public void updateLiftWeight(List<Lift> listOfLift, int numberOfLift, int weight){
-        Lift l = listOfLift.get(numberOfLift - 1);
-        l.setWeight(weight);
-    }
-
 }
