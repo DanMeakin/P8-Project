@@ -5,8 +5,19 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.io.Serializable;
 
+/**
+ * This class represents one lift carried out within a weightlifting
+ * competition.
+ *
+ * A lift may be one of several types: a snatch or a clean and jerk. The weight
+ * of a lift and a flag indicating whether it was successful are stored with
+ * the lift.
+ *
+ * The class provides methods for determining the score for a lift (this will
+ * be the weight lifted if successful, or 0 if not).
+ */
 @Entity
-public class Lift implements Serializable {
+public class Lift {
 
     /**
      * Defines the types of lift which may be carried out by a Lifter.
