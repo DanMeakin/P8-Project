@@ -3,9 +3,25 @@ package dk.aau.ida8.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * This class represents one weightlifting competition.
+ *
+ * Each competition is hosted by a particular weightlifting club at a venue of
+ * the club's choosing, and on a set date.
+ *
+ * The way in which a weightlifting competition is scored varies depending on
+ * the scoring rules adopted. These rules are encapsulated within a
+ * {@link ScoreStrategy, ScoreStrategy} object associated with a Competition
+ * instance.
+ *
+ * After a competition is created, weightlifters sign-up to participate, with
+ * each lifter's participation encapsulated and stored within a
+ * {@link Participation Participation} instance.
+ */
 @Entity
 public class Competition {
 
@@ -17,7 +33,7 @@ public class Competition {
     private String competitionName;
     private Address location;
     private Club host;
-    private Date date;
+    private LocalDate date;
 
     /**
      * Creates a new Competition object.
@@ -33,13 +49,13 @@ public class Competition {
      *                        competition, e.g. Sinclair, weight classes
      * @param date            the date on which the competition is to take place
      */
-    public Competition(String competitionName, Club host, Address location, ScoreStrategy scoreStrategy, Date date) {
+    public Competition(String competitionName, Club host, Address location, ScoreStrategy scoreStrategy, LocalDate date) {
         this.competitionName = competitionName;
         this.scoreStrategy = scoreStrategy;
         this.location = location;
         this.date = date;
         this.host = host;
-        this.participations = new ArrayList<Participation>();
+        this.participations = new ArrayList<>();
     }
 
     /**
@@ -184,11 +200,11 @@ public class Competition {
         this.location = location;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
