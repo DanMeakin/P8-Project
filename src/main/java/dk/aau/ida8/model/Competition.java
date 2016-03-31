@@ -1,8 +1,6 @@
 package dk.aau.ida8.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,15 +23,26 @@ import java.util.stream.Collectors;
 @Entity
 public class Competition {
 
+    public enum CompetitionType {
+        SINCLAIR, TOTAL_WEIGHT
+    }
+
     @Id
     @GeneratedValue
     private long id;
-    private ScoreStrategy scoreStrategy;
+
+    @OneToMany
     private List<Participation> participations;
+
     private String competitionName;
-    private Address location;
-    private Club host;
+    private CompetitionType competitionType;
     private LocalDate date;
+
+    @ManyToOne
+    private Address location;
+
+    @ManyToOne
+    private Club host;
 
     /**
      * Creates a new Competition object.
@@ -45,17 +54,35 @@ public class Competition {
      * @param competitionName the title/name of the competition
      * @param host            the club hosting the competition
      * @param location        the venue at which the competition takes place
-     * @param scoreStrategy     object encapsulating the win strategy of the
-     *                        competition, e.g. Sinclair, weight classes
+     * @param competitionType the type of the competition, i.e. Sinclair or
+     *                        total weight
      * @param date            the date on which the competition is to take place
      */
-    public Competition(String competitionName, Club host, Address location, ScoreStrategy scoreStrategy, LocalDate date) {
+    public Competition(String competitionName, Club host, Address location, CompetitionType competitionType, LocalDate date) {
         this.competitionName = competitionName;
-        this.scoreStrategy = scoreStrategy;
+        this.competitionType = competitionType;
         this.location = location;
         this.date = date;
         this.host = host;
         this.participations = new ArrayList<>();
+    }
+
+    /**
+     * Factory method for creating a ScoreStrategy object.
+     *
+     * @return
+     */
+    private ScoreStrategy createScoreStrategy() {
+        ScoreStrategy strategy = null;
+        switch (competitionType.toString()) {
+            case "SINCLAIR":
+                strategy = new SinclairStrategy();
+                break;
+            case "TOTAL_WEIGHT":
+                strategy = new TotalStrategy();
+                break;
+        }
+        return strategy;
     }
 
     /**
@@ -142,10 +169,6 @@ public class Competition {
         return getParticipations();
     }
 
-    private ScoreStrategy getScoreStrategy() {
-        return scoreStrategy;
-    }
-
     public List<Participation> getParticipations() {
         return participations;
     }
@@ -167,7 +190,7 @@ public class Competition {
      * @return the score for that participation
      */
     public double calculateScore(Participation participation) {
-        return getScoreStrategy().calculateScore(participation);
+        return createScoreStrategy().calculateScore(participation);
     }
 
     /**

@@ -1,8 +1,6 @@
 package dk.aau.ida8.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Club {
@@ -12,11 +10,17 @@ public class Club {
     private long id;
 
     private String name;
+
+    @ManyToOne
     private Address address;
 
     public Club(String name, Address address) {
         this.name = name;
         this.address = address;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getName() {

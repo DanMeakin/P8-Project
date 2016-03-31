@@ -2,9 +2,7 @@ package dk.aau.ida8.model;
 
 import org.omg.CORBA.DynAnyPackage.Invalid;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -30,9 +28,14 @@ public class Participation {
     @GeneratedValue
     private long id;
 
+    @ManyToOne
     private Lifter lifter;
+
+    @ManyToOne
     private Competition competition;
     private int currentWeight;
+
+    @OneToMany
     private List<Lift> lifts;
 
 
