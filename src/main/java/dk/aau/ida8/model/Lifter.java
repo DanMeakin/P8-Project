@@ -2,9 +2,9 @@ package dk.aau.ida8.model;
 
 import org.omg.PortableServer.POAPackage.ServantNotActiveHelper;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class represents one weightlifter.
@@ -31,16 +31,34 @@ public class Lifter {
 
     private String forename;
     private String surname;
+
+    @ManyToOne
     private Club club;
     private Gender gender;
     private double bodyWeight;
 
-    public Lifter(String forename, String surname, Club club, Gender gender, float bodyWeight) {
+    @OneToMany
+    private List<Participation> participations;
+
+    public Lifter(String forename, String surname, Club club, Gender gender, double bodyWeight) {
         this.forename = forename;
         this.surname = surname;
         this.club = club;
         this.gender = gender;
         this.bodyWeight = bodyWeight;
+        this.participations = new ArrayList<>();
+    }
+
+    /**
+     * Adds a Participation instance for this Lifter.
+     *
+     * A Participation instance represents the participation of a lifter within
+     * a given competition. See {@link Participation Participation} for details.
+     *
+     * @param participation the participation to aggregate to this lifter
+     */
+    public void addParticipation(Participation participation) {
+        participations.add(participation);
     }
 
     public long getId() {
@@ -93,5 +111,9 @@ public class Lifter {
 
     public void setBodyWeight(double bodyWeight) {
         this.bodyWeight = bodyWeight;
+    }
+
+    public List<Participation> getParticipations() {
+        return participations;
     }
 }

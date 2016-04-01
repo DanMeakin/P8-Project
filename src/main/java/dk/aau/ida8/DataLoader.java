@@ -1,6 +1,8 @@
 package dk.aau.ida8;
 
 import dk.aau.ida8.data.LifterRepository;
+import dk.aau.ida8.model.Address;
+import dk.aau.ida8.model.Club;
 import dk.aau.ida8.model.Lifter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -44,11 +46,11 @@ public class DataLoader {
         lifterRepository.save(lifter3);
 */
 
-        Lifter lifter2 = new Lifter("Lotte", "Ak Jyden", "F", 1, 60.0f, 70, 80);
-        lifter2.updateLiftWeight(lifter2.getCleanJerks(), 2, 70);
+        Club club = new Club("AK Jyden", new Address("", "Vesterbro 33", "Aalborg", "9000"));
+        Lifter lifter2 = new Lifter("Lotte", "S", club, Lifter.Gender.FEMALE, 60.0);
         lifterRepository.save(lifter2);
 
-        Lifter lifter3 = new Lifter("Robin", "Ak Jyden", "M", 2, 60.0f, 70, 80);
+        Lifter lifter3 = new Lifter("Robin", "L", club, Lifter.Gender.MALE, 60.0);
         lifterRepository.save(lifter3);
 
     }

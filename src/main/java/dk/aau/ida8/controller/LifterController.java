@@ -28,7 +28,6 @@ public class LifterController {
     @RequestMapping("/lifter/{id}")
     public String lifter(@PathVariable Long id, Model model) {
         model.addAttribute("lifter", lifterService.findOne(id));
-        model.addAttribute("cleanJerks", lifterService.findOne(id).getCleanJerks());
         return "lifter-view";
     }
 
