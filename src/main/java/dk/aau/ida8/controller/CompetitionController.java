@@ -1,6 +1,5 @@
 package dk.aau.ida8.controller;
 
-import dk.aau.ida8.service.LiftService;
 import dk.aau.ida8.service.LifterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

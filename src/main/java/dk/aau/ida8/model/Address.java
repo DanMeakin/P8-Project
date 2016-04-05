@@ -15,6 +15,10 @@ public class Address {
     private String postcode;
     private String town;
 
+    public Address() {
+
+    }
+
     public Address(String building, String street, String postcode, String town) {
         this.building = building;
         this.street = street;

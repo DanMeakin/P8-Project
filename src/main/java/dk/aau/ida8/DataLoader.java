@@ -1,5 +1,7 @@
 package dk.aau.ida8;
 
+import dk.aau.ida8.data.AddressRepository;
+import dk.aau.ida8.data.ClubRepository;
 import dk.aau.ida8.data.LifterRepository;
 import dk.aau.ida8.model.Address;
 import dk.aau.ida8.model.Club;
@@ -13,10 +15,16 @@ import javax.annotation.PostConstruct;
 public class DataLoader {
 
     private LifterRepository lifterRepository;
+    private ClubRepository clubRepository;
+    private AddressRepository addressRepository;
 
     @Autowired
-    public DataLoader(LifterRepository lifterRepository) {
+    public DataLoader(LifterRepository lifterRepository,
+                      ClubRepository clubRepository,
+                      AddressRepository addressRepository) {
         this.lifterRepository = lifterRepository;
+        this.clubRepository = clubRepository;
+        this.addressRepository = addressRepository;
     }
 
     @PostConstruct
@@ -46,7 +54,10 @@ public class DataLoader {
         lifterRepository.save(lifter3);
 */
 
-        Club club = new Club("AK Jyden", new Address("", "Vesterbro 33", "Aalborg", "9000"));
+        Address address = new Address("", "oseesterbro 33", "Aalborg", "9000");
+        addressRepository.save(address);
+        Club club = new Club("AK Jyden", address);
+        clubRepository.save(club);
         Lifter lifter2 = new Lifter("Lotte", "S", club, Lifter.Gender.FEMALE, 60.0);
         lifterRepository.save(lifter2);
 
