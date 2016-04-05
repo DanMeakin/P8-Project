@@ -14,6 +14,10 @@ public class Club {
     @ManyToOne
     private Address address;
 
+    public Club() {
+
+    }
+
     public Club(String name, Address address) {
         this.name = name;
         this.address = address;

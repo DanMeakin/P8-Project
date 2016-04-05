@@ -40,6 +40,10 @@ public class Lifter {
     @OneToMany
     private List<Participation> participations;
 
+    public Lifter() {
+
+    }
+
     public Lifter(String forename, String surname, Club club, Gender gender, double bodyWeight) {
         this.forename = forename;
         this.surname = surname;
