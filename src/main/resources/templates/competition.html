@@ -101,8 +101,8 @@
           </thead>
           <tbody>
             <tr th:each="lifter : ${lifters}">
-              <td th:text="${lifter.lifterNumber}">Lifter no</td>
-              <td th:text="${lifter.name}">Lifter name</td>
+              <td th:text="${lifter.id}">Lifter no</td>
+              <td th:text="${lifter.getFullName()}">Lifter name</td>
               <td>1990</td>
               <td th:text="${lifter.gender}">M</td>
               <td th:text="${lifter.club}">AK Jyden</td>
