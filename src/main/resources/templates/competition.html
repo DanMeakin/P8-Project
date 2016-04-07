@@ -83,7 +83,7 @@
               <th>No.</th>
               <th>Name</th>
               <th>Sex</th>
-              <th>Born</th>
+              <th>DoB</th>
               <th>Club</th>
               <th>BW</th>
               <th>Sn 1</th>
@@ -101,24 +101,22 @@
           </thead>
           <tbody>
             <tr th:each="lifter : ${lifters}">
-              <td th:text="${lifter.lifterNumber}">Lifter no</td>
-              <td th:text="${lifter.name}">Lifter name</td>
-              <td>1990</td>
-              <td th:text="${lifter.gender}">M</td>
-              <td th:text="${lifter.club}">AK Jyden</td>
-              <td >60.00</td>
-              <td th:text="${lifter.cleanJerks[0].weight}">70</td>
-              <td th:if="${lifter.cleanJerks[1].weight != 0}"><span th:text="${lifter.cleanJerks[1].weight}"></span></td>
-              <td th:if="${lifter.cleanJerks[1].weight == 0}"></td>
-              <td th:if="${lifter.cleanJerks[2].weight != 0}"><span th:text="${lifter.cleanJerks[2].weight}"></span></td>
-              <td th:if="${lifter.cleanJerks[2].weight == 0}"></td>
+              <td th:text="${lifter.id}">Lifter no</td>
+              <td th:text="${lifter.getFullName()}">Lifter name</td>
+              <td th:text="${lifter.getGenderInitial()}">M</td>
+              <td th:text="${lifter.dateOfBirth}">Date of birth</td>
+              <td th:text="${lifter.club.name}">AK Jyden</td>
+              <td th:text="${lifter.bodyWeight}">Bodyweight</td>
+              <td>70</td>
+              <td>75</td>
+              <td>unsuccessful</td>
+              <td>100</td>
+              <td>unsuccessful</td>
+              <td>105</td>
+              <td>75</td>
+              <td>105</td>
+              <td>185</td>
               <td></td>
-              <td></td>
-              <td></td>
-              <td>80</td>
-              <td>0</td>
-              <td>0</td>
-              <td>0</td>
               <td></td>
             </tr>
           </tbody>

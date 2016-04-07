@@ -11,10 +11,10 @@
         <form th:action="@{/lifter/update}" th:object="${lifter}" method="POST">
             <input type="hidden" name="id" th:field="*{id}" />
             <div class="form-group">
-                <input type="text" name="lifter-number" th:field="*{lifterNumber}" class="form-control" />
+                <input type="text" name="lifter-number" th:field="*{id}" class="form-control" />
             </div>
             <div class="form-group">
-                <input type="text" name="name" th:field="*{name}" class="form-control" />
+                <input type="text" name="name" th:field="*{getFullName()}" class="form-control" />
             </div>
             <div class="form-group">
                 <input type="text" name="cj-weight-1" th:field="*{cleanJerks[0].weight}" class="form-control" />

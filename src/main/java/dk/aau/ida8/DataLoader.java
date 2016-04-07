@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDate;
 
 @Component
 public class DataLoader {
@@ -58,10 +59,10 @@ public class DataLoader {
         addressRepository.save(address);
         Club club = new Club("AK Jyden", address);
         clubRepository.save(club);
-        Lifter lifter2 = new Lifter("Lotte", "S", club, Lifter.Gender.FEMALE, 60.0);
+        Lifter lifter2 = new Lifter("Lotte", "S", club, Lifter.Gender.FEMALE, LocalDate.of(1990, 3, 6), 60.0);
         lifterRepository.save(lifter2);
 
-        Lifter lifter3 = new Lifter("Robin", "L", club, Lifter.Gender.MALE, 60.0);
+        Lifter lifter3 = new Lifter("Robin", "L", club, Lifter.Gender.MALE, LocalDate.of(1992, 10, 22), 60.0);
         lifterRepository.save(lifter3);
 
     }

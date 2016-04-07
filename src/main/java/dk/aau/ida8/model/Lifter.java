@@ -3,6 +3,7 @@ package dk.aau.ida8.model;
 import org.omg.PortableServer.POAPackage.ServantNotActiveHelper;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class Lifter {
     private Club club;
     private Gender gender;
     private double bodyWeight;
+    private LocalDate dateOfBirth;
 
     @OneToMany
     private List<Participation> participations;
@@ -44,11 +46,12 @@ public class Lifter {
 
     }
 
-    public Lifter(String forename, String surname, Club club, Gender gender, double bodyWeight) {
+    public Lifter(String forename, String surname, Club club, Gender gender, LocalDate dateOfBirth, double bodyWeight) {
         this.forename = forename;
         this.surname = surname;
         this.club = club;
         this.gender = gender;
+        this.dateOfBirth = dateOfBirth;
         this.bodyWeight = bodyWeight;
         this.participations = new ArrayList<>();
     }
@@ -109,12 +112,24 @@ public class Lifter {
         this.gender = gender;
     }
 
+    public String getGenderInitial() {
+        return getGender().toString().substring(0, 1);
+    }
+
     public double getBodyWeight() {
         return bodyWeight;
     }
 
     public void setBodyWeight(double bodyWeight) {
         this.bodyWeight = bodyWeight;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
     }
 
     public List<Participation> getParticipations() {
