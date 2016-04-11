@@ -14,7 +14,6 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
-apply plugin: 'jetty'
 apply plugin: 'spring-boot' 
 
 jar {
