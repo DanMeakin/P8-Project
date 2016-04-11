@@ -4,15 +4,19 @@ buildscript {
 	}
 	repositories {
 		mavenCentral()
+    jcenter()
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
+    classpath("io.ratpack:ratpack-gradle:1.0.0")
 	}
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
+apply plugin: 'jetty'
+apply plugin: 'io.ratpack.ratpack-groovy'
 apply plugin: 'spring-boot' 
 
 jar {
@@ -24,6 +28,7 @@ repositories {
 	mavenCentral()
 }
 
+mainClassName = "Main"
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
@@ -34,6 +39,9 @@ dependencies {
 	testCompile('org.springframework.boot:spring-boot-starter-test')
   testCompile('org.hamcrest:hamcrest-all:1.+')
   testCompile('org.mockito:mockito-all:1.+')
+  runtime('org.slf4j:slf4j-simple:1.7.12')
+  compile('com.heroku.sdk:heroku-jdbc:0.1.1')
+  compile('org.postgresql:postgresql:9.4-1201-jdbc4')
 }
 
 
@@ -46,4 +54,8 @@ eclipse {
 
 task wrapper(type: Wrapper) {
 	gradleVersion = '2.9'
+}
+
+task stage {
+  dependsOn installDist
 }
