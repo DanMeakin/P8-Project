@@ -10,6 +10,7 @@ hs_err_pid*
 *.swp
 .classpath
 .DS_Store
+.gradle
 
 # IntelliJ Project files
 .idea/
