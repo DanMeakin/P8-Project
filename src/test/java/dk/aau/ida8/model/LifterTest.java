@@ -33,10 +33,10 @@ public class LifterTest {
 
     @Test
     public void testAddParticipation() throws Exception {
-        assertTrue(l.getParticipations().isEmpty());
-        Participation p = mock(Participation.class);
+        assertTrue(l.getParticipants().isEmpty());
+        Participant p = mock(Participant.class);
         l.addParticipation(p);
-        assertEquals(Arrays.asList(new Participation[]{p}), l.getParticipations());
+        assertEquals(Arrays.asList(new Participant[]{p}), l.getParticipants());
     }
     */
 }
