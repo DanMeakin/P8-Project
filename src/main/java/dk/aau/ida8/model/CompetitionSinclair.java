@@ -1,5 +1,6 @@
 package dk.aau.ida8.model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +10,10 @@ import java.util.stream.Collectors;
  * Created by mikkelmoerch on 12/04/16.
  */
 public class CompetitionSinclair extends Competition {
+
+    public CompetitionSinclair(String competitionName, Club host, Address location, CompetitionType competitionType, LocalDate date){
+            super(competitionName, host, location, competitionType, date);
+    }
 
     // The coefficient for this Olympic cycle
     private static final double MALE_COEFFICIENT = 0.704358141;

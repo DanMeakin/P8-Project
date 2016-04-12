@@ -68,7 +68,7 @@ public abstract class Competition {
     }
 
     public Competition(){
-
+        this.participants = new ArrayList<>();
     }
 
     /**
@@ -157,7 +157,7 @@ public abstract class Competition {
         return getParticipants();
     }
 
-    public ArrayList<Participant> getParticipants() {
+    public List<Participant> getParticipants() {
         return participants;
     }
 
