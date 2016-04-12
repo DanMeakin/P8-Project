@@ -32,6 +32,14 @@ public class CompetitionService {
         return competitionRepository.findOne(id);
     }
 
-    //The next thing to add will be the save, edit and delete of competitions. This can ce added
-    //once we have the createCompetition-class
+
+    //Method to save a competition. Takes a competition object and saves in database.
+    public Competition save (Competition competition){
+        return competitionRepository.save(competition);
+    }
+
+    //Method to delete a competition
+    public void delete (Long id){
+        competitionRepository.delete(id);
+    }
 }
