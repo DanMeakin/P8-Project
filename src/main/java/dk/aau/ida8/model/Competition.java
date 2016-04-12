@@ -67,6 +67,10 @@ public abstract class Competition {
         this.participants = new ArrayList<>();
     }
 
+    public Competition(){
+
+    }
+
     /**
      * Adds a new participant to the competition.
      *
@@ -153,7 +157,7 @@ public abstract class Competition {
         return getParticipants();
     }
 
-    public List<Participant> getParticipants() {
+    public ArrayList<Participant> getParticipants() {
         return participants;
     }
 
@@ -183,11 +187,11 @@ public abstract class Competition {
      *
      * @return participants for this competition, ranked in order
      */
-    public List<Participant> calculateRankings() {
+    public abstract List<Participant> calculateRankings(); /*{
         return getParticipants().stream()
                 .sorted((p1, p2) -> (int) Math.round(p2.getTotalScore() - p1.getTotalScore()))
                 .collect(Collectors.toList());
-    }
+    }*/
 
     public String getCompetitionName() {
         return competitionName;
