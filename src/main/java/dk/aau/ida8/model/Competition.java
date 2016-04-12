@@ -67,6 +67,9 @@ public class Competition {
         this.participations = new ArrayList<>();
     }
 
+    public Competition() {
+    }
+
     /**
      * Factory method for creating a ScoreStrategy object.
      *
