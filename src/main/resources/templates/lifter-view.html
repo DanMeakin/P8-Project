@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="layouts/main">
+<head>
+    <title>Weightlifting Management System</title>
+</head>
+<body>
+
+    <div layout:fragment="content">
+        <form th:action="@{/lifter/update}" th:object="${lifter}" method="POST">
+            <input type="hidden" name="id" th:field="*{id}" />
+            <div class="form-group">
+                <input type="text" name="lifter-number" th:field="*{id}" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input type="text" name="name" th:field="*{getFullName()}" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input type="text" name="cj-weight-1" th:field="*{cleanJerks[0].weight}" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input type="text" name="cj-weight-2" th:field="*{cleanJerks[1].weight}" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input type="text" name="cj-weight-3" th:field="*{cleanJerks[2].weight}" class="form-control" />
+            </div>
+            <input type="submit" value="Update" class="btn btn-primary" />
+        </form>
+    </div>
+
+</body>
+</html>

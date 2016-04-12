@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:th="http://www.thymeleaf.org"
+  layout:decorator="layouts/main">
+<head>
+    <title>Weightlifting Management System</title>
+</head>
+<body>
+
+  <div layout:fragment="content">
+    <div class="row">
+      <div class="col-md-12 upcoming-lifters">
+        <p><strong>UPCOMING LIFTERS</strong>: Lotte Selnø, Nicklas Jørgensen, Robin Hansen</p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-7 current-lifter-info">
+        <ul class="comp-progress">
+          <li class="steps pass">Snatch 1</li>
+          <li class="steps fail">Snatch 2</li>
+          <li class="steps pass">Snatch 3</li>
+          <li class="steps current">CJ 1</li>
+          <li class="steps">CJ 2</li>
+          <li class="steps">CJ 3</li>
+        </ul>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Current weight</th>
+              <th>Bodyweight</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="row">
+          <div class="col-md-6 col-md-offset-3">
+            <p><button class="btn btn-success btn-pass">Pass</button> <button class="btn btn-danger btn-fail">Fail</button></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-md-offset-1 edit-lifter-info">
+        <p>Lifter name: Frederik Nygart<br />Lifter number: 10</p>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Sn 1</th>
+              <th>Sn 2</th>
+              <th>Sn 3</th>
+              <th>CJ 1</th>
+              <th>CJ 2</th>
+              <th>CJ 3</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>40</td>
+              <td>50</td>
+              <td>55</td>
+              <td class="current-edit">85</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+        <p><button class="btn btn-default">Save</button></p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <table class="table table-striped table-hover table-competition">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Name</th>
+              <th>Sex</th>
+              <th>DoB</th>
+              <th>Club</th>
+              <th>BW</th>
+              <th>Sn 1</th>
+              <th>Sn 2</th>
+              <th>Sn 3</th>
+              <th>CJ 1</th>
+              <th>CJ 2</th>
+              <th>CJ 3</th>
+              <th>Best Sn</th>
+              <th>Best CJ</th>
+              <th>Total</th>
+              <th>Sinclair</th>
+              <th>Ranking</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="lifter : ${lifters}">
+              <td th:text="${lifter.id}">Lifter no</td>
+              <td th:text="${lifter.getFullName()}">Lifter name</td>
+              <td th:text="${lifter.getGenderInitial()}">M</td>
+              <td th:text="${lifter.dateOfBirth}">Date of birth</td>
+              <td th:text="${lifter.club.name}">AK Jyden</td>
+              <td th:text="${lifter.bodyWeight}">Bodyweight</td>
+              <td>70</td>
+              <td>75</td>
+              <td>unsuccessful</td>
+              <td>100</td>
+              <td>unsuccessful</td>
+              <td>105</td>
+              <td>75</td>
+              <td>105</td>
+              <td>185</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
