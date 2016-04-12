@@ -9,6 +9,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.time.LocalDate;
 
 import static org.junit.Assert.*;
 
@@ -21,7 +22,7 @@ public class LifterTest {
 
     @Before
     public void setUp() throws Exception {
-        l = new Lifter("Jokum", "K", mock(Club.class), Lifter.Gender.MALE, 60.00);
+        l = new Lifter("Jokum", "K", mock(Club.class), Lifter.Gender.MALE, LocalDate.of(1990, 1, 1), 60.00);
 
     }
 
