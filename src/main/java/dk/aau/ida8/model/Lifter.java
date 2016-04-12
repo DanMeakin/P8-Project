@@ -1,7 +1,5 @@
 package dk.aau.ida8.model;
 
-import org.omg.PortableServer.POAPackage.ServantNotActiveHelper;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,7 +11,7 @@ import java.util.List;
  * Each weightlifter must be the member of a club to participate in a
  * competition. Their gender, weight and name must be stored.
  *
- * Lifter objects are used in the {@link Participation Participation} class,
+ * Lifter objects are used in the {@link Participant Participant} class,
  * representing an individual's participation within a particular competition.
  */
 @Entity
@@ -40,7 +38,7 @@ public class Lifter {
     private LocalDate dateOfBirth;
 
     @OneToMany
-    private List<Participation> participations;
+    private List<Participant> participants;
 
     public Lifter() {
 
@@ -53,19 +51,19 @@ public class Lifter {
         this.gender = gender;
         this.dateOfBirth = dateOfBirth;
         this.bodyWeight = bodyWeight;
-        this.participations = new ArrayList<>();
+        this.participants = new ArrayList<>();
     }
 
     /**
-     * Adds a Participation instance for this Lifter.
+     * Adds a Participant instance for this Lifter.
      *
-     * A Participation instance represents the participation of a lifter within
-     * a given competition. See {@link Participation Participation} for details.
+     * A Participant instance represents the participant of a lifter within
+     * a given competition. See {@link Participant Participant} for details.
      *
-     * @param participation the participation to aggregate to this lifter
+     * @param participant the participant to aggregate to this lifter
      */
-    public void addParticipation(Participation participation) {
-        participations.add(participation);
+    public void addParticipation(Participant participant) {
+        participants.add(participant);
     }
 
     public long getId() {
@@ -132,7 +130,7 @@ public class Lifter {
         return dateOfBirth;
     }
 
-    public List<Participation> getParticipations() {
-        return participations;
+    public List<Participant> getParticipants() {
+        return participants;
     }
 }
