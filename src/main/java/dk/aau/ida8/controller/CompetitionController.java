@@ -1,8 +1,10 @@
 package dk.aau.ida8.controller;
 
 import dk.aau.ida8.model.Competition;
+import dk.aau.ida8.model.Participant;
 import dk.aau.ida8.service.CompetitionService;
 import dk.aau.ida8.service.LifterService;
+import dk.aau.ida8.service.ParticipantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -20,21 +22,15 @@ import java.util.Date;
 public class CompetitionController {
 
     private CompetitionService competitionService;
-
     private LifterService lifterService;
+    private ParticipantService participantService;
 
     @Autowired
-    public CompetitionController(LifterService lifterService, CompetitionService competitionService) {
+    public CompetitionController(LifterService lifterService, CompetitionService competitionService, ParticipantService participantService) {
         this.lifterService = lifterService;
         this.competitionService = competitionService;
+        this.participantService = participantService;
     }
-
-    /*
-    @RequestMapping(value = "/competition")
-    public String comp() {
-        return "competition";
-    }
-    */
 
     @RequestMapping(method = RequestMethod.GET)
     public String showAll(Model model) {
@@ -42,20 +38,29 @@ public class CompetitionController {
         return "competition";
     }
 
-    @RequestMapping(value = "/{competitionID}/register-lift/{participantID}", method = RequestMethod.GET)
-    public String liftOutcomeForm(Model model, @PathVariable long competitionID, @PathVariable long participantID) {
+    @RequestMapping(value = "/register-lift/{participantID}/", method = RequestMethod.GET)
+    public String liftOutcomeForm(Model model, @PathVariable long participantID) {
+        model.addAttribute("participant", participantService.findOne(participantID));
         return "lift-register-form";
     }
 
-    @RequestMapping(value = "/{competitionID}/register-lift/{participantID}", method = RequestMethod.POST, produces = MediaType.TEXT_HTML_VALUE)
-    public String registerLift(Model model, @RequestParam("action") String action, @PathVariable long competitionID, @PathVariable long participantID) {
-        if (action == "PASS") {
-            return "<div>It's a pass!</div>";
-        } else if (action == "FAIL") {
-            return "<div>It's a fail!</div>";
-        } else {
-            return "<div>It's an abstention!</div>";
+    @RequestMapping(value = "/register-lift/", method = RequestMethod.POST)
+    public String registerLift(Model model, @RequestParam("action") String action, @RequestParam("participantID") long participantID) {
+        Participant p = participantService.findOne(participantID);
+        switch (action) {
+            case "PASS":
+                p.addPassedLift();
+                break;
+            case "FAIL":
+                p.addFailedLift();
+                break;
+            case "ABSTAIN":
+                p.addAbstainedLift();
+                break;
         }
+        participantService.saveParticipant(p);
+        model.addAttribute("participant", p);
+        return "lift-register-form";
     }
 
     /**
