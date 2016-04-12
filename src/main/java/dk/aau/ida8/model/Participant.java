@@ -36,9 +36,20 @@ public class Participant {
     private Competition competition;
     private int currentWeight;
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.ALL})
     private List<Lift> lifts;
 
+
+    public long getId() {
+        return id;
+    }
+
+    /**
+     * Default constructor required for Hibernate.
+     */
+    public Participant() {
+
+    }
 
     /**
      * Creates a participation instance.
@@ -79,6 +90,10 @@ public class Participant {
      */
     public int getCurrentWeight() {
         return currentWeight;
+    }
+
+    public String getFullName() {
+        return getLifter().getFullName();
     }
 
     /**
@@ -195,7 +210,7 @@ public class Participant {
      *
      */
     public void addPassedLift() throws InvalidParameterException {
-        Lift lift = Lift.passedLift(getCurrentLiftType(), getCurrentWeight());
+        Lift lift = Lift.passedLift(this, getCurrentLiftType(), getCurrentWeight());
         addLift(lift);
     }
 
@@ -207,7 +222,7 @@ public class Participant {
      *
      */
     public void addFailedLift() throws InvalidParameterException {
-        Lift lift = Lift.failedLift(getCurrentLiftType(), getCurrentWeight());
+        Lift lift = Lift.failedLift(this, getCurrentLiftType(), getCurrentWeight());
         addLift(lift);
     }
 
@@ -219,7 +234,7 @@ public class Participant {
      *
      */
     public void addAbstainedLift() throws InvalidParameterException {
-        Lift lift = Lift.abstainedLift(getCurrentLiftType(), getCurrentWeight());
+        Lift lift = Lift.abstainedLift(this, getCurrentLiftType(), getCurrentWeight());
         addLift(lift);
     }
 

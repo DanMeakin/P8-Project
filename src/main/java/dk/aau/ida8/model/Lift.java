@@ -3,6 +3,7 @@ package dk.aau.ida8.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 /**
  * This class represents one lift carried out within a weightlifting
@@ -45,51 +46,67 @@ public class Lift {
     private LiftType liftType;
     private int weight;
 
+    @ManyToOne
+    private Participant participant;
+
     /**
      * Creates a new Lift object representing a successful/passed lift.
      *
+     * @param participant the participant undertaking the lift
      * @param liftType type of lift - snatch or clean & jerk
      * @param weight the weight lifted
      * @return a Lift object containing values as passed to this method
      */
-    public static Lift passedLift(LiftType liftType, int weight) {
-        return new Lift(liftType, weight, LiftOutcome.PASS);
+    public static Lift passedLift(Participant participant, LiftType liftType, int weight) {
+        return new Lift(participant, liftType, weight, LiftOutcome.PASS);
     }
 
     /**
      * Creates a new Lift object representing an unsuccessful/failed lift.
      *
+     * @param participant the participant undertaking the lift
      * @param liftType type of lift - snatch or clean & jerk
      * @param weight the weight lifted
      * @return a Lift object containing values as passed to this method
      */
-    public static Lift failedLift(LiftType liftType, int weight) {
-        return new Lift(liftType, weight, LiftOutcome.FAIL);
+    public static Lift failedLift(Participant participant, LiftType liftType, int weight) {
+        return new Lift(participant, liftType, weight, LiftOutcome.FAIL);
     }
 
     /**
      * Creates a new Lift object representing an abstained lift.
      *
+     * @param participant the participant undertaking the lift
      * @param liftType type of lift - snatch or clean & jerk
      * @param weight the weight lifted
      * @return a Lift object containing values as passed to this method
      */
-    public static Lift abstainedLift(LiftType liftType, int weight) {
-        return new Lift(liftType, weight, LiftOutcome.ABSTAIN);
+    public static Lift abstainedLift(Participant participant, LiftType liftType, int weight) {
+        return new Lift(participant, liftType, weight, LiftOutcome.ABSTAIN);
     }
 
     public Lift() {
 
     }
 
-    private Lift(LiftType liftType, int weight, LiftOutcome outcome) {
+    private Lift(Participant participant, LiftType liftType, int weight, LiftOutcome outcome) {
+        this.participant = participant;
         this.liftType = liftType;
         this.outcome = outcome;
         this.weight = weight;
     }
 
+    @Override
+    public String toString() {
+        return "Lift: " + getLiftType() + " - " + getWeight() + " (" + getOutcome() + ")";
+    }
+
     public LiftType getLiftType() {
         return liftType;
+    }
+
+    public Participant getParticipant() {
+        return participant;
     }
 
     /**
