@@ -11,7 +11,7 @@ public class SinclairStrategy implements ScoreStrategy {
     private static final double FEMALE_WRH_BODYWEIGHT = 148.026;
 
     /**
-     * Calculates the score for a participation of a given lifter in a
+     * Calculates the score for a participant of a given lifter in a
      * competition.
      *
      * The Sinclair scoring strategy involves the calculation of a coefficient
@@ -21,15 +21,15 @@ public class SinclairStrategy implements ScoreStrategy {
      * The coefficient is then multiplied by the actual total the lifter
      * achieved, to determine the "Sinclair" total.
      *
-     * @param participation the Participation object representing a Lifter's
-     *                      participation in a given Competition
+     * @param participant the Participant object representing a Lifter's
+     *                      participant in a given Competition
      * @return the "Sinclair" total score for the competition
      */
     @Override
-    public double calculateScore(Participation participation){
-        Lifter lifter = participation.getLifter();
-        int rawScore = participation.getBestCleanAndJerk() +
-                participation.getBestSnatch();
+    public double calculateScore(Participant participant){
+        Lifter lifter = participant.getLifter();
+        int rawScore = participant.getBestCleanAndJerk() +
+                participant.getBestSnatch();
         return rawScore * sinclairCoefficient(lifter);
     }
 

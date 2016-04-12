@@ -1,14 +1,11 @@
 package dk.aau.ida8.model;
 
-import dk.aau.ida8.model.Lift;
-import dk.aau.ida8.model.Lifter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
-import java.util.List;
 import java.time.LocalDate;
 
 import static org.junit.Assert.*;
@@ -33,9 +30,9 @@ public class LifterTest {
 
     @Test
     public void testAddParticipation() throws Exception {
-        assertTrue(l.getParticipations().isEmpty());
-        Participation p = mock(Participation.class);
+        assertTrue(l.getParticipants().isEmpty());
+        Participant p = mock(Participant.class);
         l.addParticipation(p);
-        assertEquals(Arrays.asList(new Participation[]{p}), l.getParticipations());
+        assertEquals(Arrays.asList(new Participant[]{p}), l.getParticipants());
     }
 }

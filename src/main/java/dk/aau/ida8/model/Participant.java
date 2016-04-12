@@ -22,7 +22,7 @@ import java.util.List;
  * be possible to carry-out more than three lifts of each type.
  */
 @Entity
-public class Participation {
+public class Participant {
 
     @Id
     @GeneratedValue
@@ -47,7 +47,7 @@ public class Participation {
      *                       participating
      * @param startingWeight the initial weight to be lifted by the lifter
      */
-    public Participation(Lifter lifter, Competition competition, int startingWeight) {
+    public Participant(Lifter lifter, Competition competition, int startingWeight) {
         this.lifter = lifter;
         this.competition = competition;
         this.currentWeight = startingWeight;

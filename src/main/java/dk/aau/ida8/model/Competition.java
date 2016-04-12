@@ -18,10 +18,10 @@ import java.util.stream.Collectors;
  *
  * After a competition is created, weightlifters sign-up to participate, with
  * each lifter's participation encapsulated and stored within a
- * {@link Participation Participation} instance.
+ * {@link Participant Participant} instance.
  */
 @Entity
-public class Competition {
+public abstract class Competition {
 
     public enum CompetitionType {
         SINCLAIR, TOTAL_WEIGHT
@@ -32,7 +32,7 @@ public class Competition {
     private long id;
 
     @OneToMany
-    private List<Participation> participations;
+    private List<Participant> participants;
 
     private String competitionName;
     private CompetitionType competitionType;
@@ -64,40 +64,22 @@ public class Competition {
         this.location = location;
         this.date = date;
         this.host = host;
-        this.participations = new ArrayList<>();
-    }
-
-    /**
-     * Factory method for creating a ScoreStrategy object.
-     *
-     * @return
-     */
-    private ScoreStrategy createScoreStrategy() {
-        ScoreStrategy strategy = null;
-        switch (competitionType.toString()) {
-            case "SINCLAIR":
-                strategy = new SinclairStrategy();
-                break;
-            case "TOTAL_WEIGHT":
-                strategy = new TotalStrategy();
-                break;
-        }
-        return strategy;
+        this.participants = new ArrayList<>();
     }
 
     /**
      * Adds a new participant to the competition.
      *
      * The participation of a lifter in a competition is encapsulated within a
-     * {@link Participation Participation} object. This method accepts a lifter
-     * instance and then creates and aggregates the required Participation
+     * {@link Participant Participant} object. This method accepts a lifter
+     * instance and then creates and aggregates the required Participant
      * object to the competition.
      *
      * @param lifter the lifter to add to the competition
      */
     public void addParticipant(Lifter lifter, int startingWeight){
-        Participation p = new Participation(lifter, this, startingWeight);
-        participations.add(p);
+        Participant p = new Participant(lifter, this, startingWeight);
+        participants.add(p);
     }
 
     /**
@@ -106,17 +88,17 @@ public class Competition {
      * @param lifter who is to be removed
      */
     public void removeParticipant(Lifter lifter){
-        Participation p = selectParticipationByLifter(lifter);
+        Participant p = selectParticipationByLifter(lifter);
         removeParticipant(p);
     }
 
     /**
-     * Removes a participant from the participations list.
+     * Removes a participant from the participants list.
      *
-     * @param participation the participation object to remove
+     * @param participant the participant object to remove
      */
-    private void removeParticipant(Participation participation) {
-        participations.remove(participation);
+    private void removeParticipant(Participant participant) {
+        participants.remove(participant);
     }
 
     /**
@@ -126,12 +108,14 @@ public class Competition {
      *               instance
      * @return participation instance for the passed lifter
      */
-    public Participation selectParticipationByLifter(Lifter lifter) {
-        List<Participation> ps = getParticipations().stream()
+    public Participant selectParticipationByLifter(Lifter lifter) {
+        List<Participant> ps = getParticipants().stream()
                 .filter(p -> p.getLifter().equals(lifter))
                 .collect(Collectors.toList());
         return ps.get(0);
     }
+
+    public abstract HashMap<Integer, ArrayList<Participant>> allocateGroups();
 
     /**
      * Determines the next participant to carry out a lift.
@@ -139,12 +123,12 @@ public class Competition {
      * @return the participation object containing the next lifter who is to
      *         lift
      */
-    public Participation determineNextParticipation() {
+    public Participant determineNextParticipation() {
         return determineParticipationOrder().get(0);
     }
 
     /**
-     * Sorts and returns the list of participations.
+     * Sorts and returns the list of participants.
      *
      * The identity of the next participant is calculated based on which
      * participant has chosen the lowest weight to lift. If two or more lifters
@@ -153,10 +137,10 @@ public class Competition {
      *
      * @return sorted list of participants
      */
-    public List<Participation> determineParticipationOrder() {
-        Collections.sort(getParticipations(), new Comparator<Participation>() {
+    public List<Participant> determineParticipationOrder() {
+        Collections.sort(getParticipants(), new Comparator<Participant>() {
             @Override
-            public int compare(Participation p1, Participation p2) {
+            public int compare(Participant p1, Participant p2) {
                 int weightComp = p1.getCurrentWeight() - p2.getCurrentWeight();
                 long idComp = p1.getLifter().getId() - p2.getLifter().getId();
                 if (weightComp == 0) {
@@ -166,32 +150,30 @@ public class Competition {
                 }
             }
         });
-        return getParticipations();
+        return getParticipants();
     }
 
-    public List<Participation> getParticipations() {
-        return participations;
+    public List<Participant> getParticipants() {
+        return participants;
     }
 
     public List<Lifter> getLifters() {
-        return getParticipations().stream()
-                .map(Participation::getLifter)
+        return getParticipants().stream()
+                .map(Participant::getLifter)
                 .collect(Collectors.toList());
     }
 
     /**
-     * Calculates the score for a given participation.
+     * Calculates the score for a given participant.
      *
      * This methods refers to the encapsulated score strategy within a
      * particular competition, and uses this to calculate the score for a
-     * participation.
+     * participant.
      *
-     * @param participation the participation for which to calculate the score
-     * @return the score for that participation
+     * @param participant the participant for which to calculate the score
+     * @return the score for that participant
      */
-    public double calculateScore(Participation participation) {
-        return createScoreStrategy().calculateScore(participation);
-    }
+    public abstract double calculateScore(Participant participant);
 
     /**
      * Calculates and returns the rankings for this competition.
@@ -199,10 +181,10 @@ public class Competition {
      * The ranking uses the score for each participation calculated using the
      * associated ScoreStrategy.
      *
-     * @return participations for this competition, ranked in order
+     * @return participants for this competition, ranked in order
      */
-    public List<Participation> calculateRankings() {
-        return getParticipations().stream()
+    public List<Participant> calculateRankings() {
+        return getParticipants().stream()
                 .sorted((p1, p2) -> (int) Math.round(p2.getTotalScore() - p1.getTotalScore()))
                 .collect(Collectors.toList());
     }
