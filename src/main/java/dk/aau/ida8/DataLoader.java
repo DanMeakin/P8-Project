@@ -1,11 +1,7 @@
 package dk.aau.ida8;
 
-import dk.aau.ida8.data.AddressRepository;
-import dk.aau.ida8.data.ClubRepository;
-import dk.aau.ida8.data.LifterRepository;
-import dk.aau.ida8.model.Address;
-import dk.aau.ida8.model.Club;
-import dk.aau.ida8.model.Lifter;
+import dk.aau.ida8.data.*;
+import dk.aau.ida8.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,14 +14,20 @@ public class DataLoader {
     private LifterRepository lifterRepository;
     private ClubRepository clubRepository;
     private AddressRepository addressRepository;
+    private CompetitionRepository competitionRepository;
+    private ParticipantRepository participantRepository;
 
     @Autowired
     public DataLoader(LifterRepository lifterRepository,
                       ClubRepository clubRepository,
-                      AddressRepository addressRepository) {
+                      AddressRepository addressRepository,
+                      CompetitionRepository competitionRepository,
+                      ParticipantRepository participantRepository) {
         this.lifterRepository = lifterRepository;
         this.clubRepository = clubRepository;
         this.addressRepository = addressRepository;
+        this.competitionRepository = competitionRepository;
+        this.participantRepository = participantRepository;
     }
 
     @PostConstruct
@@ -64,6 +66,12 @@ public class DataLoader {
 
         Lifter lifter3 = new Lifter("Robin", "L", club, Lifter.Gender.MALE, LocalDate.of(1992, 10, 22), 60.0);
         lifterRepository.save(lifter3);
+
+        Competition c = new Competition("Super Awesome Competition!", club, address, Competition.CompetitionType.SINCLAIR, LocalDate.of(2016, 5, 2));
+        competitionRepository.save(c);
+
+        Participant p = new Participant(lifter2, c, 100);
+        participantRepository.save(p);
 
     }
 }

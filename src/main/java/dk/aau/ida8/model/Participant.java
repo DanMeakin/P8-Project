@@ -7,6 +7,7 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class represents the participation of one lifter in a competition. It
@@ -35,9 +36,20 @@ public class Participant {
     private Competition competition;
     private int currentWeight;
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.ALL})
     private List<Lift> lifts;
 
+
+    public long getId() {
+        return id;
+    }
+
+    /**
+     * Default constructor required for Hibernate.
+     */
+    public Participant() {
+
+    }
 
     /**
      * Creates a participation instance.
@@ -78,6 +90,10 @@ public class Participant {
      */
     public int getCurrentWeight() {
         return currentWeight;
+    }
+
+    public String getFullName() {
+        return getLifter().getFullName();
     }
 
     /**
@@ -151,18 +167,74 @@ public class Participant {
     }
 
     /**
-     * Creates and adds a lift to a participation instance.
+     * Gets the type of lift this participant is due to undertake next.
+     *
+     * This method checks the list of completed Lifts associated with a given
+     * participant.
+     *
+     * If this list has fewer than three completed Snatch lifts
+     * contained in it, then the participant will be carrying out a Snatch
+     * next.
+     *
+     * If this list has three completed Snatch lifts but fewer than three
+     * completed Clean & Jerk lifts, then the participant will be carrying out
+     * a Clean & Jerk next.
+     *
+     * If this list has three of each type of activity, then there is no further
+     * lift to be completed, and this method will return null.
+     *
+     * @return the type of lift to carry-out next, or null if no further lifts
+     *         to complete
+     */
+    public Lift.LiftType getCurrentLiftType() {
+        if (getLifts().stream()
+                .filter(l -> l.isSnatch())
+                .collect(Collectors.toList())
+                .size() < 3) {
+            return Lift.LiftType.SNATCH;
+        } else if (getLifts().stream()
+                .filter(l -> l.isCleanAndJerk())
+                .collect(Collectors.toList())
+                .size() < 3) {
+            return Lift.LiftType.CLEAN_AND_JERK;
+        } else {
+            return null;
+        }
+    }
+
+     /**
+     * Creates and adds a passed lift to a participation instance.
      *
      * An InvalidParameterException will be thrown if the lift is of a type
      * which has been fully completed.
      *
-     * @param activity   the type of lift undertaken
-     * @param successful flag whether this particular lift was successful or
-     *                   not
      */
-    public void addLift(Lift.LiftType activity, boolean successful) throws InvalidParameterException {
-        Lift lift = new Lift(activity, getCurrentWeight());
-        lift.setAccepted(successful);
+    public void addPassedLift() throws InvalidParameterException {
+        Lift lift = Lift.passedLift(this, getCurrentLiftType(), getCurrentWeight());
+        addLift(lift);
+    }
+
+    /**
+     * Creates and adds a failed lift to a participation instance.
+     *
+     * An InvalidParameterException will be thrown if the lift is of a type
+     * which has been fully completed.
+     *
+     */
+    public void addFailedLift() throws InvalidParameterException {
+        Lift lift = Lift.failedLift(this, getCurrentLiftType(), getCurrentWeight());
+        addLift(lift);
+    }
+
+    /**
+     * Creates and adds an abstained lift to a participation instance.
+     *
+     * An InvalidParameterException will be thrown if the lift is of a type
+     * which has been fully completed.
+     *
+     */
+    public void addAbstainedLift() throws InvalidParameterException {
+        Lift lift = Lift.abstainedLift(this, getCurrentLiftType(), getCurrentWeight());
         addLift(lift);
     }
 
@@ -190,15 +262,10 @@ public class Participant {
      * @param lift the lift which is to be checked for validity
      */
     private void validateLiftConditions(Lift lift) throws InvalidParameterException {
-        if (getLifts().size() >= 6) {
-            String msg = "unable to add lift: six lifts already completed";
+        if (lift.getOutcome() == null) {
+            String msg = "unable to create lift with null outcome; " +
+                    "participant has already completed six lifts";
             throw new InvalidParameterException(msg);
-        } else {
-            // We need extra logic in here to compare lift activity with the
-            // activities already listed. The lift class does not contain any
-            // details of the activity undertaken during a lift, so this needs
-            // to be added before we can complete this.
-            return;
         }
     }
 }

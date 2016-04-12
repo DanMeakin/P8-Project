@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <title>Lift Register Form</title>
+</head>
+<body>
+<h3>Add Lift</h3>
+<p th:text="'Participant: ' + ${participant.fullName}"></p>
+<ul th:each="lift: ${participant.lifts}">
+    <li th:text="${lift}"></li>
+</ul>
+
+    <form action="/competition/register-lift/" method="post" >
+        <input type="hidden" th:value="${participant.id}" name="participantID"/>
+        <input type="submit" value="PASS" name="action"/>
+        <input type="submit" value="FAIL" name="action"/>
+        <input type="submit" value="ABSTAIN" name="action"/>
+    </form>
+</body>
+</html>
