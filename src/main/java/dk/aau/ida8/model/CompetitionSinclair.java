@@ -1,6 +1,19 @@
 package dk.aau.ida8.model;
 
-public class SinclairStrategy implements ScoreStrategy {
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * Created by mikkelmoerch on 12/04/16.
+ */
+public class CompetitionSinclair extends Competition {
+
+    public CompetitionSinclair(String competitionName, Club host, Address location, CompetitionType competitionType, LocalDate date){
+            super(competitionName, host, location, competitionType, date);
+    }
 
     // The coefficient for this Olympic cycle
     private static final double MALE_COEFFICIENT = 0.704358141;
@@ -9,6 +22,11 @@ public class SinclairStrategy implements ScoreStrategy {
     //male and female world record holder's bodyweight (in the heaviest category)
     private static final double MALE_WRH_BODYWEIGHT = 174.393;
     private static final double FEMALE_WRH_BODYWEIGHT = 148.026;
+
+    @Override
+    public HashMap<Integer, ArrayList<Participant>> allocateGroups() {
+        return null;
+    }
 
     /**
      * Calculates the score for a participant of a given lifter in a
@@ -26,7 +44,7 @@ public class SinclairStrategy implements ScoreStrategy {
      * @return the "Sinclair" total score for the competition
      */
     @Override
-    public double calculateScore(Participant participant){
+    public double calculateScore(Participant participant) {
         Lifter lifter = participant.getLifter();
         int rawScore = participant.getBestCleanAndJerk() +
                 participant.getBestSnatch();
@@ -62,4 +80,18 @@ public class SinclairStrategy implements ScoreStrategy {
         return Math.pow(10, genderCoefficient * Math.pow(Math.log10(lifter.getBodyWeight() / genderBodyweight), 2));
     }
 
+    /**
+     * Calculates and returns the rankings for this competition.
+     *
+     * The ranking uses the score for each participation calculated using the
+     * associated ScoreStrategy.
+     *
+     * @return participants for this competition, ranked in order
+     */
+    @Override
+    public List<Participant> calculateRankings() {
+        return getParticipants().stream()
+                .sorted((p1, p2) -> (int) Math.round(p2.getTotalScore() - p1.getTotalScore()))
+                .collect(Collectors.toList());
+    }
 }

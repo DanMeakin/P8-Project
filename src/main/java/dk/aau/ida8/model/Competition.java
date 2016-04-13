@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * {@link Participant Participant} instance.
  */
 @Entity
-public class Competition {
+public abstract class Competition {
 
     public enum CompetitionType {
         SINCLAIR, TOTAL_WEIGHT
@@ -67,25 +67,8 @@ public class Competition {
         this.participants = new ArrayList<>();
     }
 
-    public Competition() {
-    }
-
-    /**
-     * Factory method for creating a ScoreStrategy object.
-     *
-     * @return
-     */
-    private ScoreStrategy createScoreStrategy() {
-        ScoreStrategy strategy = null;
-        switch (competitionType.toString()) {
-            case "SINCLAIR":
-                strategy = new SinclairStrategy();
-                break;
-            case "TOTAL_WEIGHT":
-                strategy = new TotalStrategy();
-                break;
-        }
-        return strategy;
+    public Competition(){
+        this.participants = new ArrayList<>();
     }
 
     /**
@@ -135,6 +118,8 @@ public class Competition {
                 .collect(Collectors.toList());
         return ps.get(0);
     }
+
+    public abstract HashMap<Integer, ArrayList<Participant>> allocateGroups();
 
     /**
      * Determines the next participant to carry out a lift.
@@ -192,9 +177,7 @@ public class Competition {
      * @param participant the participant for which to calculate the score
      * @return the score for that participant
      */
-    public double calculateScore(Participant participant) {
-        return createScoreStrategy().calculateScore(participant);
-    }
+    public abstract double calculateScore(Participant participant);
 
     /**
      * Calculates and returns the rankings for this competition.
@@ -204,11 +187,11 @@ public class Competition {
      *
      * @return participants for this competition, ranked in order
      */
-    public List<Participant> calculateRankings() {
+    public abstract List<Participant> calculateRankings(); /*{
         return getParticipants().stream()
                 .sorted((p1, p2) -> (int) Math.round(p2.getTotalScore() - p1.getTotalScore()))
                 .collect(Collectors.toList());
-    }
+    }*/
 
     public String getCompetitionName() {
         return competitionName;

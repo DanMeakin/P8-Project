@@ -1,14 +1,11 @@
 package dk.aau.ida8.model;
 
-import dk.aau.ida8.model.Lift;
-import dk.aau.ida8.model.Lifter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
-import java.util.List;
 import java.time.LocalDate;
 
 import static org.junit.Assert.*;
