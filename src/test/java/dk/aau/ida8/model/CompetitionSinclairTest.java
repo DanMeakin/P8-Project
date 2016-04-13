@@ -68,7 +68,7 @@ public class CompetitionSinclairTest {
         p1 = c.selectParticipationByLifter(l);
         p2 = c.selectParticipationByLifter(l2);
 
-        /* */
+        /*
         p1.setCurrentWeight(71);
         p1.addLift(Lift.LiftType.SNATCH, true);
 
@@ -92,7 +92,7 @@ public class CompetitionSinclairTest {
         correctList.add(p2);
         correctList.add(p1);
 
-        /* */
+        */
 
         /**
          * There is a bug somewhere which can be triggered by

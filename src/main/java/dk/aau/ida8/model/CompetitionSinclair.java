@@ -15,6 +15,9 @@ public class CompetitionSinclair extends Competition {
             super(competitionName, host, location, competitionType, date);
     }
 
+    public CompetitionSinclair() {
+    }
+
     // The coefficient for this Olympic cycle
     private static final double MALE_COEFFICIENT = 0.704358141;
     private static final double FEMALE_COEFFICIENT = 0.897260740;

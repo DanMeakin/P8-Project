@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import java.security.InvalidParameterException;
 
 /**
  * This class represents one lift carried out within a weightlifting
@@ -137,7 +138,18 @@ public class Lift {
         return weight;
     }
 
-    private void setWeight(int weight) {
+    /**
+     * Sets the weight for a particular lift.
+     *
+     * @param weight the weight to set the lift to
+     * @throws InvalidParameterException if weight passed is less than or
+     *                                   equal to zero
+     */
+    private void setWeight(int weight) throws InvalidParameterException {
+        if (weight <= 0) {
+            String msg = "unable to set weight to less than 1kg";
+            throw new InvalidParameterException(msg);
+        }
         this.weight = weight;
     }
 

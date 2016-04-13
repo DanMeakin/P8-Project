@@ -1,6 +1,7 @@
 package dk.aau.ida8.controller;
 
 import dk.aau.ida8.model.Competition;
+import dk.aau.ida8.model.CompetitionSinclair;
 import dk.aau.ida8.model.Participant;
 import dk.aau.ida8.service.CompetitionService;
 import dk.aau.ida8.service.LifterService;
@@ -70,7 +71,7 @@ public class CompetitionController {
      */
     @RequestMapping("/new")
     public String newComp(Model model){
-        model.addAttribute("competition", new Competition());
+        model.addAttribute("competition", new CompetitionSinclair());
         return "new-competition";
     }
 
