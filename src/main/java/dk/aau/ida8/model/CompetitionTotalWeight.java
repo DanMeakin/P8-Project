@@ -15,7 +15,7 @@ public class CompetitionTotalWeight extends Competition {
 
     @Override
     public HashMap<Integer, ArrayList<Participant>> allocateGroups() {
-
+        return null;
     }
 
     /**
