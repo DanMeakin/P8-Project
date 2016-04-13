@@ -24,8 +24,8 @@ public class CompetitionSinclair extends Competition {
     private static final double FEMALE_WRH_BODYWEIGHT = 148.026;
 
     @Override
-    public HashMap<Integer, ArrayList<Participant>> allocateGroups() {
-        return null;
+    public void allocateGroups() {
+
     }
 
     /**
