@@ -29,12 +29,27 @@ public class Participant {
     @GeneratedValue
     private long id;
 
+    /**
+     * This integer is used to track the number of weight changes made by a
+     * participant between lifts.
+     */
+    private int weightChanges = 0;
+
     @ManyToOne
     private Lifter lifter;
 
     @ManyToOne
     private Competition competition;
+
     private int currentWeight;
+
+    /**
+     * This integer tracks the weight previously selected by the lifter. This
+     * is used where it is necessary to revert to the previously selected
+     * weight where, for example, a user has changed the weight of a
+     * participant in error.
+     */
+    private int previousWeight;
 
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Lift> lifts;
@@ -63,6 +78,7 @@ public class Participant {
         this.lifter = lifter;
         this.competition = competition;
         this.currentWeight = startingWeight;
+        this.previousWeight = startingWeight;
         this.lifts = new ArrayList<>();
     }
 
@@ -92,6 +108,16 @@ public class Participant {
         return currentWeight;
     }
 
+    /**
+     * Gets the weight the lifter had elected to lift immediately before the
+     * current weight.
+     *
+     * @return the previous weight
+     */
+    public int getPreviousWeight() {
+        return previousWeight;
+    }
+
     public String getFullName() {
         return getLifter().getFullName();
     }
@@ -99,20 +125,112 @@ public class Participant {
     /**
      * Sets the weight this participant chooses to lift next.
      *
-     * Weight can only increase. As such, this method ensures that the new
-     * weight is not less than the current weight. If the new weight is lower
-     * than existing, an IllegalArgumentException is thrown.
+     * This method is used only to set the weight. A weight change may occur in
+     * certain circumstances: a participant may have successfully completed a
+     * lift, in which case the weight is increased automatically by 1kg (see
+     * {@link #incrementWeight() incrementWeight}); or a participant may elect
+     * to increase the next weight they will lift (see
+     * {@link #increaseWeight(int) increaseWeight}) Additionally, an erroneous
+     * increase can be corrected by the user
+     * (see {@link #correctWeight(int) correctWeight} and
+     * {@link #revertWeight() revertWeight}).
      *
-     * @param newWeight the weight this lifter will be lifting next
+     * @param newWeight the weight this participant will be lifting next
      */
-    public void setCurrentWeight(int newWeight) throws IllegalArgumentException {
-        if (newWeight < getCurrentWeight()) {
-            String msg = "unable to set new weight to " + newWeight + "kg; " +
-                         "current weight of " + this.currentWeight + " kg " +
-                         "is greater than new weight";
-            throw new IllegalArgumentException(msg);
-        }
+    private void setCurrentWeight(int newWeight) {
+        this.previousWeight = getCurrentWeight();
         this.currentWeight = newWeight;
+    }
+
+    /**
+     * Gets the number of weight changes made by a participant since the
+     * immediately previous lift (or before the first lift).
+     *
+     * @return the number of weight changes made
+     */
+    public int getWeightChanges() {
+        return weightChanges;
+    }
+
+    /**
+     * Sets the number of weight changes made by a participant since the
+     * immediately previous lift (or before the first lift).
+     *
+     *
+     * @param weightChanges the number of weight changes made
+     */
+    private void setWeightChanges(int weightChanges) {
+        this.weightChanges = weightChanges;
+    }
+
+    /**
+     * Increments the weight to be lifted by the participant.
+     *
+     * This method is called after the completion of a successful lift, where
+     * the rules require that the next weight to be lifted must be at least
+     * one kilogram higher than that just lifted.
+     *
+     */
+    private void incrementWeight() {
+        setCurrentWeight(getCurrentWeight() + 1);
+    }
+
+    /**
+     * Increases the weight to be lifted by the participant.
+     *
+     * A participant may only increase the weight to be lifted (not decrease
+     * it). As such, this method checks that the new weight is greater than the
+     * existing weight.
+     *
+     * Additionally, a participant may only change weights twice between lifts
+     * (or before the first lift). This method ensures that a change cannot be
+     * made if the participant has already made two changes in weight.
+     *
+     * @param newWeight the weight the participant has chosen to lift next
+     * @throws InvalidParameterException if the specified new weight is not
+     *                                   greater than the current weight
+     * @throws UnsupportedOperationException if the lifter has already changed
+     *                                       weights twice since the previous lift
+     */
+    public void increaseWeight(int newWeight) throws InvalidParameterException, UnsupportedOperationException {
+        if (newWeight <= getCurrentWeight()) {
+            String msg = "new weight must be greater than existing weight; " +
+                    "current weight of " + getCurrentWeight() + " is greater " +
+                    "than or equal to new weight of " + newWeight;
+            throw new InvalidParameterException(msg);
+        } else if (getWeightChanges() >= 2) {
+            String msg = "unable to increase weight: two changes have " +
+                    "already been made";
+            throw new UnsupportedOperationException(msg);
+        }
+        setCurrentWeight(newWeight);
+        setWeightChanges(getWeightChanges() + 1);
+    }
+
+    /**
+     * Corrects the current weight to be lifted to a new value.
+     *
+     * This method is to be used where a participant's select lift weight has
+     * been increased in error.
+     *
+     * @param newWeight the corrected weight which the participant will lift
+     *                  next
+     */
+    public void correctWeight(int newWeight) {
+        setCurrentWeight(newWeight);
+    }
+
+    /**
+     * Reverts the current weight to be lifted to its previous value.
+     *
+     * This method is intended for use where a participant's selected lift
+     * weight has been changed in error, and must return to its previous value.
+     * (It is intended as a sort of "undo" for a weight change, where the user
+     * has, for example, changed the weight of the wrong participant.)
+     */
+    public void revertWeight() {
+        setCurrentWeight(getPreviousWeight());
+        setWeightChanges(getWeightChanges() - 1);
     }
 
     /**
@@ -187,19 +305,35 @@ public class Participant {
      *         to complete
      */
     public Lift.LiftType getCurrentLiftType() {
-        if (getLifts().stream()
-                .filter(l -> l.isSnatch())
-                .collect(Collectors.toList())
-                .size() < 3) {
+        if (snatchCount() < 3) {
             return Lift.LiftType.SNATCH;
-        } else if (getLifts().stream()
-                .filter(l -> l.isCleanAndJerk())
-                .collect(Collectors.toList())
-                .size() < 3) {
+        } else if (cleanAndJerkCount() < 3) {
             return Lift.LiftType.CLEAN_AND_JERK;
         } else {
             return null;
         }
+    }
+
+    /**
+     * Counts the number of snatch lifts completed.
+     *
+     * @return the number of snatch lifts completed by this participant
+     */
+    public int snatchCount() {
+        return (int) (getLifts().stream()
+                .filter(l -> l.isSnatch())
+                .count());
+    }
+
+    /**
+     * Counts the number of clean & jerk lifts completed.
+     *
+     * @return the number of clean & jerk lifts completed by this participant
+     */
+    public int cleanAndJerkCount() {
+        return (int) (getLifts().stream()
+                .filter(l -> l.isCleanAndJerk())
+                .count());
     }
 
      /**
@@ -210,8 +344,11 @@ public class Participant {
      *
      */
     public void addPassedLift() throws InvalidParameterException {
+        validateLiftConditions();
         Lift lift = Lift.passedLift(this, getCurrentLiftType(), getCurrentWeight());
         addLift(lift);
+        incrementWeight();
+        setWeightChanges(0);
     }
 
     /**
@@ -222,8 +359,10 @@ public class Participant {
      *
      */
     public void addFailedLift() throws InvalidParameterException {
+        validateLiftConditions();
         Lift lift = Lift.failedLift(this, getCurrentLiftType(), getCurrentWeight());
         addLift(lift);
+        setWeightChanges(0);
     }
 
     /**
@@ -234,8 +373,10 @@ public class Participant {
      *
      */
     public void addAbstainedLift() throws InvalidParameterException {
+        validateLiftConditions();
         Lift lift = Lift.abstainedLift(this, getCurrentLiftType(), getCurrentWeight());
         addLift(lift);
+        setWeightChanges(0);
     }
 
     /**
@@ -243,8 +384,7 @@ public class Participant {
      *
      * @param lift the lift to add to the participation
      */
-    private void addLift(Lift lift) throws InvalidParameterException {
-        validateLiftConditions(lift);
+    private void addLift(Lift lift) {
         lifts.add(lift);
     }
 
@@ -259,12 +399,10 @@ public class Participant {
      * This method throws an exception if the lift conditions are invalid. If
      * they are valid, no exception is thrown.
      *
-     * @param lift the lift which is to be checked for validity
      */
-    private void validateLiftConditions(Lift lift) throws InvalidParameterException {
-        if (lift.getOutcome() == null) {
-            String msg = "unable to create lift with null outcome; " +
-                    "participant has already completed six lifts";
+    private void validateLiftConditions() throws InvalidParameterException {
+        if (getCurrentLiftType() == null) {
+            String msg = "participant has already completed six lifts";
             throw new InvalidParameterException(msg);
         }
     }

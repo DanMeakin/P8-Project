@@ -4,6 +4,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.mockito.Mockito.*;
 
+import java.security.InvalidParameterException;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -16,7 +17,7 @@ public class ParticipantTest {
     private static List<Lift> lifts;
     private static Participant participant;
 
-    public static double expectedScore = 35.0;
+    private static double expectedScore = 35.0;
 
     @BeforeClass
     public static void setUpClass() {
@@ -24,12 +25,12 @@ public class ParticipantTest {
         competition = mock(Competition.class);
         participant = new Participant(lifter, competition, 10);
         participant.addPassedLift();
-        participant.setCurrentWeight(15);
+        participant.increaseWeight(15);
         participant.addPassedLift();
-        participant.setCurrentWeight(20);
+        participant.increaseWeight(20);
         participant.addFailedLift();
         participant.addPassedLift();
-        participant.setCurrentWeight(25);
+        participant.increaseWeight(25);
         participant.addFailedLift();
         participant.addFailedLift();
         when(competition.calculateScore(participant)).thenReturn(expectedScore);
@@ -48,5 +49,46 @@ public class ParticipantTest {
     @Test
     public void testGetBestSnatch() throws Exception {
         assertEquals(15, participant.getBestSnatch());
+    }
+
+    /**
+     * This test ensures that a seventh lift cannot be added to a participant.
+     */
+    @Test(expected = InvalidParameterException.class)
+    public void testAddInvalidLift() throws Exception {
+        participant.addPassedLift();
+    }
+
+    @Test
+    public void testIncreaseWeight() throws Exception {
+        int cw = participant.getCurrentWeight();
+        int nw = cw + 20;
+        participant.increaseWeight(nw);
+        assertEquals(nw, participant.getCurrentWeight());
+    }
+
+    @Test
+    public void testIncreaseWeightTwice() throws Exception {
+        int cw = participant.getCurrentWeight();
+        int inc = 20;
+        for (int i = 1; i <= 2; i++) {
+            participant.increaseWeight(cw + inc*i);
+            assertEquals(cw + inc*i, participant.getCurrentWeight());
+        }
+    }
+    /**
+     * This test ensures that current weight can only be increased using the
+     * increase weight method.
+     */
+    @Test(expected = InvalidParameterException.class)
+    public void testInvalidIncreaseWeight() throws Exception {
+        participant.increaseWeight(participant.getCurrentWeight() - 1);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testIncreaseWeightTooManyTimes () throws Exception {
+        for (int i = 0; i < 3; i++) {
+            participant.increaseWeight(participant.getCurrentWeight() + 1);
+        }
     }
 }
