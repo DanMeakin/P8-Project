@@ -72,6 +72,7 @@ public class CompetitionSinclairTest {
         p1.setCurrentWeight(71);
         p1.addLift(Lift.LiftType.SNATCH, true);
 
+
         p1.setCurrentWeight(71);
         p1.addLift(Lift.LiftType.CLEANANDJERK, true);
 
