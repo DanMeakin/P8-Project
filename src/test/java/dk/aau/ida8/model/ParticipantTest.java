@@ -1,5 +1,6 @@
 package dk.aau.ida8.model;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.mockito.Mockito.*;
@@ -19,8 +20,8 @@ public class ParticipantTest {
 
     private static double expectedScore = 35.0;
 
-    @BeforeClass
-    public static void setUpClass() {
+    @Before
+    public void setUp() {
         lifter = mock(Lifter.class);
         competition = mock(Competition.class);
         participant = new Participant(lifter, competition, 10);
