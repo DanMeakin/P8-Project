@@ -175,30 +175,46 @@ public class Participant {
         setCurrentWeight(getCurrentWeight() + 1);
     }
 
+
     /**
-     * Increases the weight to be lifted by the participant.
-     *
      * A participant may only increase the weight to be lifted (not decrease
      * it). As such, this method checks that the new weight is greater than the
      * existing weight.
      *
-     * Additionally, a participant may only change weights twice between lifts
+     * @param newWeight
+     * @return true if a weight change is valid
+     */
+    public boolean canIncreaseWeight(int newWeight){
+        return newWeight > getCurrentWeight();
+    }
+
+    /**
+     * A participant may only change weights twice between lifts
      * (or before the first lift). This method ensures that a change cannot be
      * made if the participant has already made two changes in weight.
+     *
+     * @return true if the participant can increase weight
+     */
+    public boolean canChangeWeight(){
+        return getWeightChanges() < 2;
+    }
+
+    /**
+     * Increases the weight to be lifted by the participant.
      *
      * @param newWeight the weight the participant has chosen to lift next
      * @throws InvalidParameterException if the specified new weight is not
      *                                   greater than the current weight
      * @throws UnsupportedOperationException if the lifter has already changed
-     *                                       weights twice since the previous lift
+     * weights twice since the previous lift
      */
     public void increaseWeight(int newWeight) throws InvalidParameterException, UnsupportedOperationException {
-        if (newWeight <= getCurrentWeight()) {
+        if (!canIncreaseWeight(newWeight)) {
             String msg = "new weight must be greater than existing weight; " +
                     "current weight of " + getCurrentWeight() + " is greater " +
                     "than or equal to new weight of " + newWeight;
             throw new InvalidParameterException(msg);
-        } else if (getWeightChanges() >= 2) {
+        } else if (!canChangeWeight()) {
             String msg = "unable to increase weight: two changes have " +
                     "already been made";
             throw new UnsupportedOperationException(msg);
