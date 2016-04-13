@@ -67,11 +67,14 @@ public class DataLoader {
         Lifter lifter3 = new Lifter("Robin", "L", club, Lifter.Gender.MALE, LocalDate.of(1992, 10, 22), 60.0);
         lifterRepository.save(lifter3);
 
+        /*
         Competition c = new Competition("Super Awesome Competition!", club, address, Competition.CompetitionType.SINCLAIR, LocalDate.of(2016, 5, 2));
         competitionRepository.save(c);
 
+
         Participant p = new Participant(lifter2, c, 100);
         participantRepository.save(p);
+        */
 
     }
 }
