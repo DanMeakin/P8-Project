@@ -119,7 +119,7 @@ public abstract class Competition {
         return ps.get(0);
     }
 
-    public abstract HashMap<Integer, ArrayList<Participant>> allocateGroups();
+    public abstract void allocateGroups();
 
     /**
      * Determines the next participant to carry out a lift.
