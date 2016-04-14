@@ -5,7 +5,8 @@
     <title>Title</title>
 </head>
 <body>
-    <h3>Add Lift</h3>
+    <h3>Correct Lift Weight</h3>
+    <p th:text="${msg}"></p>
 
     <form action="/competition/correct-lift/" method="post" th:object="${lift}" >
         <p th:text="'Lifter: ' + ${lift.participant}"></p>

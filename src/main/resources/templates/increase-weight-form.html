@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <title>Increase Weight</title>
+</head>
+<body>
+    <h3>Increase Weight</h3>
+    <p th:text="${msg}"></p>
+
+    <form action="/competition/increase-weight/" method="post" th:object="${participant}" >
+        <p th:text="'Participant: ' + *{fullName}"></p>
+        <input type="hidden" th:field="*{id}" name="participantID"/>
+        <p><input type="text" th:field="*{currentWeight}" /></p>
+        <input type="submit" value="Increase Weight" name="action"/>
+    </form>
+</body>
+</html>
