@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 @Entity
 public class CompetitionSinclair extends Competition {
 
-    public CompetitionSinclair(String competitionName, Club host, Address location, CompetitionType competitionType, Date date){
-            super(competitionName, host, location, competitionType, date);
+    public CompetitionSinclair(String competitionName, Club host, Address location, CompetitionType competitionType, Date date, Date lastRegistrationDate, int maxNumParticipants){
+            super(competitionName, host, location, competitionType, date, lastRegistrationDate, maxNumParticipants);
     }
 
     public CompetitionSinclair() {
