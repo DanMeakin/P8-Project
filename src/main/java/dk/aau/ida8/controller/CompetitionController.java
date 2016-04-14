@@ -94,10 +94,12 @@ public class CompetitionController {
         return "correct-lift-form";
     }
 
-    @RequestMapping(value = "/lift-corrected", method = RequestMethod.POST)
-    public String submitCorrectedLift(Model model, @ModelAttribute Lift lift){
-        liftService.saveLift(lift);
-        model.addAttribute("lift", lift);
+    @RequestMapping(value = "/correct-lift", method = RequestMethod.POST)
+    public String submitCorrectedLift(Model model, @RequestParam("id") long liftID, @RequestParam("weight") int weight){
+        Lift l = liftService.findOne(liftID);
+        l.setWeight(weight);
+        liftService.saveLift(l);
+        model.addAttribute("lift", l);
         return "correct-lift-form-result";
     }
 
