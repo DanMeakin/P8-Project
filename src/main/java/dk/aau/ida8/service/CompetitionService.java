@@ -34,7 +34,7 @@ public class CompetitionService {
 
 
     //Method to save a competition. Takes a competition object and saves in database.
-    public Competition save (Competition competition){
+    public Competition save(Competition competition){
         return competitionRepository.save(competition);
     }
 

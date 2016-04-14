@@ -24,7 +24,8 @@ import java.util.stream.Collectors;
 public abstract class Competition {
 
     public enum CompetitionType {
-        SINCLAIR, TOTAL_WEIGHT
+        SINCLAIR,
+        TOTAL_WEIGHT
     }
 
     @Id
