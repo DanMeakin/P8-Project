@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="Competition" table="COMPETITION">
+        <id name="id" type="long" column="id">
+            <generator class="native" />
+        </id>
+        <discriminator column="competition_type" type="STRING" />
+        <property name="competition_name" type="STRING" />
+        <property name="date" type="DATE" />
+        <many-to-one name="address" class="Address">
+            <column name="address_id" not-null="true" />
+        </many-to-one>
+        <many-to-one name="club" class="Club">
+            <column name="club_id" not-null="true" />
+        </many-to-one>
+        <set name="participants" table="participants" inverse="true" lazy="true"
+             fetch="select">
+            <key>
+                <column name="competition_id" not-null="true" />
+            </key>
+            <one-to-many class="Participant" />
+        </set>
+
+        <subclass name="CompetitionSinclair" discriminator-value="SINCLAIR" />
+        <subclass name="CompetitionTotalWeight" discriminator-value="TOTAL_WEIGHT" />
+    </class>
+</hibernate-mapping>

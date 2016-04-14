@@ -134,6 +134,10 @@ public class Lift {
         return getLiftType().equals(LiftType.SNATCH);
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public int getWeight() {
         return weight;
     }
@@ -145,7 +149,7 @@ public class Lift {
      * @throws InvalidParameterException if weight passed is less than or
      *                                   equal to zero
      */
-    private void setWeight(int weight) throws InvalidParameterException {
+    public void setWeight(int weight) throws InvalidParameterException {
         if (weight <= 0) {
             String msg = "unable to set weight to less than 1kg";
             throw new InvalidParameterException(msg);
