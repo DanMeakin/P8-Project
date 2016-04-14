@@ -38,4 +38,9 @@ public class LiftService {
         return liftRepository.save(lift);
     }
 
+    //Save method to save a lift-object to a database
+    public Lift saveLift(Lift lift){
+        return liftRepository.save(lift);
+    }
+
 }
