@@ -138,4 +138,8 @@ public class CompetitionSinclairTest {
         assertEquals(correctList, pList);
     }
 
+    public void hej(){
+
+    }
+
 }

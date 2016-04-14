@@ -422,4 +422,12 @@ public class Participant {
             throw new InvalidParameterException(msg);
         }
     }
+
+    public Lifter.Gender getGender () {
+        return getLifter().getGender();
+    }
+
+    public double getBodyWeight() {
+        return getLifter().getBodyWeight();
+    }
 }
