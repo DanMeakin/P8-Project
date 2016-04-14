@@ -14,7 +14,7 @@
 
             <h1>Create a new competition</h1>
 
-            <form th:action="@{/competition/save}" th:object="${competition}" method="POST">
+            <form th:action="@{/competition/sinclair/save}" th:object="${competition}" method="POST">
                 <div class="form-group">
                     <label for="comp-title">
                         Title
@@ -48,21 +48,6 @@
                         Max number of participants
                     </label>
                     <input type="NUMBER" name="comp-max-participants" id="comp-max-participants" min="0" max="200" value="50" class="form-control"/>
-                </div>
-
-                <div class="radio">
-                    <p>Competition type</p>
-                    <label for="comp-type-sinclair">
-                        <input type="radio" value="" name="comp-type-sinclair" id="comp-type-sinclair" />
-                        Sinclair
-                    </label>
-                </div>
-
-                <div class="radio">
-                    <label for="comp-type-weightgroup">
-                        <input type="radio" value="" name="comp-type-weightgroup" id="comp-type-weightgroup" />
-                        Weight Group
-                    </label>
                 </div>
 
                 <div class="form-group">

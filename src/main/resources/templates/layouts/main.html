@@ -26,18 +26,36 @@
     <nav class="navbar navbar-default">
       <div class="container">
         <div class="navbar-header">
-          <a href="file:///home/nicklas/WMS/index.html" class="navbar-brand">Weightlifting Management</a>
+          <a href="/" class="navbar-brand">Weightlifting Management</a>
         </div>
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="#">New competition</a></li>
-          <li><a href="file:///home/nicklas/WMS/new-lifter.html">Register lifter</a></li>
-          <li><a href="file:///home/nicklas/WMS/past-results.html">View past results</a></li>
+          <li><a href="#" data-toggle="modal" data-target="#new-competition-modal">New competition</a></li>
+          <li><a href="#">Register lifter</a></li>
+          <li><a href="#">View past results</a></li>
         </ul>
       </div>
     </nav>
 
     <div class="container">
       <div layout:fragment="content"></div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="new-competition-modal" tabindex="-1" role="dialog" aria-labelledby="competitionModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Choose competition type</h4>
+          </div>
+          <div class="modal-body clearfix">
+            <div class="col-md-6 col-md-offset-3">
+              <a th:href="@{/competition/sinclair/new}" class="btn btn-success">Sinclair</a>
+              <a th:href="@{/competition/weightclass/new}" class="btn btn-success">Weight classes</a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>

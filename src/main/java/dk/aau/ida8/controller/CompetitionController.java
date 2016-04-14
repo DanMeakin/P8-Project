@@ -1,9 +1,6 @@
 package dk.aau.ida8.controller;
 
-import dk.aau.ida8.model.Competition;
-import dk.aau.ida8.model.CompetitionSinclair;
-import dk.aau.ida8.model.Lift;
-import dk.aau.ida8.model.Participant;
+import dk.aau.ida8.model.*;
 import dk.aau.ida8.service.CompetitionService;
 import dk.aau.ida8.service.LiftService;
 import dk.aau.ida8.service.LifterService;
@@ -66,23 +63,45 @@ public class CompetitionController {
     }
 
     /**
-     *     Controller method to create a new competition object when on the specified URL
+     * Controller method to create a new competition object when on the specified URL
      * @param model
      * @return
      */
-    @RequestMapping("/new")
-    public String newComp(Model model){
+    @RequestMapping("/sinclair/new")
+    public String newSinclairComp(Model model){
        model.addAttribute("competition", new CompetitionSinclair());
-        return "new-competition";
+        return "new-sinclair-competition";
     }
 
     /**
-     * Controller method to save a competition. The save method is called from CompetitionService.
+     * Controller method to create a new competition object when on the specified URL
+     * @param model
+     * @return
+     */
+    @RequestMapping("/weightclass/new")
+    public String newWeightclassComp(Model model){
+        model.addAttribute("competition", new CompetitionTotalWeight());
+        return "new-weightclass-competition";
+    }
+
+    /**
+     * Controller method to save a Sinclair competition. The save method is called from CompetitionService.
      * @param competition
      * @return Returns a redirect to the front page
      */
-    @RequestMapping(value="/save", method = RequestMethod.POST)
+    @RequestMapping(value="/sinclair/save", method = RequestMethod.POST)
     public String saveComp(CompetitionSinclair competition){
+        Competition savedComp = competitionService.save(competition);
+        return "redirect:/";
+    }
+
+    /**
+     * Controller method to save a Weight group competition. The save method is called from CompetitionService.
+     * @param competition
+     * @return
+     */
+    @RequestMapping(value="/weightclass/save", method = RequestMethod.POST)
+    public String saveComp(CompetitionTotalWeight competition){
         Competition savedComp = competitionService.save(competition);
         return "redirect:/";
     }

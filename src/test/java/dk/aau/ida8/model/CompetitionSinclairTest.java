@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static dk.aau.ida8.model.Lifter.Gender.MALE;
@@ -37,7 +38,7 @@ public class CompetitionSinclairTest {
 
         jyden = new Club("AK Jyden", new Address());
 
-        c = new CompetitionSinclair("lol", jyden, new Address(), Competition.CompetitionType.SINCLAIR, LocalDate.now());
+        c = new CompetitionSinclair("lol", jyden, new Address(), Competition.CompetitionType.SINCLAIR, new Date());
 
         l = new Lifter("Brian", "Jensen", jyden, Lifter.Gender.MALE, LocalDate.now(), 80.50);
         l2 = new Lifter("Mark", "Jensen", jyden, Lifter.Gender.MALE, LocalDate.now(), 80.50);
