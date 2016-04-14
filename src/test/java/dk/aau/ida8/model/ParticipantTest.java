@@ -19,10 +19,12 @@ public class ParticipantTest {
     private static Participant participant;
 
     private static double expectedScore = 35.0;
+    private static String lifterFullName = "John Lifter";
 
     @Before
     public void setUp() {
         lifter = mock(Lifter.class);
+        when(lifter.getFullName()).thenReturn(lifterFullName);
         competition = mock(Competition.class);
         participant = new Participant(lifter, competition, 10);
         participant.addPassedLift();
@@ -37,6 +39,10 @@ public class ParticipantTest {
         when(competition.calculateScore(participant)).thenReturn(expectedScore);
     }
 
+    @Test
+    public void testGetFullName() throws Exception {
+        assertEquals(lifterFullName, participant.getFullName());
+    }
     @Test
     public void testGetTotalScore() throws Exception {
         assertEquals(expectedScore, participant.getTotalScore(), 0.001);
