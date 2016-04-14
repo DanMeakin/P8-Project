@@ -1,5 +1,7 @@
 package dk.aau.ida8.model;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.*;
@@ -37,7 +39,9 @@ public abstract class Competition {
 
     private String competitionName;
     private CompetitionType competitionType;
-    private LocalDate date;
+
+    @DateTimeFormat(pattern = "dd-mm-yyyy HH:mm")
+    private Date date;
 
     @ManyToOne
     private Address location;
@@ -59,7 +63,7 @@ public abstract class Competition {
      *                        total weight
      * @param date            the date on which the competition is to take place
      */
-    public Competition(String competitionName, Club host, Address location, CompetitionType competitionType, LocalDate date) {
+    public Competition(String competitionName, Club host, Address location, CompetitionType competitionType, Date date) {
         this.competitionName = competitionName;
         this.competitionType = competitionType;
         this.location = location;
@@ -210,11 +214,11 @@ public abstract class Competition {
         this.location = location;
     }
 
-    public LocalDate getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

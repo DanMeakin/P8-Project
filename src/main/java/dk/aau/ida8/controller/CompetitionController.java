@@ -74,18 +74,17 @@ public class CompetitionController {
      */
     @RequestMapping("/new")
     public String newComp(Model model){
-       // model.addAttribute("competition", new CompetitionSinclair());
+       model.addAttribute("competition", new CompetitionSinclair());
         return "new-competition";
     }
 
     /**
      * Controller method to save a competition. The save method is called from CompetitionService.
-     * @param model
      * @param competition
      * @return Returns a redirect to the front page
      */
     @RequestMapping(value="/save", method = RequestMethod.POST)
-    public String saveComp(Model model, Competition competition){
+    public String saveComp(CompetitionSinclair competition){
         Competition savedComp = competitionService.save(competition);
         return "redirect:/";
     }

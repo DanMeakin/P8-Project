@@ -3,6 +3,7 @@ package dk.aau.ida8.model;
 import javax.persistence.Entity;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class CompetitionTotalWeight extends Competition {
     public CompetitionTotalWeight() {
     }
 
-    public CompetitionTotalWeight(String competitionName, Club host, Address location, CompetitionType competitionType, LocalDate date){
+    public CompetitionTotalWeight(String competitionName, Club host, Address location, CompetitionType competitionType, Date date){
         super(competitionName, host, location, competitionType, date);
         this.groupsMen = new HashMap<Integer, ArrayList<Participant>>();
         this.groupsWomen = new HashMap<Integer, ArrayList<Participant>>();

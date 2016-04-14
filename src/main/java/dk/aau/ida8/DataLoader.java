@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
+import java.util.Date;
 
 @Component
 public class DataLoader {
@@ -73,10 +74,10 @@ public class DataLoader {
         Lifter lifter3 = new Lifter("Robin", "L", club, Lifter.Gender.MALE, LocalDate.of(1992, 10, 22), 60.0);
         lifterRepository.save(lifter3);
 
-        Competition c1 = new CompetitionSinclair("Super Awesome Competition!", club, address, Competition.CompetitionType.SINCLAIR, LocalDate.of(2016, 5, 2));
+        Competition c1 = new CompetitionSinclair("Super Awesome Competition!", club, address, Competition.CompetitionType.SINCLAIR, new Date());
         competitionRepository.save(c1);
 
-        Competition c2 = new CompetitionTotalWeight("Super Awesome Competition!", club1, address1, Competition.CompetitionType.TOTAL_WEIGHT, LocalDate.of(2016, 5, 2));
+        Competition c2 = new CompetitionTotalWeight("Super Awesome Competition!", club1, address1, Competition.CompetitionType.TOTAL_WEIGHT, new Date());
         competitionRepository.save(c2);
 
         /*
