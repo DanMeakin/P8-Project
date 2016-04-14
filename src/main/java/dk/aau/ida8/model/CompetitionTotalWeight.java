@@ -19,8 +19,8 @@ public class CompetitionTotalWeight extends Competition {
     public CompetitionTotalWeight() {
     }
 
-    public CompetitionTotalWeight(String competitionName, Club host, Address location, CompetitionType competitionType, Date date){
-        super(competitionName, host, location, competitionType, date);
+    public CompetitionTotalWeight(String competitionName, Club host, Address location, CompetitionType competitionType, Date date, Date lastRegistrationDate, int maxNumParticipants){
+        super(competitionName, host, location, competitionType, date, lastRegistrationDate, maxNumParticipants);
         this.groupsMen = new HashMap<Integer, ArrayList<Participant>>();
         this.groupsWomen = new HashMap<Integer, ArrayList<Participant>>();
     }
