@@ -1,5 +1,7 @@
 package dk.aau.ida8.model;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.omg.CORBA.DynAnyPackage.Invalid;
 
 import javax.persistence.*;
@@ -421,5 +423,13 @@ public class Participant {
             String msg = "participant has already completed six lifts";
             throw new InvalidParameterException(msg);
         }
+    }
+
+    public Lifter.Gender getGender () {
+        return getLifter().getGender();
+    }
+
+    public double getBodyWeight() {
+        return getLifter().getBodyWeight();
     }
 }

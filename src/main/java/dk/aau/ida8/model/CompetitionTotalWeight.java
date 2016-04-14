@@ -3,14 +3,15 @@ package dk.aau.ida8.model;
 import javax.persistence.Entity;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 @Entity
 public class CompetitionTotalWeight extends Competition {
 
-    private int[] weightClassesMen = {56, 62, 69, 77, 85, 94, 105, 106};
-    private int[] weightClassesWomen = {48, 53, 58, 63, 69, 75, 76};
+    private double[] weightClassesMen = {56, 62, 69, 77, 85, 94, 105};
+    private double[] weightClassesWomen = {48, 53, 58, 63, 69, 75};
 
     private HashMap<Integer, ArrayList<Participant>> groupsMen;
     private HashMap<Integer, ArrayList<Participant>> groupsWomen;
@@ -18,40 +19,60 @@ public class CompetitionTotalWeight extends Competition {
     public CompetitionTotalWeight() {
     }
 
-    public CompetitionTotalWeight(String competitionName, Club host, Address location, CompetitionType competitionType, LocalDate date){
-        super(competitionName, host, location, competitionType, date);
+    public CompetitionTotalWeight(String competitionName, Club host, Address location, CompetitionType competitionType, Date date, Date lastRegistrationDate, int maxNumParticipants){
+        super(competitionName, host, location, competitionType, date, lastRegistrationDate, maxNumParticipants);
         this.groupsMen = new HashMap<Integer, ArrayList<Participant>>();
         this.groupsWomen = new HashMap<Integer, ArrayList<Participant>>();
     }
 
     @Override
-    public void allocateGroups() {
-        divideParticipantsByGenderAndWeight();
-
+    public void allocateGroups(List<Participant> list, int indexForWeightClass) {
+        divideParticipantsByGenderAndWeight(list);
+        createSubgroups(indexForWeightClass);
     }
 
-    private void divideParticipantsByGenderAndWeight(){
-        for(Participant p : getParticipants()){
+    private void divideParticipantsByGenderAndWeight(List<Participant> list){
+        for(Participant p : list){
             if(p.getLifter().getGender().equals(Lifter.Gender.MALE)){
-                addParticipantToGroup(p);
+                addParticipantToMensGroup(p);
             } else {
-                addParticipantToGroup(p);
+                addParticipantToWomensGroup(p);
             }
         }
     }
 
-    private int checkBodyWeight(Participant p){
-        int bodyWeight = (int) p.getLifter().getBodyWeight();
+    /**
+     * Gets the groupnumber based on the index in the respective weightclass arrays
+     * based on the participant's bodyweight. Also distinguishes between gender.
+     * @param p Participant
+     * @return An group number (int) based on the index in the weightclasses array
+     */
+    private int getIndexByBodyWeight(Participant p){
+        double bodyWeight = p.getLifter().getBodyWeight();
 
-        for(int i = 0; i < weightClassesMen.length; i++){
-            if(bodyWeight == weightClassesMen[i]){
-                return bodyWeight;
-            }
-
-            if(p.getLifter().getGender().equals(Lifter.Gender.MALE)) {
-                return weightClassesMen[weightClassesMen.length - 1];
+        if (p.getLifter().getGender() == Lifter.Gender.MALE) {
+            if (bodyWeight <= weightClassesMen[0]) {
+                return 1;
+            } else if (bodyWeight >= weightClassesMen[weightClassesMen.length - 1]) {
+                return weightClassesMen.length;
             } else {
-                return weightClassesWomen[weightClassesWomen.length - 1];
+                for (int i = 0; i < weightClassesMen.length - 1; i++) {
+                    if (bodyWeight > weightClassesMen[i] && bodyWeight < weightClassesMen[i + 1]) {
+                        return i + 1;
+                    }
+                }
+            }
+        } else {
+            if (bodyWeight <= weightClassesWomen[0]) {
+                return 1;
+            } else if (bodyWeight >= weightClassesWomen[weightClassesWomen.length - 1]) {
+                return weightClassesWomen.length;
+            } else {
+                for (int i = 0; i < weightClassesWomen.length - 1; i++) {
+                    if (bodyWeight > weightClassesWomen[i] && bodyWeight < weightClassesWomen[i + 1]) {
+                        return i + 1;
+                    }
+                }
             }
         }
 
@@ -64,8 +85,20 @@ public class CompetitionTotalWeight extends Competition {
      * @param p
      * @return True if the key exists in the HashMap, False otherwise
      */
-    private boolean checkKeyExists(Participant p) {
-        if(this.groupsMen.containsKey(checkBodyWeight(p))){
+    private boolean checkKeyExistsMen(Participant p) {
+        if(this.groupsMen.containsKey(getIndexByBodyWeight(p))){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Predicate method
+     * @param p
+     * @return True if the key exists in the HashMap, False otherwise
+     */
+    private boolean checkKeyExistsWomen (Participant p) {
+        if(this.groupsMen.containsKey(getIndexByBodyWeight(p))){
             return true;
         }
         return false;
@@ -76,13 +109,45 @@ public class CompetitionTotalWeight extends Competition {
      * If the weight group exists, add partcipant. If not, add new weight group.
      * @param p
      */
-    private void addParticipantToGroup(Participant p) {
-        if(checkKeyExists(p)){
-            this.groupsMen.get(checkBodyWeight(p)).add(p);
+    private void addParticipantToMensGroup(Participant p) {
+        if(checkKeyExistsMen(p)){
+            this.groupsMen.get(getIndexByBodyWeight(p)).add(p);
         } else {
-            this.groupsMen.put(checkBodyWeight(p), new ArrayList<Participant>());
-            this.groupsMen.get(checkBodyWeight(p)).add(p);
+            this.groupsMen.put(getIndexByBodyWeight(p), new ArrayList<Participant>());
+            this.groupsMen.get(getIndexByBodyWeight(p)).add(p);
         }
+    }
+
+    /**
+     * Adds a participant to a weight group represented in the HashMap.
+     * If the weight group exists, add partcipant. If not, add new weight group.
+     * @param p
+     */
+    private void addParticipantToWomensGroup(Participant p) {
+        if(checkKeyExistsWomen(p)){
+            this.groupsWomen.get(getIndexByBodyWeight(p)).add(p);
+        } else {
+            this.groupsWomen.put(getIndexByBodyWeight(p), new ArrayList<Participant>());
+            this.groupsWomen.get(getIndexByBodyWeight(p)).add(p);
+        }
+    }
+
+    public List<List<Participant>> createSubgroups(int indexForWeightClass) {
+        List<List<Participant>> list = new ArrayList<>();
+        int j = 0;
+        for (int i = 1; i < this.groupsMen.get(indexForWeightClass).size(); i++){
+            if (i % 10 == 0) {
+                j = i;
+                list.add(this.groupsMen.get(indexForWeightClass)
+                        .subList(i-10, i-1)
+                );
+            }
+        }
+        list.add(this.groupsMen.get(indexForWeightClass)
+                .subList(j, this.groupsMen.get(indexForWeightClass).size() - 1)
+        );
+
+        return list;
     }
 
     /**

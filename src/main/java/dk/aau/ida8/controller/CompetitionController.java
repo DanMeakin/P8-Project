@@ -1,16 +1,11 @@
 package dk.aau.ida8.controller;
 
-import dk.aau.ida8.model.Competition;
-import dk.aau.ida8.model.CompetitionSinclair;
-import dk.aau.ida8.model.Lift;
-import dk.aau.ida8.model.Participant;
+import dk.aau.ida8.model.*;
 import dk.aau.ida8.service.CompetitionService;
 import dk.aau.ida8.service.LiftService;
 import dk.aau.ida8.service.LifterService;
 import dk.aau.ida8.service.ParticipantService;
-import org.omg.CORBA.Request;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.NumberFormat;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -119,7 +114,49 @@ public class CompetitionController {
      * @param model the Spring model object to pass to the view
      * @param liftID the ID# of the lift to change
      * @return correct lift form view
+     * Controller method to create a new competition object when on the specified URL
+     * @param model
+     * @return
      */
+    @RequestMapping("/sinclair/new")
+    public String newSinclairComp(Model model){
+       model.addAttribute("competition", new CompetitionSinclair());
+        return "new-sinclair-competition";
+    }
+
+    /**
+     * Controller method to create a new competition object when on the specified URL
+     * @param model
+     * @return
+     */
+    @RequestMapping("/weightclass/new")
+    public String newWeightclassComp(Model model){
+        model.addAttribute("competition", new CompetitionTotalWeight());
+        return "new-weightclass-competition";
+    }
+
+    /**
+     * Controller method to save a Sinclair competition. The save method is called from CompetitionService.
+     * @param competition
+     * @return Returns a redirect to the front page
+     */
+    @RequestMapping(value="/sinclair/save", method = RequestMethod.POST)
+    public String saveComp(CompetitionSinclair competition){
+        Competition savedComp = competitionService.save(competition);
+        return "redirect:/";
+    }
+
+    /**
+     * Controller method to save a Weight group competition. The save method is called from CompetitionService.
+     * @param competition
+     * @return
+     */
+    @RequestMapping(value="/weightclass/save", method = RequestMethod.POST)
+    public String saveComp(CompetitionTotalWeight competition){
+        Competition savedComp = competitionService.save(competition);
+        return "redirect:/";
+    }
+
     @RequestMapping(value="/correct-lift/{liftID}", method = RequestMethod.GET)
     public String correctCompletedLift(Model model, @PathVariable long liftID){
         model.addAttribute("lift", liftService.findOne(liftID));

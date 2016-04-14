@@ -8,6 +8,6 @@ $(document).ready(function () {
     });
 
     $('#birthday').datepicker({
-        format: "dd/mm/yyyy"
+        format: "dd-mm-yyyy"
     });
 });
