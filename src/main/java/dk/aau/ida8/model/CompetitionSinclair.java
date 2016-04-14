@@ -1,18 +1,18 @@
 package dk.aau.ida8.model;
 
+import javax.persistence.Entity;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Created by mikkelmoerch on 12/04/16.
- */
+@Entity
 public class CompetitionSinclair extends Competition {
 
-    public CompetitionSinclair(String competitionName, Club host, Address location, CompetitionType competitionType, LocalDate date){
-            super(competitionName, host, location, competitionType, date);
+    public CompetitionSinclair(String competitionName, Club host, Address location, CompetitionType competitionType, Date date, Date lastRegistrationDate, int maxNumParticipants){
+            super(competitionName, host, location, competitionType, date, lastRegistrationDate, maxNumParticipants);
     }
 
     public CompetitionSinclair() {

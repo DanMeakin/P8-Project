@@ -1,5 +1,7 @@
 package dk.aau.ida8.model;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.omg.CORBA.DynAnyPackage.Invalid;
 
 import javax.persistence.*;

@@ -1,5 +1,7 @@
 package dk.aau.ida8.model;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.*;
@@ -24,7 +26,8 @@ import java.util.stream.Collectors;
 public abstract class Competition {
 
     public enum CompetitionType {
-        SINCLAIR, TOTAL_WEIGHT
+        SINCLAIR,
+        TOTAL_WEIGHT
     }
 
     @Id
@@ -36,7 +39,13 @@ public abstract class Competition {
 
     private String competitionName;
     private CompetitionType competitionType;
-    private LocalDate date;
+    private int maxNumParticipants;
+
+    @DateTimeFormat(pattern = "dd-mm-yyyy HH:mm")
+    private Date date;
+
+    @DateTimeFormat(pattern = "dd-mm-yyyy HH:mm")
+    private Date lastRegistrationDate;
 
     @ManyToOne
     private Address location;
@@ -58,11 +67,13 @@ public abstract class Competition {
      *                        total weight
      * @param date            the date on which the competition is to take place
      */
-    public Competition(String competitionName, Club host, Address location, CompetitionType competitionType, LocalDate date) {
+    public Competition(String competitionName, Club host, Address location, CompetitionType competitionType, Date date, Date lastRegistrationDate, int maxNumParticipants) {
         this.competitionName = competitionName;
         this.competitionType = competitionType;
         this.location = location;
         this.date = date;
+        this.lastRegistrationDate = lastRegistrationDate;
+        this.maxNumParticipants = maxNumParticipants;
         this.host = host;
         this.participants = new ArrayList<>();
     }
@@ -209,12 +220,28 @@ public abstract class Competition {
         this.location = location;
     }
 
-    public LocalDate getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(Date date) {
         this.date = date;
+    }
+
+    public Date getLastRegistrationDate() {
+        return lastRegistrationDate;
+    }
+
+    public void setLastRegistrationDate(Date lastRegistrationDate) {
+        this.lastRegistrationDate = lastRegistrationDate;
+    }
+
+    public int getMaxNumParticipants() {
+        return maxNumParticipants;
+    }
+
+    public void setMaxNumParticipants(int maxNumParticipants) {
+        this.maxNumParticipants = maxNumParticipants;
     }
 
     public Club getHost() {
