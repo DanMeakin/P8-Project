@@ -13,15 +13,19 @@
     </div>
     <div class="row">
         <div class="col-md-6">
-            <form action="">
+            <form th:action="@{/club/save}" th:object="${lifter}" method="POST">
                 <div class="form-group">
-                    <label for="name">Name: </label>
-                    <input type="text" name="name" id="name" class="form-control" />
+                    <label for="name">Firstname:</label>
+                    <input type="text" name="name" id="name" th:field="*{forename}" class="form-control" />
                 </div>
                 <div class="form-group">
-                    <label for="birthday">Date of birth: </label>
+                    <label for="lastname">Lastname:</label>
+                    <input type="text"  name="lastname" id="lastname" th:field="*{surname}" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="birthday">Date of birth:</label>
                     <div class="input-group">
-                        <input type="text" name="birthday" id="birthday" placeholder="01-01-2010" class="form-control" />
+                        <input type="text" name="birthday" id="birthday" th:field="*{dateOfBirth}" placeholder="01-01-2010" class="form-control" />
                         <div class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></div>
                     </div>
                 </div>
@@ -42,41 +46,20 @@
             <table class="table table-hover table-striped">
                 <thead>
                     <tr>
-                        <th>Name</th>
+                        <th>First name</th>
+                        <th>Last name</th>
                         <th>Gender</th>
                         <th>Date of Birth</th>
+                        <th class="date">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Lotte Selnø</td>
-                        <td>F</td>
-                        <td>01-01-2010</td>
-                    </tr>
-                    <tr>
-                        <td>Nicklas Jørgensen</td>
-                        <td>M</td>
-                        <td>01-01-2010</td>
-                    </tr>
-                    <tr>
-                        <td>Mikkel Mørch</td>
-                        <td>M</td>
-                        <td>01-01-2010</td>
-                    </tr>
-                    <tr>
-                        <td>Robin Larsen</td>
-                        <td>M</td>
-                        <td>01-01-2010</td>
-                    </tr>
-                    <tr>
-                        <td>Frederik Nygart</td>
-                        <td>M</td>
-                        <td>01-01-2010</td>
-                    </tr>
-                    <tr>
-                        <td>Dan Meakin</td>
-                        <td>M</td>
-                        <td>01-01-2010</td>
+                    <tr th:each="lifter : ${lifters}">
+                        <td th:text="${lifter.forename}">Name</td>
+                        <td th:text="${lifter.surname}"></td>
+                        <td>gender</td>
+                        <td th:text="${#calendars.format(lifter.dateOfBirth, 'dd-MM-yyyy')}">01-01-2010</td>
+                        <td class="date"><a th:href="@{/club/delete/} + ${lifter.id}" class="label label-warning">Delete</a> <span class="label label-primary">Edit</span></td>
                     </tr>
                 </tbody>
             </table>

@@ -38,10 +38,10 @@ public class CompetitionSinclairTest {
 
         jyden = new Club("AK Jyden", new Address());
 
-        c = new CompetitionSinclair("lol", jyden, new Address(), Competition.CompetitionType.SINCLAIR, new Date());
+        c = new CompetitionSinclair("lol", jyden, new Address(), Competition.CompetitionType.SINCLAIR, new Date(), new Date(), 50);
 
-        l = new Lifter("Brian", "Jensen", jyden, Lifter.Gender.MALE, LocalDate.now(), 80.50);
-        l2 = new Lifter("Mark", "Jensen", jyden, Lifter.Gender.MALE, LocalDate.now(), 80.50);
+        l = new Lifter("Brian", "Jensen", jyden, Lifter.Gender.MALE, new Date(), 80.50);
+        l2 = new Lifter("Mark", "Jensen", jyden, Lifter.Gender.MALE, new Date(), 80.50);
 
         /*
         Participant p1 = new Participant(l, c, 70);

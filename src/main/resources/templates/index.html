@@ -25,7 +25,8 @@
                 <tr>
                     <th>Name</th>
                     <th>Type</th>
-                    <th class="date">Date</th>
+                    <th class="date">Date of competition</th>
+                    <th class="date">Last registration</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -34,6 +35,7 @@
                     <td th:text="${comp.competitionName}" class="name">Comp name</td>
                     <td class="type">Comp type</td>
                     <td th:text="${#calendars.format(comp.date, 'dd-MM-yyyy HH:mm')}" class="date">Comp date</td>
+                    <td th:text="${#calendars.format(comp.lastRegistrationDate, 'dd-MM-yyyy HH:mm')}" class="date">Comp date</td>
                     <td><span class="label label-warning">Edit</span> <span class="label label-primary">View</span> <span class="label label-success">Start</span></td>
                 </tr>
                 </tbody>
