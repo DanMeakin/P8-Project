@@ -2,6 +2,7 @@ package dk.aau.ida8.controller;
 
 import dk.aau.ida8.model.Competition;
 import dk.aau.ida8.model.CompetitionSinclair;
+import dk.aau.ida8.model.Lift;
 import dk.aau.ida8.model.Participant;
 import dk.aau.ida8.service.CompetitionService;
 import dk.aau.ida8.service.LiftService;
@@ -11,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Date;
@@ -94,6 +92,13 @@ public class CompetitionController {
     public String correctCompletedLift(Model model, @PathVariable long liftID){
         model.addAttribute("lift", liftService.findOne(liftID));
         return "correct-lift-form";
+    }
+
+    @RequestMapping(value = "/lift-corrected", method = RequestMethod.POST)
+    public String submitCorrectedLift(Model model, @ModelAttribute Lift lift){
+        liftService.saveLift(lift);
+        model.addAttribute("lift", lift);
+        return "correct-lift-form-result";
     }
 
 
