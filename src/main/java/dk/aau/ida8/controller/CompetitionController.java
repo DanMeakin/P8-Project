@@ -4,6 +4,7 @@ import dk.aau.ida8.model.Competition;
 import dk.aau.ida8.model.CompetitionSinclair;
 import dk.aau.ida8.model.Participant;
 import dk.aau.ida8.service.CompetitionService;
+import dk.aau.ida8.service.LiftService;
 import dk.aau.ida8.service.LifterService;
 import dk.aau.ida8.service.ParticipantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,11 @@ public class CompetitionController {
     private CompetitionService competitionService;
     private LifterService lifterService;
     private ParticipantService participantService;
+    private LiftService liftService;
 
     @Autowired
-    public CompetitionController(LifterService lifterService, CompetitionService competitionService, ParticipantService participantService) {
+    public CompetitionController(LiftService liftService,LifterService lifterService, CompetitionService competitionService, ParticipantService participantService) {
+        this.liftService = liftService;
         this.lifterService = lifterService;
         this.competitionService = competitionService;
         this.participantService = participantService;
@@ -71,7 +74,7 @@ public class CompetitionController {
      */
     @RequestMapping("/new")
     public String newComp(Model model){
-        model.addAttribute("competition", new CompetitionSinclair());
+       // model.addAttribute("competition", new CompetitionSinclair());
         return "new-competition";
     }
 
@@ -85,6 +88,12 @@ public class CompetitionController {
     public String saveComp(Model model, Competition competition){
         Competition savedComp = competitionService.save(competition);
         return "redirect:/";
+    }
+
+    @RequestMapping(value="/correct-lift/{liftID}", method = RequestMethod.GET)
+    public String correctCompletedLift(Model model, @PathVariable long liftID){
+        model.addAttribute("lift", liftService.findOne(liftID));
+        return "correct-lift-form";
     }
 
 
