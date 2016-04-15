@@ -27,7 +27,7 @@ public class CompetitionSinclair extends Competition {
     private static final double FEMALE_WRH_BODYWEIGHT = 148.026;
 
     @Override
-    public void allocateGroups() {
+    public void allocateGroups(List<Participant> list, int indexForWeightClass) {
 
     }
 

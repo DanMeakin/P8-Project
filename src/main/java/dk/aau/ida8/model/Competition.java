@@ -133,12 +133,11 @@ public abstract class Competition {
     public abstract void allocateGroups(List<Participant> list, int indexForWeightClass);
 
     /**
-     * Determines the next participant to carry out a lift.
+     * Finds the participant who is to carry out a lift next.
      *
-     * @return the participation object containing the next lifter who is to
-     *         lift
+     * @return the participant next to left
      */
-    public Participant determineNextParticipation() {
+    public Participant currentParticipant() {
         return determineParticipationOrder().get(0);
     }
 

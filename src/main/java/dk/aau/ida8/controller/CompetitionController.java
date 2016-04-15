@@ -32,13 +32,12 @@ public class CompetitionController {
         this.participantService = participantService;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-    public String showAll(Model model) {
-        model.addAttribute("lifters", lifterService.findAll());
-        return "competition";
-    }
-
     /**
+     * Displays the form to allow the user to correct an incorrectly entered
+     * lift weight value.
+     *
+     * @param model the Spring model object to pass to the view
+     * @return correct lift form view
      * Controller method to create a new competition object when on the specified URL
      * @param model
      * @return
@@ -97,6 +96,15 @@ public class CompetitionController {
         return "lift-register-form";
     }
 
+    @RequestMapping("/{competitionID}")
+    public String competitionDashboard(Model model, @PathVariable long competitionID) {
+        Competition competition = competitionService.findOne(competitionID);
+        model.addAttribute("competition", competition);
+        model.addAttribute("participants", competition.getParticipants());
+        model.addAttribute("participant", competition.currentParticipant());
+        return "competition";
+    }
+
     /**
      * Creates a new lift for a particular Participant.
      *
@@ -122,6 +130,8 @@ public class CompetitionController {
             case "ABSTAIN":
                 p.addAbstainedLift();
                 break;
+            default:
+                throw new ResourceNotFoundException();
         }
         participantService.saveParticipant(p);
         model.addAttribute("participant", p);
