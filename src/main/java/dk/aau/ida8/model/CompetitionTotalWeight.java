@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Entity
-public class gCompetitionTotalWeight extends Competition {
+public class CompetitionTotalWeight extends Competition {
 
     private double[] weightClassesMen = {56, 62, 69, 77, 85, 94, 105};
     private double[] weightClassesWomen = {48, 53, 58, 63, 69, 75};
