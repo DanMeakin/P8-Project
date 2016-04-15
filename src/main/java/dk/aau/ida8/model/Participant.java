@@ -6,8 +6,10 @@ import org.omg.CORBA.DynAnyPackage.Invalid;
 
 import javax.persistence.*;
 import java.security.InvalidParameterException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -425,8 +427,25 @@ public class Participant {
         }
     }
 
-    public Lifter.Gender getGender () {
+    /****************************
+     * LIFTER ATTRIBUTE GETTERS *
+     ****************************/
+
+
+    public Lifter.Gender getGender() {
         return getLifter().getGender();
+    }
+
+    public String getGenderInitial() {
+        return getGender().toString().substring(0, 1);
+    }
+
+    public Date getDateOfBirth() {
+        return getLifter().getDateOfBirth();
+    }
+
+    public String getClubName() {
+        return getLifter().getClubName();
     }
 
     public double getBodyWeight() {

@@ -34,7 +34,7 @@ public abstract class Competition {
     @GeneratedValue
     private long id;
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.ALL})
     private List<Participant> participants;
 
     private String competitionName;

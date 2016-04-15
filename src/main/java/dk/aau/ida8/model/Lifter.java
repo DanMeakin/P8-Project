@@ -44,7 +44,7 @@ public class Lifter {
     @DateTimeFormat(pattern = "dd-mm-yyyy")
     private Date dateOfBirth;
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.ALL})
     private List<Participant> participants;
 
     public Lifter() {
@@ -109,6 +109,13 @@ public class Lifter {
         this.club = club;
     }
 
+    public String getClubName() {
+        if (getClub() == null) {
+            return "";
+        } else {
+            return getClub().getName();
+        }
+    }
     public Gender getGender() {
         return gender;
     }
