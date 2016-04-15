@@ -6,6 +6,7 @@
 </head>
 <body>
 <h3>Add Lift</h3>
+<p th:text="${participant}"></p>
 <p th:text="'Participant: ' + ${participant.fullName}"></p>
 <ul th:each="lift: ${participant.lifts}">
     <li th:text="${lift}"></li>

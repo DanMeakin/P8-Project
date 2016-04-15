@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
+import java.util.Date;
 
 @Component
 public class DataLoader {
@@ -61,20 +62,26 @@ public class DataLoader {
         addressRepository.save(address);
         Club club = new Club("AK Jyden", address);
         clubRepository.save(club);
-        Lifter lifter2 = new Lifter("Lotte", "S", club, Lifter.Gender.FEMALE, LocalDate.of(1990, 3, 6), 60.0);
+
+        Address address1 = new Address("", "Nygade 114", "København K", "4000");
+        addressRepository.save(address1);
+        Club club1 = new Club("AK Viking", address1);
+        clubRepository.save(club1);
+
+        Lifter lifter2 = new Lifter("Lotte", "S", club, Lifter.Gender.FEMALE, new Date(), 60.0);
         lifterRepository.save(lifter2);
 
-        Lifter lifter3 = new Lifter("Robin", "L", club, Lifter.Gender.MALE, LocalDate.of(1992, 10, 22), 60.0);
+        Lifter lifter3 = new Lifter("Robin", "L", club, Lifter.Gender.MALE, new Date(), 60.0);
         lifterRepository.save(lifter3);
 
-        /*
-        Competition c = new Competition("Super Awesome Competition!", club, address, Competition.CompetitionType.SINCLAIR, LocalDate.of(2016, 5, 2));
-        competitionRepository.save(c);
+        Competition c1 = new CompetitionSinclair("Super Awesome Competition!", club, address, Competition.CompetitionType.SINCLAIR, new Date(), new Date(), 50);
+        competitionRepository.save(c1);
 
+        Competition c2 = new CompetitionTotalWeight("Super Awesome Competition!", club1, address1, Competition.CompetitionType.TOTAL_WEIGHT, new Date(), new Date(), 50);
+        competitionRepository.save(c2);
 
-        Participant p = new Participant(lifter2, c, 100);
+        Participant p = new Participant(lifter2, c1, 100);
         participantRepository.save(p);
-        */
 
     }
 }
