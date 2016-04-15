@@ -81,6 +81,7 @@ public class DataLoader {
         competitionRepository.save(c2);
 
         c1.addParticipant(lifter2, 100);
+        c1.addParticipant(lifter3, 120);
         competitionRepository.save(c1);
 
 
