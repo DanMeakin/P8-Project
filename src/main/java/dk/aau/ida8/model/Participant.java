@@ -7,10 +7,7 @@ import org.omg.CORBA.DynAnyPackage.Invalid;
 import javax.persistence.*;
 import java.security.InvalidParameterException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -107,6 +104,37 @@ public class Participant {
      */
     public List<Lift> getLifts() {
         return lifts;
+    }
+
+    /**
+     * Gets a count of the number of completed lifts by the participant.
+     *
+     * @return the number of lifts completed by this participant in this
+     *         competition
+     */
+    public int getLiftsCount() {
+        return getLifts().size();
+    }
+
+    /**
+     * Gets a count of the number of lifts yet to be complete by the
+     * participant.
+     *
+     * @return the number of lifts yet to be completed by the participant in
+     *         this competition
+     */
+    public int getLiftsRemaining() {
+        return 6 - getLiftsCount();
+    }
+
+    /**
+     * Determines whether this participant has completed their lifts for this
+     * competition.
+     *
+     * @return true if lifts are all complete, else false
+     */
+    public boolean liftsComplete() {
+        return getLiftsCount() == 6;
     }
 
     /**
@@ -273,17 +301,32 @@ public class Participant {
     }
 
     /**
+     * Gets the combined total value of the best snatch and best clean & jerk
+     * weights.
+     *
+     * @return the combined total of the best snatch and best clean & jerk
+     */
+    public int getBestTotal() {
+        return getBestSnatch() + getBestCleanAndJerk();
+
+    }
+
+    /**
      * Gets the weight of the best successful clean & jerk lift from this
      * participation.
      *
      * @return the best clean & jerk lift weight
      */
     public int getBestCleanAndJerk() {
-        return getLifts().stream()
+        Optional<Lift> l = getLifts().stream()
                 .filter(Lift::isCleanAndJerk)
-                .max(scoreComparator())
-                .get()
-                .getScore();
+                .max(scoreComparator());
+
+        if (l.isPresent()) {
+            return l.get().getScore();
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -293,11 +336,15 @@ public class Participant {
      * @return the best snatch lift weight
      */
     public int getBestSnatch() {
-         return getLifts().stream()
+        Optional<Lift> l = getLifts().stream()
                  .filter(Lift::isSnatch)
-                 .max(scoreComparator())
-                 .get()
-                 .getScore();
+                 .max(scoreComparator());
+
+        if (l.isPresent()) {
+            return l.get().getScore();
+        } else {
+            return 0;
+        }
     }
 
     /**

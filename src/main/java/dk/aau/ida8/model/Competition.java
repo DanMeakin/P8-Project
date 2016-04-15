@@ -41,6 +41,10 @@ public abstract class Competition {
     private CompetitionType competitionType;
     private int maxNumParticipants;
 
+    public long getId() {
+        return id;
+    }
+
     @DateTimeFormat(pattern = "dd-mm-yyyy HH:mm")
     private Date date;
 
@@ -157,7 +161,15 @@ public abstract class Competition {
             public int compare(Participant p1, Participant p2) {
                 int weightComp = p1.getCurrentWeight() - p2.getCurrentWeight();
                 long idComp = p1.getLifter().getId() - p2.getLifter().getId();
-                if (weightComp == 0) {
+                if (p1.liftsComplete() || p2.liftsComplete()) {
+                    if (p1.liftsComplete()) {
+                        return 1;
+                    } else if (p2.liftsComplete()) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                } else if (weightComp == 0) {
                     return (int) idComp;
                 } else {
                     return weightComp;
