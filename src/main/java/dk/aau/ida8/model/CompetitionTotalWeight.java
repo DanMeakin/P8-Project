@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by mikkelmoerch on 13/04/16.
- */
 public class CompetitionTotalWeight extends Competition {
 
     private int[] weightClassesMen = {56, 62, 69, 77, 85, 94, 105, 106};

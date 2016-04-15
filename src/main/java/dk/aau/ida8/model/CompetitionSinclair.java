@@ -6,9 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Created by mikkelmoerch on 12/04/16.
- */
 public class CompetitionSinclair extends Competition {
 
     public CompetitionSinclair(String competitionName, Club host, Address location, CompetitionType competitionType, LocalDate date){
