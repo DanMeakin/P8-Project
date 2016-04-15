@@ -39,12 +39,6 @@ public class CompetitionController {
     }
 
     /**
-     * Displays the form to allow the user to correct an incorrectly entered
-     * lift weight value.
-     *
-     * @param model the Spring model object to pass to the view
-     * @param liftID the ID# of the lift to change
-     * @return correct lift form view
      * Controller method to create a new competition object when on the specified URL
      * @param model
      * @return

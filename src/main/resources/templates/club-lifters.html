@@ -15,6 +15,14 @@
         <div class="col-md-6">
             <form th:action="@{/club/save}" th:object="${lifter}" method="POST">
                 <div class="form-group">
+                    <label>Select club</label>
+                        <select class="form-control">
+                            <option>AK Jyden</option>
+                            <option>Some other club</option>
+                            <option>A bad club</option>
+                        </select>
+                </div>
+                <div class="form-group">
                     <label for="name">Firstname:</label>
                     <input type="text" name="name" id="name" th:field="*{forename}" class="form-control" />
                 </div>
@@ -43,6 +51,14 @@
             </form>
         </div>
         <div class="col-md-6">
+            <div class="form-group">
+                <label>Select club</label>
+                <select class="form-control">
+                    <option>AK Jyden</option>
+                    <option>Some other club</option>
+                    <option>A bad club</option>
+                </select>
+            </div>
             <table class="table table-hover table-striped">
                 <thead>
                     <tr>
