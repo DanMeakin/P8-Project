@@ -27,9 +27,55 @@ public class CompetitionSinclair extends Competition {
     private static final double FEMALE_WRH_BODYWEIGHT = 148.026;
 
     @Override
-    public void allocateGroups(List<Participant> list, int indexForWeightClass) {
+    public void allocateGroups(List<Participant> list, int number) {
+        List<Participant> bigList = getParticipants();
+        List<List<Participant>> subGroupsMen = new ArrayList<>();
+        List<List<Participant>> subGroupsWomen = new ArrayList<>();
+
+        // Participant needs a field representing the start weight - DONE
+        // sort the list based on snatch startingweight
+        bigList = bigList.stream()
+                .sorted((p1, p2) -> Integer
+                        .compare(p1.getStartingWeight(), p2.getStartingWeight()))
+                .collect(Collectors.toList());
+
+
+        // split groups up into genders
+        List<Participant> listMale = splitListByGender(bigList, Lifter.Gender.MALE);
+        List<Participant> listFemale = splitListByGender(bigList, Lifter.Gender.FEMALE);
+
+        // make a list of lists where subgroups can be added
+
 
     }
+
+    private List<List<Participant>> splitListIntoSubGroups(List<Participant> list) {
+
+        List<List<Participant>> finalList = new ArrayList<>();
+        int remainder = list.size() % 10;
+        int chunk = 10;
+
+        // add participants in groups of 10
+        for (int i = 0; i < list.size() - remainder; i = i + chunk) {
+            finalList.add(list.subList(
+                    i, i + chunk - 1
+            ));
+        }
+
+        // add the remaining participants
+        finalList.add(list.subList(
+                (list.size() - remainder - 1), (list.size() - 1)
+        ));
+
+        return finalList;
+    }
+
+    private List<Participant> splitListByGender(List<Participant> list, Lifter.Gender gender) {
+        return list.stream()
+                .filter(p -> p.getGender() == gender)
+                .collect(Collectors.toList());
+    }
+
 
     /**
      * Calculates the score for a participant of a given lifter in a
