@@ -100,13 +100,13 @@
             </tr>
           </thead>
           <tbody>
-            <tr th:each="lifter : ${lifters}">
-              <td th:text="${lifter.id}">Lifter no</td>
-              <td th:text="${lifter.getFullName()}">Lifter name</td>
-              <td th:text="${lifter.getGenderInitial()}">M</td>
-              <td th:text="${lifter.dateOfBirth}">Date of birth</td>
-              <td th:text="${lifter.club.name}">AK Jyden</td>
-              <td th:text="${lifter.bodyWeight}">Bodyweight</td>
+            <tr th:each="p : ${participants}">
+              <td th:text="${p.id}">Lifter no</td>
+              <td th:text="${p.fullName}">Lifter name</td>
+              <td th:text="${p.genderInitial}">M</td>
+              <td th:text="${p.dateOfBirth}">Date of birth</td>
+              <td th:text="${p.clubName}">AK Jyden</td>
+              <td th:text="${p.bodyWeight}">Bodyweight</td>
               <td>70</td>
               <td>75</td>
               <td>unsuccessful</td>
