@@ -16,6 +16,7 @@ hs_err_pid*
 .idea/
 P7-Project.iml
 P8-Project.iml
+*.ipr
 _mac/
 keymaps/
 inspection/
