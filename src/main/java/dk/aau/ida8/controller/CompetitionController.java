@@ -134,8 +134,9 @@ public class CompetitionController {
                 throw new ResourceNotFoundException();
         }
         participantService.saveParticipant(p);
+        Competition c = p.getCompetition();
         model.addAttribute("participant", p);
-        return "lift-register-form";
+        return "redirect:/competition/" + c.getId();
     }
 
     @RequestMapping(value="/correct-lift/{liftID}", method = RequestMethod.GET)
