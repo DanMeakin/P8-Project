@@ -43,6 +43,11 @@ public class Participant {
     @ManyToOne
     private Competition competition;
 
+    /**
+     * used to calculate the starting groups for a sinclair competition
+     */
+    private int startingWeight;
+
     private int currentWeight;
 
     /**
@@ -79,6 +84,7 @@ public class Participant {
     public Participant(Lifter lifter, Competition competition, int startingWeight) {
         this.lifter = lifter;
         this.competition = competition;
+        this.startingWeight = startingWeight;
         this.currentWeight = startingWeight;
         this.previousWeight = startingWeight;
         this.lifts = new ArrayList<>();
@@ -431,5 +437,14 @@ public class Participant {
 
     public double getBodyWeight() {
         return getLifter().getBodyWeight();
+    }
+
+    // added getter and setter for the new startingWeight value
+    public int getStartingWeight() {
+        return startingWeight;
+    }
+
+    public void setStartingWeight(int startingWeight) {
+        this.startingWeight = startingWeight;
     }
 }
