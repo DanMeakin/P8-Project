@@ -513,4 +513,20 @@ public class Participant {
     public void setStartingWeight(int startingWeight) {
         this.startingWeight = startingWeight;
     }
+
+    /**
+     * Gets this participant's rank
+     * @return this participant's rank
+     */
+    public int getRank(){
+        return getCompetition().getRank(this);
+    }
+
+    /**
+     * Gets this partipant's score
+     * @return this participant's score
+     */
+    public double getScore(){
+        return getCompetition().calculateScore(this);
+    }
 }

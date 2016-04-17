@@ -262,4 +262,14 @@ public abstract class Competition {
     public void setHost(Club host) {
         this.host = host;
     }
+
+    /**
+     * Calculates a specific participant's rank
+     * @param participant the participant for whom the ranking is being calculated
+     * @return the passed participant's rank
+     */
+    public int getRank(Participant participant){
+        return calculateRankings().indexOf(participant) + 1;
+    }
+
 }
