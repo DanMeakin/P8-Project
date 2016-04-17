@@ -3,6 +3,7 @@ package dk.aau.ida8.model;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,7 +57,7 @@ public class CompetitionTotalWeightTest {
         club = mock(Club.class);
         address = mock(Address.class);
 
-        competition = new CompetitionTotalWeight("Name", club, address, Competition.CompetitionType.TOTAL_WEIGHT, LocalDate.now());
+        competition = new CompetitionTotalWeight("Name", club, address, Competition.CompetitionType.TOTAL_WEIGHT, Date.valueOf(LocalDate.of(2016, 6, 1)), Date.valueOf(LocalDate.of(2016, 5, 15)), 100);
 
 
     }

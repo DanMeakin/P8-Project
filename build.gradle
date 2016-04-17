@@ -12,6 +12,7 @@ buildscript {
 }
 
 apply plugin: 'java'
+apply plugin: 'jacoco'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'spring-boot' 
@@ -53,3 +54,12 @@ task wrapper(type: Wrapper) {
 task stage {
   dependsOn build
 }
+
+jacocoTestReport {
+  reports {
+    xml.enabled true
+    html.enabled true
+  }
+}
+
+test {finalizedBy jacocoTestReport }
