@@ -9,9 +9,7 @@
     <h3>Add Lift</h3>
     <p th:text="${participant}"></p>
     <p th:text="'Participant: ' + ${participant.fullName}"></p>
-    <ul th:each="lift: ${participant.lifts}">
-        <li th:text="${lift}"></li>
-    </ul>
+
 
     <form action="/competition/register-lift/" method="post" >
         <input type="hidden" th:value="${participant.id}" name="participantID"/>

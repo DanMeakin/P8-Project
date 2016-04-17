@@ -8,7 +8,9 @@
 <body>
 
 <div layout:fragment="content">
-  <div th:include ="fragments/lift-register-form :: register-lift" />
+  <div th:include="fragments/lift-register-form :: register-lift" />
+  <div th:include="fragments/participant-info :: participant-info"/>
+
 
   <div class="col-md-12">
     <table class="table table-striped table-hover table-competition">
@@ -34,7 +36,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr th:each="p : ${participants}">
+        <tr class="table table-striped" th:each="p : ${participants}">
           <td th:text="${p.id}">Lifter no</td>
           <td th:text="${p.fullName}">Lifter name</td>
           <td th:text="${p.genderInitial}">M</td>

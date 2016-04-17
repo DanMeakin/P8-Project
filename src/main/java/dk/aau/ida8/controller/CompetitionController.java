@@ -226,5 +226,11 @@ public class CompetitionController {
         return "increase-weight-form";
     }
 
+    @RequestMapping(value = "/participant-info/{participantID}", method = RequestMethod.GET)
+    public String displayParticipantInfo(Model model, @PathVariable long participantID){
+        model.addAttribute("participant", participantService.findOne(participantID));
+        return "participant-info";
+    }
+
 
 }
