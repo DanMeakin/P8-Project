@@ -25,6 +25,7 @@ public class ClubController {
 
     @RequestMapping("/club/new-lifter")
     public String newLifter(Model model) {
+        model.addAttribute("clubs", clubService.findAll());
         model.addAttribute("lifters", lifterService.findAll());
         model.addAttribute("lifter", new Lifter());
         return "club-lifters";

@@ -1,6 +1,8 @@
 package dk.aau.ida8.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Club {
@@ -14,13 +16,25 @@ public class Club {
     @ManyToOne
     private Address address;
 
+    @OneToMany(cascade = {CascadeType.ALL})
+    private List<Lifter> lifters;
+
     public Club() {
 
     }
 
     public Club(String name, Address address) {
+        this.lifters = new ArrayList<Lifter>();
         this.name = name;
         this.address = address;
+    }
+
+    public void addLifter(Lifter lifter) {
+        lifters.add(lifter);
+    }
+
+    public void removeLifter(Lifter lifter) {
+        lifters.remove(lifter);
     }
 
     public long getId() {
@@ -42,4 +56,5 @@ public class Club {
     public void setAddress(Address address) {
         this.address = address;
     }
+
 }
