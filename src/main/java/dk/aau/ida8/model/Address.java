@@ -1,8 +1,7 @@
 package dk.aau.ida8.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Address {
@@ -41,4 +40,5 @@ public class Address {
     public String getTown() {
         return town;
     }
+
 }
