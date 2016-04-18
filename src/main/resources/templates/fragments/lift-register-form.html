@@ -6,16 +6,22 @@
 </head>
 <body>
 <div th:fragment="register-lift">
-    <h3>Add Lift</h3>
-    <p th:text="${participant}"></p>
-    <p th:text="'Participant: ' + ${participant.fullName}"></p>
-
+    <h3>Register Lift</h3>
+    <p th:text="'Lift Weight: ' + ${participant.currentWeight} + ' kg'"/>
 
     <form action="/competition/register-lift/" method="post" >
-        <input type="hidden" th:value="${participant.id}" name="participantID"/>
-        <input type="submit" value="PASS" name="action"/>
-        <input type="submit" value="FAIL" name="action"/>
-        <input type="submit" value="ABSTAIN" name="action"/>
+        <div class="form-group row">
+            <input type="hidden" th:value="${participant.id}" name="participantID"/>
+            <div class="col-xs-4">
+                <input class="form-control btn btn-success" type="submit" value="PASS" name="action"/>
+            </div>
+            <div class="col-xs-4">
+                <input class="form-control btn btn-danger" type="submit" value="FAIL" name="action"/>
+            </div>
+            <div class="col-xs-4">
+                <input class="form-control btn btn-default" type="submit" value="ABSTAIN" name="action"/>
+            </div>
+        </div>
     </form>
 </div>
 </body>

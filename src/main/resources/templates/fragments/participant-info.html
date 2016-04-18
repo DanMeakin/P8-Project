@@ -6,16 +6,39 @@
 </head>
 <body>
     <div th:fragment="participant-info" th:object="${participant}">
-        <div>
-            <span class="label label-primary" th:text="${participant.getRank()}"/>
-            <span th:text="${participant.fullName}"/>
+        <div class="row">
+            <div class="col-xs-1">
+                <span class="label label-primary"
+                 th:text="${participant.rank}"/>
+            </div>
+            <div class="col-xs-11"
+                 th:text="${participant.fullName} + ' (' + ${participant.genderInitial} + ')'">
+            </div>
         </div>
-        <ul>
-            <li th:text="'Born: ' + ${participant.dateOfBirth}"/>
-            <li th:text="'Weight: ' + ${participant.bodyWeight}"/>
-            <li th:text="'Club: ' + ${participant.clubName}"/>
-            <li th:text="'Sinclair: ' + *{participant.getScore()}"/>
-        </ul>
+        <table class="table">
+            <tbody>
+            <tr>
+                <td>Body Weight:</td>
+                <td th:text="${participant.bodyWeight} + 'kg'"></td>
+            </tr>
+            <tr>
+                <td>Date of Birth:</td>
+                <td th:text="${participant.dateOfBirthString}"></td>
+            </tr>
+            <tr>
+                <td>Club:</td>
+                <td th:text="${participant.clubName}"></td>
+            </tr>
+            <tr>
+                <td>Total Score:</td>
+                <td th:text="${participant.bestTotal}"></td>
+            </tr>
+            <tr>
+                <td>Sinclair Total:</td>
+                <td th:text="${participant.score}"></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </body>
 </html>
