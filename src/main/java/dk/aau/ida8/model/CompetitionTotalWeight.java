@@ -218,18 +218,6 @@ public class CompetitionTotalWeight extends Competition {
         return list;
     }
 
-    /**
-     * This methods return the total score of a participant, which is the
-     * best snatch added to the best clean and jerk.
-     *
-     * @param participant the participant for which to calculate the score
-     * @return The total score of a participant
-     */
-    @Override
-    public double calculateScore(Participant participant) {
-        return participant.getBestCleanAndJerk() +
-                participant.getBestSnatch();
-    }
 
     @Override
     public List<Participant> calculateRankings() {
