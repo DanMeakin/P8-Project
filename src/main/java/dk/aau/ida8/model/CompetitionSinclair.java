@@ -45,7 +45,17 @@ public class CompetitionSinclair extends Competition {
         subGroupsMen = splitListIntoSubGroups(listMale);
         subGroupsWomen = splitListIntoSubGroups(listFemale);
 
-        return subGroupsMen;
+        List<List<Participant>> returnList = new ArrayList<>();
+
+        for (List<Participant> subGroupWomen : subGroupsWomen) {
+            returnList.add(subGroupWomen);
+        }
+
+        for (List<Participant> subGroupMen : subGroupsMen) {
+            returnList.add(subGroupMen);
+        }
+
+        return returnList;
     }
 
     /**
