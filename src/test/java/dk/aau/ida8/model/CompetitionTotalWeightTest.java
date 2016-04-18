@@ -3,6 +3,7 @@ package dk.aau.ida8.model;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,10 +20,13 @@ import static org.mockito.Mockito.when;
  */
 public class CompetitionTotalWeightTest {
 
+    // The mocked list of participants
     private static List<Participant> listOfParticipants;
     private static double[] listOfBodyWeights = {60.0, 34.0, 55.6, 43.8, 54.8, 56.0, 56.1, 58.0, 54.0, 59.0,
             60.0};
-    private static Competition competition;
+
+    private static double[] listOfBodyWeights2 = {62, 64, 67, 65, 64, 65, 66, 68, 67, 63, 64,};
+    private static CompetitionTotalWeight competition;
     private static Participant participant;
 
     private static List<List<Participant>> listOfLists;
@@ -39,15 +43,27 @@ public class CompetitionTotalWeightTest {
         listOfLists.add(new ArrayList<Participant>());
         listOfLists.add(new ArrayList<Participant>());
 
-        for (int i = 0; i < 11; i++) {
-            participant = mock(Participant.class);
-            when(participant.getGender()).thenReturn(Lifter.Gender.MALE);
-            when(participant.getBodyWeight()).thenReturn(listOfBodyWeights[i]);
+        for(int j = 0; j < 2; j++) {
+            for (int i = 0; i < 11; i++) {
+                participant = mock(Participant.class);
+                //when(participant.getGender()).thenReturn(Lifter.Gender.MALE);
+                when(participant.getBodyWeight()).thenReturn(listOfBodyWeights[i]);
 
-            listOfParticipants.add(participant);
+                listOfParticipants.add(participant);
+            }
         }
 
-        for (int i = 0; i < 10; i++) {
+        for(int j = 0; j < 2; j++) {
+            for (int i = 0; i < 11; i++) {
+                participant = mock(Participant.class);
+                when(participant.getGender()).thenReturn(Lifter.Gender.MALE);
+                when(participant.getBodyWeight()).thenReturn(listOfBodyWeights2[i]);
+
+                listOfParticipants.add(participant);
+            }
+        }
+
+        for (int i = 0; i < listOfParticipants.size()-1; i++) {
             listOfLists.get(0).add(listOfParticipants.get(i));
         }
 
@@ -56,21 +72,31 @@ public class CompetitionTotalWeightTest {
         club = mock(Club.class);
         address = mock(Address.class);
 
-        competition = new CompetitionTotalWeight("Name", club, address, Competition.CompetitionType.TOTAL_WEIGHT, LocalDate.now());
-
+        competition = new CompetitionTotalWeight("Name", club, address, Competition.CompetitionType.TOTAL_WEIGHT, Date.valueOf(LocalDate.now()), Date.valueOf(LocalDate.now()), 100);
 
     }
 
     @Test
-    public void allocateGroups() throws Exception {
-
+    public void allocateGroupsTest() throws Exception {
 
         // to be continued...
 
         //assertEquals(listOfLists, competition.);
 
-
-
     }
 
+    @Test
+    public void createSubGroupsTest() throws Exception {
+        List<List<Participant>> completeList = competition.createSubgroups((ArrayList<Participant>) listOfParticipants);
+        System.out.println("The size of the completeList is " + completeList.size());
+        for(List<Participant> lp : completeList) {
+            System.out.println("This is a sublist: ");
+            for(Participant p : lp) {
+                System.out.println(p.getBodyWeight());
+            }
+        }
+        //System.out.println(completeList.get(1).get(0).getBodyWeight());
+
+        competition.allocateGroups(listOfParticipants);
+    }
 }

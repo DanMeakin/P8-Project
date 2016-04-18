@@ -130,7 +130,7 @@ public abstract class Competition {
         return ps.get(0);
     }
 
-    public abstract void allocateGroups(List<Participant> list, int indexForWeightClass);
+    public abstract void allocateGroups(List<Participant> list/*, int indexForWeightClass*/);
 
     /**
      * Determines the next participant to carry out a lift.
