@@ -1,11 +1,13 @@
 package dk.aau.ida8.model;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -19,37 +21,39 @@ import static org.mockito.Mockito.when;
  */
 public class CompetitionSinclairTest {
 
-    ArrayList<Participant> list;
-    Competition competition;
+    private static Competition competition;
 
     private static List<Participant> listOfParticipants;
     private static List<List<Participant>> checkList;
+
     private static double[] listOfBodyWeights = {60.0, 34.0, 55.6, 43.8, 54.8, 56.0, 56.1, 58.0, 54.0, 59.0,
             60.0};
-
     private static double[] listOfBodyWeights2 = {62, 64, 67, 65, 64, 65, 66, 68, 67, 63, 64,};
-    private static int[] listOfStartingWeights = {162, 164, 167, 165, 164, 165, 166, 168, 167, 163, 164,};
+    private static int[] listOfStartingWeights = {162, 164, 167, 165, 161, 165, 166, 168, 167, 163, 164,};
 
-    Lifter lifter;
+    // declare variables needed to setup the test cases
+    private static Lifter lifter;
+    private static Club club;
+    private static Address address;
 
-    Participant p2;
-
-    Club club;
-    Address address;
-
-    @Before
-    public void setUp() throws Exception {
-
-
-        // Compare list
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        // initialize the expected result
         checkList = new ArrayList<>();
 
+        // mock required objects to setup the test case
         club = mock(Club.class);
         address = mock(Address.class);
 
+        // instantiate the class under test
         competition = new CompetitionSinclair("lol", club, address, Competition.CompetitionType.SINCLAIR, new Date(), new Date(), 50);
 
 
+        /*************************************
+
+         SETUP TEST DATA
+
+         *************************************/
 
         // Populating list with Female lifters in weight class 1
         for(int j = 0; j < 1; j++) {
@@ -66,6 +70,7 @@ public class CompetitionSinclairTest {
                 subListOfPs.add(competition.selectParticipationByLifter(lifter));
             }
 
+            // add to the list of expected results
             checkList.add(subListOfPs);
         }
 
@@ -85,6 +90,7 @@ public class CompetitionSinclairTest {
 
             }
 
+            // add to the list of expected results
             checkList.add(subListOfps);
         }
 
@@ -103,12 +109,65 @@ public class CompetitionSinclairTest {
                 subListOfps.add(competition.selectParticipationByLifter(lifter));
             }
 
+            // add to the list of expected results
             checkList.add(subListOfps);
         }
 
+        // print out test data
+        for (List<Participant> lp : checkList) {
+            System.out.println("Printing out the contents of a sublist:");
+            System.out.println(lp);
+
+        }
+
+        // do some printing to see if we're on the right track
+        System.out.println("Printing out the gender and startingweight for" +
+                " the first participant in the FIRST list:");
+        System.out.println(checkList.get(0).get(0).getGender() + ", " +
+                checkList.get(0).get(0).getStartingWeight()
+        );
+
+        System.out.println("Printing out the gender and startingweight for" +
+                " the first participant in the SECOND list:");
+        System.out.println(checkList.get(1).get(0).getGender() + ", " +
+                checkList.get(1).get(0).getStartingWeight()
+        );
+
+        System.out.println("Printing out the gender and startingweight for" +
+                " the first participant in the THIRD list:");
+        System.out.println(checkList.get(2).get(0).getGender() + ", " +
+                checkList.get(2).get(0).getStartingWeight()
+        );
+
+        // sort each list by starting weight
+        for (List<Participant> lp : checkList) {
+            Collections.sort(lp, (p1,p2) -> p1.getStartingWeight() - p2.getStartingWeight());
+        }
+
+        // again, do some printing to see if the sorting succeeded
+        System.out.println("Printing out the gender and startingweight for" +
+                " the first participant in the FIRST list:");
+        System.out.println(checkList.get(0).get(0).getGender() + ", " +
+                checkList.get(0).get(0).getStartingWeight()
+        );
+
+        System.out.println("Printing out the gender and startingweight for" +
+                " the first participant in the SECOND list:");
+        System.out.println(checkList.get(1).get(0).getGender() + ", " +
+                checkList.get(1).get(0).getStartingWeight()
+        );
+
+        System.out.println("Printing out the gender and startingweight for" +
+                " the first participant in the THIRD list:");
+        System.out.println(checkList.get(2).get(0).getGender() + ", " +
+                checkList.get(2).get(0).getStartingWeight()
+        );
+
+    }
 
 
-
+    @Before
+    public void setUp() throws Exception {
 
 
         /*
@@ -196,6 +255,25 @@ public class CompetitionSinclairTest {
     @Test
     public void testAllocateGroups() throws Exception {
 
+        List<Participant> firstGroup = checkList.get(0);
+        List<Participant> actualFirstGroup = competition.allocateGroups().get(0);
+
+        /*
+        System.out.println("Printing out the gender and startingweight for" +
+                " the SECOND participant in the ACTUAL list:");
+        System.out.println(actualFirstGroup.get(1).getGender() + ", " +
+                actualFirstGroup.get(1).getStartingWeight()
+        );
+        */
+
+        // print out actual data
+        for (Participant p : actualFirstGroup) {
+            System.out.println("Printing out the contents of a actual data list");
+            System.out.println(p);
+
+        }
+
+        assertEquals(firstGroup, actualFirstGroup);
 
     }
 
@@ -203,9 +281,6 @@ public class CompetitionSinclairTest {
     public void testCalculateRankings() throws Exception {
         ArrayList<Participant> pList = (ArrayList<Participant>) competition.calculateRankings();
 
-        //assertNotEquals(list, pList);
-
-        //assertEquals(correctList, pList);
     }
 
     /*
