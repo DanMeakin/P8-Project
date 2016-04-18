@@ -3,6 +3,7 @@ package dk.aau.ida8.model;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class Club {
@@ -20,7 +21,6 @@ public class Club {
     private List<Lifter> lifters;
 
     public Club() {
-
     }
 
     public Club(String name, Address address) {
@@ -55,6 +55,14 @@ public class Club {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    public List<Lifter> getLifters() {
+        return lifters;
+    }
+
+    public String toString() {
+        return this.name;
     }
 
 }

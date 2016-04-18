@@ -16,11 +16,12 @@
             <form th:action="@{/club/save}" th:object="${lifter}" method="POST">
                 <div class="form-group">
                     <label>Select club</label>
-                        <select class="form-control">
-                            <option>AK Jyden</option>
-                            <option>Some other club</option>
-                            <option>A bad club</option>
-                        </select>
+                    <select class="form-control">
+                        <option th:each="club : ${clubs}"
+                                th:value="${club.name}"
+                                th:text="${club.name}"
+                                th:field="*{club}">AK Jyden</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="name">Firstname:</label>
@@ -52,12 +53,16 @@
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label>Select club</label>
-                <select class="form-control">
-                    <option>AK Jyden</option>
-                    <option>Some other club</option>
-                    <option>A bad club</option>
-                </select>
+                <form th:action="@{/club/new-lifter}" method="GET">
+                    <label>Select club</label>
+                    <select class="form-control">
+                        <option th:each="club : ${clubs}"
+                                th:value="${club.id}"
+                                th:text="${club.name}">AK Jyden</option>
+                    </select>
+                    <input type="hidden" name="id" value="2" />
+                    <input type="submit" value="send" />
+                </form>
             </div>
             <table class="table table-hover table-striped">
                 <thead>
@@ -65,6 +70,7 @@
                         <th>First name</th>
                         <th>Last name</th>
                         <th>Gender</th>
+                        <th>Club</th>
                         <th>Date of Birth</th>
                         <th class="date">Actions</th>
                     </tr>
@@ -74,6 +80,7 @@
                         <td th:text="${lifter.forename}">Name</td>
                         <td th:text="${lifter.surname}"></td>
                         <td>gender</td>
+                        <td th:text="${lifter.club}">Club</td>
                         <td th:text="${#calendars.format(lifter.dateOfBirth, 'dd-MM-yyyy')}">01-01-2010</td>
                         <td class="date"><a th:href="@{/club/delete/} + ${lifter.id}" class="label label-warning">Delete</a> <span class="label label-primary">Edit</span></td>
                     </tr>
