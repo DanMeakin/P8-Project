@@ -2,10 +2,8 @@ package dk.aau.ida8.model;
 
 import javax.persistence.Entity;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 public class CompetitionTotalWeight extends Competition {
@@ -17,6 +15,7 @@ public class CompetitionTotalWeight extends Competition {
     private HashMap<Integer, ArrayList<Participant>> groupsWomen;
 
     public CompetitionTotalWeight() {
+
     }
 
     public CompetitionTotalWeight(String competitionName, Club host, Address location, CompetitionType competitionType, Date date, Date lastRegistrationDate, int maxNumParticipants){
@@ -25,15 +24,59 @@ public class CompetitionTotalWeight extends Competition {
         this.groupsWomen = new HashMap<Integer, ArrayList<Participant>>();
     }
 
+    /**
+     * This!
+     *
+     */
     @Override
-    public void allocateGroups(List<Participant> list, int indexForWeightClass) {
-        divideParticipantsByGenderAndWeight(list);
-        createSubgroups(indexForWeightClass);
+    public List<List<Participant>> allocateGroups() {
+        List<List<Participant>> completeList = new ArrayList<>();
+
+        divideParticipantsByGenderAndWeight(getParticipants());
+
+        for(ArrayList<Participant> list : groupsWomen.values()){
+            // Creating a list of subgroups that each has a max of 10 participants
+            List<List<Participant>> newList = createSubgroups(list);
+            // Each subgroup is added sequentially to the completeList
+            for(List<Participant> lp : newList){
+                completeList.add(lp);
+            }
+        }
+
+        // Looping through the HashMap for lists of participants based on weight class and gender
+        for(ArrayList<Participant> list : groupsMen.values()){
+            // Creating a list of subgroups that each has a max of 10 participants
+            List<List<Participant>> newList = createSubgroups(list);
+            // Each subgroup is added sequentially to the completeList
+            for(List<Participant> lp : newList){
+                completeList.add(lp);
+            }
+        }
+
+        //Collections.sort(completeList, (l1,l2) -> l1.get(0).getStartingWeight() - l2.get(0).getStartingWeight());
+
+        /**
+         * Printing to console for testing
+         */
+        System.out.println("--------");
+        System.out.println("Test of allocateGroups()");
+        System.out.println("--------");
+        int counter = 0;
+        for(int i = 0; i < completeList.size(); i++){
+            counter++;
+            System.out.print("This is group nb: " + counter);
+            System.out.println("It consists of following bodyweights representing participants: ");
+            for(Participant p : completeList.get(i)){
+                System.out.println(p.getBodyWeight());
+            }
+        }
+
+        return completeList;
     }
 
     private void divideParticipantsByGenderAndWeight(List<Participant> list){
         for(Participant p : list){
-            if(p.getLifter().getGender().equals(Lifter.Gender.MALE)){
+            if(p.getGender().equals(Lifter.Gender.MALE)){
                 addParticipantToMensGroup(p);
             } else {
                 addParticipantToWomensGroup(p);
@@ -48,16 +91,16 @@ public class CompetitionTotalWeight extends Competition {
      * @return An group number (int) based on the index in the weightclasses array
      */
     private int getIndexByBodyWeight(Participant p){
-        double bodyWeight = p.getLifter().getBodyWeight();
+        double bodyWeight = p.getBodyWeight();
 
-        if (p.getLifter().getGender() == Lifter.Gender.MALE) {
+        if (p.getGender() == Lifter.Gender.MALE) {
             if (bodyWeight <= weightClassesMen[0]) {
                 return 1;
             } else if (bodyWeight >= weightClassesMen[weightClassesMen.length - 1]) {
                 return weightClassesMen.length;
             } else {
                 for (int i = 0; i < weightClassesMen.length - 1; i++) {
-                    if (bodyWeight > weightClassesMen[i] && bodyWeight < weightClassesMen[i + 1]) {
+                    if (bodyWeight >= weightClassesMen[i] && bodyWeight < weightClassesMen[i + 1]) {
                         return i + 1;
                     }
                 }
@@ -75,7 +118,6 @@ public class CompetitionTotalWeight extends Competition {
                 }
             }
         }
-
         // Don't know the best practice here. Would it be better to return null?
         return 0;
     }
@@ -132,19 +174,43 @@ public class CompetitionTotalWeight extends Competition {
         }
     }
 
-    public List<List<Participant>> createSubgroups(int indexForWeightClass) {
+    /**
+     * Auxiliary method which sorts an ArrayList of Participant according to their body weight placing the
+     * participant with the lowest weight first.
+     * @param list
+     * @return
+     */
+    public ArrayList<Participant> sortList(ArrayList<Participant> list){
+        Collections.sort(list, (p1, p2) -> (int) p1.getBodyWeight() - (int) p2.getBodyWeight());
+        return list;
+    }
+
+    /**
+     * Only works for Mens groups so far.
+     * @return
+     */
+    public List<List<Participant>> createSubgroups(ArrayList<Participant> listOfParticipants) {
+        // The list to be populated and returned
         List<List<Participant>> list = new ArrayList<>();
+
+        // Sorted list
+        ArrayList<Participant> sortedList = sortList(listOfParticipants);
+
         int j = 0;
-        for (int i = 1; i < this.groupsMen.get(indexForWeightClass).size(); i++){
+
+        // For every tenth participant, a new list is made so that every list will contain a max of
+        // ten participants.
+        for (int i = 1; i < sortedList.size(); i++){
             if (i % 10 == 0) {
                 j = i;
-                list.add(this.groupsMen.get(indexForWeightClass)
-                        .subList(i-10, i-1)
+                list.add(sortedList
+                        .subList(i-10, i)
                 );
             }
         }
-        list.add(this.groupsMen.get(indexForWeightClass)
-                .subList(j, this.groupsMen.get(indexForWeightClass).size() - 1)
+        // The remaining participants are allocated to a list
+        list.add(sortedList
+                .subList(j, sortedList.size())
         );
 
         return list;
