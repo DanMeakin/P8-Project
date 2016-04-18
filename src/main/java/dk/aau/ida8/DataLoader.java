@@ -39,26 +39,7 @@ public class DataLoader {
 
     public void createLifters() {
 
-        /*
-        Lifter lifter1 = new Lifter();
-        lifter1.setLifterNumber(11);
-        lifter1.setName("Mikkel");
-        lifter1.setGender("M");
-        lifter1.setClub("AK Jyden");
-        lifterRepository.save(lifter1);
-
-        Lifter lifter2 = new Lifter();
-        lifter2.setLifterNumber(12);
-        lifter2.setName("Lotte");
-        lifterRepository.save(lifter2);
-
-        Lifter lifter3 = new Lifter();
-        lifter3.setLifterNumber(9);
-        lifter3.setName("Robin");
-        lifterRepository.save(lifter3);
-*/
-
-        Address address = new Address("", "oseesterbro 33", "Aalborg", "9000");
+        Address address = new Address("", "Østerbro 33", "Aalborg", "9000");
         addressRepository.save(address);
         Club club = new Club("AK Jyden", address);
         clubRepository.save(club);
@@ -68,11 +49,18 @@ public class DataLoader {
         Club club1 = new Club("AK Viking", address1);
         clubRepository.save(club1);
 
+        Address address2 = new Address("", "Petergade 1", "Århus", "8210");
+        addressRepository.save(address2);
+        Club club2 = new Club("AK Viking", address2);
+        clubRepository.save(club2);
+
         Lifter lifter2 = new Lifter("Lotte", "S", club, Lifter.Gender.FEMALE, new Date(), 60.0);
         lifterRepository.save(lifter2);
+        club.addLifter(lifter2);
 
-        Lifter lifter3 = new Lifter("Robin", "L", club, Lifter.Gender.MALE, new Date(), 60.0);
+        Lifter lifter3 = new Lifter("Robin", "L", club1, Lifter.Gender.MALE, new Date(), 60.0);
         lifterRepository.save(lifter3);
+        club1.addLifter(lifter3);
 
         Competition c1 = new CompetitionSinclair("Super Awesome Competition!", club, address, Competition.CompetitionType.SINCLAIR, new Date(), new Date(), 50);
         competitionRepository.save(c1);
@@ -83,7 +71,5 @@ public class DataLoader {
         c1.addParticipant(lifter2, 119);
         c1.addParticipant(lifter3, 120);
         competitionRepository.save(c1);
-
-
     }
 }
