@@ -36,7 +36,6 @@ public class ParticipantTest {
         participant.increaseWeight(25);
         participant.addFailedLift();
         participant.addFailedLift();
-        when(competition.calculateScore(participant)).thenReturn(expectedScore);
     }
 
     @Test

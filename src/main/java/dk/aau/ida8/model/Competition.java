@@ -189,17 +189,6 @@ public abstract class Competition {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Calculates the score for a given participant.
-     *
-     * This methods refers to the encapsulated score strategy within a
-     * particular competition, and uses this to calculate the score for a
-     * participant.
-     *
-     * @param participant the participant for which to calculate the score
-     * @return the score for that participant
-     */
-    public abstract double calculateScore(Participant participant);
 
     /**
      * Calculates and returns the rankings for this competition.
@@ -209,11 +198,7 @@ public abstract class Competition {
      *
      * @return participants for this competition, ranked in order
      */
-    public abstract List<Participant> calculateRankings(); /*{
-        return getParticipants().stream()
-                .sorted((p1, p2) -> (int) Math.round(p2.getTotalScore() - p1.getTotalScore()))
-                .collect(Collectors.toList());
-    }*/
+    public abstract List<Participant> calculateRankings();
 
     public String getCompetitionName() {
         return competitionName;
