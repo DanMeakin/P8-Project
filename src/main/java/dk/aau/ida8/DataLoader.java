@@ -51,16 +51,16 @@ public class DataLoader {
 
         Address address2 = new Address("", "Petergade 1", "Århus", "8210");
         addressRepository.save(address2);
-        Club club2 = new Club("AK Viking", address2);
+        Club club2 = new Club("AK Gotha", address2);
         clubRepository.save(club2);
 
         Lifter lifter2 = new Lifter("Lotte", "S", club, Lifter.Gender.FEMALE, new Date(), 60.0);
-        lifterRepository.save(lifter2);
         club.addLifter(lifter2);
+        lifterRepository.save(lifter2);
 
         Lifter lifter3 = new Lifter("Robin", "L", club1, Lifter.Gender.MALE, new Date(), 60.0);
-        lifterRepository.save(lifter3);
         club1.addLifter(lifter3);
+        lifterRepository.save(lifter3);
 
         Competition c1 = new CompetitionSinclair("Super Awesome Competition!", club, address, Competition.CompetitionType.SINCLAIR, new Date(), new Date(), 50);
         competitionRepository.save(c1);
@@ -71,5 +71,10 @@ public class DataLoader {
         c1.addParticipant(lifter2, 119);
         c1.addParticipant(lifter3, 120);
         competitionRepository.save(c1);
+    }
+
+    public void addLifter() {
+        this.createLifters();
+
     }
 }
