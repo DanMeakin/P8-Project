@@ -40,6 +40,7 @@ public class CompetitionTotalWeight extends Competition {
             // Each subgroup is added sequentially to the completeList
             for(List<Participant> lp : newList){
                 completeList.add(lp);
+                //System.out.println(lp + " was added to the complete list.");
             }
         }
 
@@ -50,6 +51,7 @@ public class CompetitionTotalWeight extends Competition {
             // Each subgroup is added sequentially to the completeList
             for(List<Participant> lp : newList){
                 completeList.add(lp);
+                //System.out.println(lp + " was added to the complete list.");
             }
         }
 
@@ -58,6 +60,7 @@ public class CompetitionTotalWeight extends Competition {
         /**
          * Printing to console for testing
          */
+        /*
         System.out.println("--------");
         System.out.println("Test of allocateGroups()");
         System.out.println("--------");
@@ -69,7 +72,7 @@ public class CompetitionTotalWeight extends Competition {
             for(Participant p : completeList.get(i)){
                 System.out.println(p.getBodyWeight());
             }
-        }
+        }*/
 
         return completeList;
     }
@@ -210,8 +213,7 @@ public class CompetitionTotalWeight extends Competition {
         }
         // The remaining participants are allocated to a list
         list.add(sortedList
-                .subList(j, sortedList.size())
-        );
+                .subList(j, sortedList.size() - 1));
 
         return list;
     }
