@@ -21,4 +21,8 @@ public class ClubService {
         return clubRepository.findAll();
     }
 
+    public Club findOne(Long id) {
+        return clubRepository.findOne(id);
+    }
+
 }
