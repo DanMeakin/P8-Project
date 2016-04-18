@@ -2,10 +2,7 @@ package dk.aau.ida8.model;
 
 import javax.persistence.Entity;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
@@ -20,14 +17,12 @@ public class CompetitionSinclair extends Competition {
 
     @Override
     public List<List<Participant>> allocateGroups() {
-        List<Participant> bigList;
-        List<List<Participant>> subGroupsMen = new ArrayList<>();
-        List<List<Participant>> subGroupsWomen = new ArrayList<>();
+        List<Participant> bigList = getParticipants();
+        List<List<Participant>> subGroupsMen;
+        List<List<Participant>> subGroupsWomen;
 
-        // sort the big list based on snatch startingweight
-        bigList = getParticipants().stream()
-                .sorted((p1, p2) -> Integer.compare(p1.getStartingWeight(), p2.getStartingWeight()))
-                .collect(Collectors.toList());
+        // sort the big list based on snatch starting weight
+        Collections.sort(bigList, (p1,p2) -> p1.getStartingWeight() - p2.getStartingWeight());
 
         // split groups up into genders
         List<Participant> listMale = splitListByGender(bigList, Lifter.Gender.MALE);
@@ -37,6 +32,7 @@ public class CompetitionSinclair extends Competition {
         subGroupsMen = splitListIntoSubGroups(listMale);
         subGroupsWomen = splitListIntoSubGroups(listFemale);
 
+        // the final list that is to be returned, which is a list concatenated with female and male groups
         List<List<Participant>> returnList = new ArrayList<>();
 
         for (List<Participant> subGroupWomen : subGroupsWomen) {
@@ -59,25 +55,26 @@ public class CompetitionSinclair extends Competition {
     private List<List<Participant>> splitListIntoSubGroups(List<Participant> list) {
         List<List<Participant>> finalList = new ArrayList<>();
         int remainder = list.size() % 10;
+        int totalSizeOfList = list.size();
         int chunk = 10;
 
-        if (list.size() < 10) {
+        if (totalSizeOfList <= 10) {
             // if under 10 participants, just add to the list
             finalList.add(list);
             return finalList;
         } else {
             // add participants in groups of 10
-            for (int i = 0; i < list.size() - remainder; i = i + chunk) {
+            for (int i = 0; i < totalSizeOfList - remainder; i = i + chunk) {
                 finalList.add(list.subList(
-                        i, i + chunk - 1
+                        i, i + chunk
                 ));
             }
 
             // check if there is a remainder. If there is, add the missing participants
-            if (remainder > 0) {
+           if (remainder > 0) {
                 // add the remaining participants
                 finalList.add(list.subList(
-                        (list.size() - remainder - 1), (list.size() - 1)
+                        (totalSizeOfList - remainder), totalSizeOfList
                 ));
             }
 
