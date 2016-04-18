@@ -32,18 +32,11 @@ public class CompetitionController {
         this.participantService = participantService;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-    public String showAll(Model model) {
-        model.addAttribute("lifters", lifterService.findAll());
-        return "competition";
-    }
-
     /**
      * Displays the form to allow the user to correct an incorrectly entered
      * lift weight value.
      *
      * @param model the Spring model object to pass to the view
-     * @param liftID the ID# of the lift to change
      * @return correct lift form view
      * Controller method to create a new competition object when on the specified URL
      * @param model
@@ -103,6 +96,15 @@ public class CompetitionController {
         return "lift-register-form";
     }
 
+    @RequestMapping("/{competitionID}")
+    public String competitionDashboard(Model model, @PathVariable long competitionID) {
+        Competition competition = competitionService.findOne(competitionID);
+        model.addAttribute("competition", competition);
+        model.addAttribute("participants", competition.getParticipants());
+        model.addAttribute("participant", competition.currentParticipant());
+        return "competition";
+    }
+
     /**
      * Creates a new lift for a particular Participant.
      *
@@ -128,10 +130,13 @@ public class CompetitionController {
             case "ABSTAIN":
                 p.addAbstainedLift();
                 break;
+            default:
+                throw new ResourceNotFoundException();
         }
         participantService.saveParticipant(p);
+        Competition c = p.getCompetition();
         model.addAttribute("participant", p);
-        return "lift-register-form";
+        return "redirect:/competition/" + c.getId();
     }
 
     @RequestMapping(value="/correct-lift/{liftID}", method = RequestMethod.GET)
@@ -219,6 +224,12 @@ public class CompetitionController {
             model.addAttribute("msg", msg);
         }
         return "increase-weight-form";
+    }
+
+    @RequestMapping(value = "/participant-info/{participantID}", method = RequestMethod.GET)
+    public String displayParticipantInfo(Model model, @PathVariable long participantID){
+        model.addAttribute("participant", participantService.findOne(participantID));
+        return "participant-info";
     }
 
 

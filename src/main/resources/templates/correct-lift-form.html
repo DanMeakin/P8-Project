@@ -9,7 +9,7 @@
     <p th:text="${msg}"></p>
 
     <form action="/competition/correct-lift/" method="post" th:object="${lift}" >
-        <p th:text="'Lifter: ' + ${lift.participant}"></p>
+        <p th:text="'Lifter: ' + *{participant}"></p>
         <p th:text="'Lift type: ' + *{liftType}"></p>
         <input type="hidden" th:field="*{id}" name="liftID"/>
         <p><input type="text" th:field="*{weight}" /></p>

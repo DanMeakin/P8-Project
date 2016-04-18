@@ -5,12 +5,11 @@
     <title>Lift Register Form</title>
 </head>
 <body>
-<h3>Add Lift</h3>
-<p th:text="${participant}"></p>
-<p th:text="'Participant: ' + ${participant.fullName}"></p>
-<ul th:each="lift: ${participant.lifts}">
-    <li th:text="${lift}"></li>
-</ul>
+<div th:fragment="register-lift">
+    <h3>Add Lift</h3>
+    <p th:text="${participant}"></p>
+    <p th:text="'Participant: ' + ${participant.fullName}"></p>
+
 
     <form action="/competition/register-lift/" method="post" >
         <input type="hidden" th:value="${participant.id}" name="participantID"/>
@@ -18,5 +17,6 @@
         <input type="submit" value="FAIL" name="action"/>
         <input type="submit" value="ABSTAIN" name="action"/>
     </form>
+</div>
 </body>
 </html>

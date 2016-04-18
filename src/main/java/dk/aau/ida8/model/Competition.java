@@ -34,12 +34,16 @@ public abstract class Competition {
     @GeneratedValue
     private long id;
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.ALL})
     private List<Participant> participants;
 
     private String competitionName;
     private CompetitionType competitionType;
     private int maxNumParticipants;
+
+    public long getId() {
+        return id;
+    }
 
     @DateTimeFormat(pattern = "dd-mm-yyyy HH:mm")
     private Date date;
@@ -133,12 +137,11 @@ public abstract class Competition {
     public abstract void allocateGroups(List<Participant> list/*, int indexForWeightClass*/);
 
     /**
-     * Determines the next participant to carry out a lift.
+     * Finds the participant who is to carry out a lift next.
      *
-     * @return the participation object containing the next lifter who is to
-     *         lift
+     * @return the participant next to left
      */
-    public Participant determineNextParticipation() {
+    public Participant currentParticipant() {
         return determineParticipationOrder().get(0);
     }
 
@@ -158,7 +161,15 @@ public abstract class Competition {
             public int compare(Participant p1, Participant p2) {
                 int weightComp = p1.getCurrentWeight() - p2.getCurrentWeight();
                 long idComp = p1.getLifter().getId() - p2.getLifter().getId();
-                if (weightComp == 0) {
+                if (p1.liftsComplete() || p2.liftsComplete()) {
+                    if (p1.liftsComplete()) {
+                        return 1;
+                    } else if (p2.liftsComplete()) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                } else if (weightComp == 0) {
                     return (int) idComp;
                 } else {
                     return weightComp;
@@ -251,4 +262,14 @@ public abstract class Competition {
     public void setHost(Club host) {
         this.host = host;
     }
+
+    /**
+     * Calculates a specific participant's rank
+     * @param participant the participant for whom the ranking is being calculated
+     * @return the passed participant's rank
+     */
+    public int getRank(Participant participant){
+        return calculateRankings().indexOf(participant) + 1;
+    }
+
 }

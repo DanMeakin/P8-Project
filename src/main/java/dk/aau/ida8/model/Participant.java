@@ -6,9 +6,8 @@ import org.omg.CORBA.DynAnyPackage.Invalid;
 
 import javax.persistence.*;
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -42,6 +41,11 @@ public class Participant {
 
     @ManyToOne
     private Competition competition;
+
+    /**
+     * used to calculate the starting groups for a sinclair competition
+     */
+    private int startingWeight;
 
     private int currentWeight;
 
@@ -79,6 +83,7 @@ public class Participant {
     public Participant(Lifter lifter, Competition competition, int startingWeight) {
         this.lifter = lifter;
         this.competition = competition;
+        this.startingWeight = startingWeight;
         this.currentWeight = startingWeight;
         this.previousWeight = startingWeight;
         this.lifts = new ArrayList<>();
@@ -99,6 +104,37 @@ public class Participant {
      */
     public List<Lift> getLifts() {
         return lifts;
+    }
+
+    /**
+     * Gets a count of the number of completed lifts by the participant.
+     *
+     * @return the number of lifts completed by this participant in this
+     *         competition
+     */
+    public int getLiftsCount() {
+        return getLifts().size();
+    }
+
+    /**
+     * Gets a count of the number of lifts yet to be complete by the
+     * participant.
+     *
+     * @return the number of lifts yet to be completed by the participant in
+     *         this competition
+     */
+    public int getLiftsRemaining() {
+        return 6 - getLiftsCount();
+    }
+
+    /**
+     * Determines whether this participant has completed their lifts for this
+     * competition.
+     *
+     * @return true if lifts are all complete, else false
+     */
+    public boolean liftsComplete() {
+        return getLiftsCount() == 6;
     }
 
     /**
@@ -265,17 +301,32 @@ public class Participant {
     }
 
     /**
+     * Gets the combined total value of the best snatch and best clean & jerk
+     * weights.
+     *
+     * @return the combined total of the best snatch and best clean & jerk
+     */
+    public int getBestTotal() {
+        return getBestSnatch() + getBestCleanAndJerk();
+
+    }
+
+    /**
      * Gets the weight of the best successful clean & jerk lift from this
      * participation.
      *
      * @return the best clean & jerk lift weight
      */
     public int getBestCleanAndJerk() {
-        return getLifts().stream()
+        Optional<Lift> l = getLifts().stream()
                 .filter(Lift::isCleanAndJerk)
-                .max(scoreComparator())
-                .get()
-                .getScore();
+                .max(scoreComparator());
+
+        if (l.isPresent()) {
+            return l.get().getScore();
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -285,11 +336,15 @@ public class Participant {
      * @return the best snatch lift weight
      */
     public int getBestSnatch() {
-         return getLifts().stream()
+        Optional<Lift> l = getLifts().stream()
                  .filter(Lift::isSnatch)
-                 .max(scoreComparator())
-                 .get()
-                 .getScore();
+                 .max(scoreComparator());
+
+        if (l.isPresent()) {
+            return l.get().getScore();
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -425,11 +480,53 @@ public class Participant {
         }
     }
 
-    public Lifter.Gender getGender () {
+    /****************************
+     * LIFTER ATTRIBUTE GETTERS *
+     ****************************/
+
+
+    public Lifter.Gender getGender() {
         return getLifter().getGender();
+    }
+
+    public String getGenderInitial() {
+        return getGender().toString().substring(0, 1);
+    }
+
+    public Date getDateOfBirth() {
+        return getLifter().getDateOfBirth();
+    }
+
+    public String getClubName() {
+        return getLifter().getClubName();
     }
 
     public double getBodyWeight() {
         return getLifter().getBodyWeight();
+    }
+
+    // added getter and setter for the new startingWeight value
+    public int getStartingWeight() {
+        return startingWeight;
+    }
+
+    public void setStartingWeight(int startingWeight) {
+        this.startingWeight = startingWeight;
+    }
+
+    /**
+     * Gets this participant's rank
+     * @return this participant's rank
+     */
+    public int getRank(){
+        return getCompetition().getRank(this);
+    }
+
+    /**
+     * Gets this partipant's score
+     * @return this participant's score
+     */
+    public double getScore(){
+        return getCompetition().calculateScore(this);
     }
 }

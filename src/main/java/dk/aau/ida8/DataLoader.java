@@ -80,8 +80,10 @@ public class DataLoader {
         Competition c2 = new CompetitionTotalWeight("Super Awesome Competition!", club1, address1, Competition.CompetitionType.TOTAL_WEIGHT, new Date(), new Date(), 50);
         competitionRepository.save(c2);
 
-        Participant p = new Participant(lifter2, c1, 100);
-        participantRepository.save(p);
+        c1.addParticipant(lifter2, 119);
+        c1.addParticipant(lifter3, 120);
+        competitionRepository.save(c1);
+
 
     }
 }

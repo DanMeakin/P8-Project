@@ -27,9 +27,66 @@ public class CompetitionSinclair extends Competition {
     private static final double FEMALE_WRH_BODYWEIGHT = 148.026;
 
     @Override
-    public void allocateGroups(List<Participant> list/*, int indexForWeightClass*/) {
+    public void allocateGroups(List<Participant> list, int number) {
+        List<Participant> bigList;
+        List<List<Participant>> subGroupsMen = new ArrayList<>();
+        List<List<Participant>> subGroupsWomen = new ArrayList<>();
 
+        // sort the big list based on snatch startingweight
+        bigList = getParticipants().stream()
+                .sorted((p1, p2) -> Integer.compare(p1.getStartingWeight(), p2.getStartingWeight()))
+                .collect(Collectors.toList());
+
+        // split groups up into genders
+        List<Participant> listMale = splitListByGender(bigList, Lifter.Gender.MALE);
+        List<Participant> listFemale = splitListByGender(bigList, Lifter.Gender.FEMALE);
+
+        // make a list of lists where subgroups can be added
+        subGroupsMen = splitListIntoSubGroups(listMale);
+        subGroupsWomen = splitListIntoSubGroups(listFemale);
     }
+
+    /**
+     * Splits a supplied list into a list of lists corresponding to subgroups of the total number of participants
+     * in the competition.
+     * @param list Takes a list of participants of one or the other gender.
+     * @return List of lists of participants reflecting subgroups of the competition
+     */
+    private List<List<Participant>> splitListIntoSubGroups(List<Participant> list) {
+        List<List<Participant>> finalList = new ArrayList<>();
+        int remainder = list.size() % 10;
+        int chunk = 10;
+
+        if (list.size() < 10) {
+            // if under 10 participants, just add to the list
+            finalList.add(list);
+            return finalList;
+        } else {
+            // add participants in groups of 10
+            for (int i = 0; i < list.size() - remainder; i = i + chunk) {
+                finalList.add(list.subList(
+                        i, i + chunk - 1
+                ));
+            }
+
+            // check if there is a remainder. If there is, add the missing participants
+            if (remainder > 0) {
+                // add the remaining participants
+                finalList.add(list.subList(
+                        (list.size() - remainder - 1), (list.size() - 1)
+                ));
+            }
+
+            return finalList;
+        }
+    }
+
+    private List<Participant> splitListByGender(List<Participant> list, Lifter.Gender gender) {
+        return list.stream()
+                .filter(p -> p.getGender() == gender)
+                .collect(Collectors.toList());
+    }
+
 
     /**
      * Calculates the score for a participant of a given lifter in a
@@ -71,10 +128,10 @@ public class CompetitionSinclair extends Competition {
     private static double sinclairCoefficient(Lifter lifter) {
         double genderCoefficient;
         double genderBodyweight;
-        if (lifter.getGender().equals("M")) {
+        if (lifter.getGender().equals(Lifter.Gender.MALE)) {
             genderCoefficient = MALE_COEFFICIENT;
             genderBodyweight = MALE_WRH_BODYWEIGHT;
-        } else if (lifter.getGender().equals("F")) {
+        } else if (lifter.getGender().equals(Lifter.Gender.FEMALE)) {
             genderCoefficient = FEMALE_COEFFICIENT;
             genderBodyweight = FEMALE_WRH_BODYWEIGHT;
         } else {
@@ -96,5 +153,14 @@ public class CompetitionSinclair extends Competition {
         return getParticipants().stream()
                 .sorted((p1, p2) -> (int) Math.round(p2.getTotalScore() - p1.getTotalScore()))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Calculates a specific participant's rank
+     * @param participant the participant for whom the ranking is being calculated
+     * @return the passed participant's rank
+     */
+    public int getRank(Participant participant){
+        return calculateRankings().indexOf(participant) + 1;
     }
 }

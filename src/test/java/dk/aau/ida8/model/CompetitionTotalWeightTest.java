@@ -72,7 +72,8 @@ public class CompetitionTotalWeightTest {
         club = mock(Club.class);
         address = mock(Address.class);
 
-        competition = new CompetitionTotalWeight("Name", club, address, Competition.CompetitionType.TOTAL_WEIGHT, Date.valueOf(LocalDate.now()), Date.valueOf(LocalDate.now()), 100);
+        competition = new CompetitionTotalWeight("Name", club, address, Competition.CompetitionType.TOTAL_WEIGHT, Date.valueOf(LocalDate.of(2016, 6, 1)), Date.valueOf(LocalDate.of(2016, 5, 15)), 100);
+
 
     }
 
