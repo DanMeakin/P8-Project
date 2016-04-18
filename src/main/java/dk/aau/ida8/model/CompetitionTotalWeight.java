@@ -3,6 +3,7 @@ package dk.aau.ida8.model;
 import javax.persistence.Entity;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 public class CompetitionTotalWeight extends Competition {
@@ -24,23 +25,35 @@ public class CompetitionTotalWeight extends Competition {
     }
 
     /**
-     * This
+     * This!
      *
-     * @param list The list of all participants for the competition
      */
     @Override
-    public void allocateGroups(List<Participant> list/*, int indexForWeightClass*/) {
-        divideParticipantsByGenderAndWeight(list);
+    public List<List<Participant>> allocateGroups() {
         List<List<Participant>> completeList = new ArrayList<>();
-        // Looping through the HashMap for lists of participants based on weight class and gender
-        for(ArrayList<Participant> aList : groupsMen.values()){
+
+        divideParticipantsByGenderAndWeight(getParticipants());
+
+        for(ArrayList<Participant> list : groupsWomen.values()){
             // Creating a list of subgroups that each has a max of 10 participants
-            List<List<Participant>> newList = createSubgroups(aList);
+            List<List<Participant>> newList = createSubgroups(list);
             // Each subgroup is added sequentially to the completeList
             for(List<Participant> lp : newList){
                 completeList.add(lp);
             }
         }
+
+        // Looping through the HashMap for lists of participants based on weight class and gender
+        for(ArrayList<Participant> list : groupsMen.values()){
+            // Creating a list of subgroups that each has a max of 10 participants
+            List<List<Participant>> newList = createSubgroups(list);
+            // Each subgroup is added sequentially to the completeList
+            for(List<Participant> lp : newList){
+                completeList.add(lp);
+            }
+        }
+
+        //Collections.sort(completeList, (l1,l2) -> l1.get(0).getStartingWeight() - l2.get(0).getStartingWeight());
 
         /**
          * Printing to console for testing
@@ -57,6 +70,8 @@ public class CompetitionTotalWeight extends Competition {
                 System.out.println(p.getBodyWeight());
             }
         }
+
+        return completeList;
     }
 
     private void divideParticipantsByGenderAndWeight(List<Participant> list){
@@ -172,15 +187,14 @@ public class CompetitionTotalWeight extends Competition {
 
     /**
      * Only works for Mens groups so far.
-     * @param indexForWeightClass
      * @return
      */
-    public List<List<Participant>> createSubgroups(/*int indexForWeightClass*/ArrayList<Participant> listOfParticipants) {
+    public List<List<Participant>> createSubgroups(ArrayList<Participant> listOfParticipants) {
         // The list to be populated and returned
         List<List<Participant>> list = new ArrayList<>();
 
         // Sorted list
-        ArrayList<Participant> sortedList = sortList(/*this.groupsMen.get(indexForWeightClass)*/listOfParticipants);
+        ArrayList<Participant> sortedList = sortList(listOfParticipants);
 
         int j = 0;
 

@@ -38,22 +38,39 @@ public class CompetitionTotalWeightTest {
     @Before
     public void setUp() throws Exception {
 
-        listOfParticipants = new ArrayList<>();
+        club = mock(Club.class);
+        address = mock(Address.class);
+
+        competition = new CompetitionTotalWeight("Name", club, address, Competition.CompetitionType.TOTAL_WEIGHT, Date.valueOf(LocalDate.of(2016, 6, 1)), Date.valueOf(LocalDate.of(2016, 5, 15)), 100);
+
+        listOfParticipants = competition.getParticipants();
         listOfLists = new ArrayList<>();
         listOfLists.add(new ArrayList<Participant>());
         listOfLists.add(new ArrayList<Participant>());
 
-        for(int j = 0; j < 2; j++) {
+        // Populating list with Female lifters in weight class 1
+        for(int j = 0; j < 1; j++) {
             for (int i = 0; i < 11; i++) {
                 participant = mock(Participant.class);
-                //when(participant.getGender()).thenReturn(Lifter.Gender.MALE);
+                when(participant.getGender()).thenReturn(Lifter.Gender.FEMALE);
                 when(participant.getBodyWeight()).thenReturn(listOfBodyWeights[i]);
 
                 listOfParticipants.add(participant);
             }
         }
 
-        for(int j = 0; j < 2; j++) {
+        // Populating list with Female lifters in weight class 2
+        for(int j = 0; j < 1; j++) {
+            for (int i = 0; i < 11; i++) {
+                participant = mock(Participant.class);
+                when(participant.getGender()).thenReturn(Lifter.Gender.FEMALE);
+                when(participant.getBodyWeight()).thenReturn(listOfBodyWeights2[i]);
+
+                listOfParticipants.add(participant);
+            }
+        }
+
+        for(int j = 0; j < 1; j++) {
             for (int i = 0; i < 11; i++) {
                 participant = mock(Participant.class);
                 when(participant.getGender()).thenReturn(Lifter.Gender.MALE);
@@ -63,16 +80,11 @@ public class CompetitionTotalWeightTest {
             }
         }
 
-        for (int i = 0; i < listOfParticipants.size()-1; i++) {
-            listOfLists.get(0).add(listOfParticipants.get(i));
-        }
+        //for (int i = 0; i < listOfParticipants.size()-1; i++) {
+        //    listOfLists.get(0).add(listOfParticipants.get(i));
+        //}
 
-        listOfLists.get(1).add(listOfParticipants.get(listOfParticipants.size() - 1));
-
-        club = mock(Club.class);
-        address = mock(Address.class);
-
-        competition = new CompetitionTotalWeight("Name", club, address, Competition.CompetitionType.TOTAL_WEIGHT, Date.valueOf(LocalDate.of(2016, 6, 1)), Date.valueOf(LocalDate.of(2016, 5, 15)), 100);
+        //listOfLists.get(1).add(listOfParticipants.get(listOfParticipants.size() - 1));
 
 
     }
@@ -93,11 +105,11 @@ public class CompetitionTotalWeightTest {
         for(List<Participant> lp : completeList) {
             System.out.println("This is a sublist: ");
             for(Participant p : lp) {
-                System.out.println(p.getBodyWeight());
+                System.out.println("Participants weight: "+ p.getBodyWeight() + " and gender: " +p.getGender());
             }
         }
         //System.out.println(completeList.get(1).get(0).getBodyWeight());
 
-        competition.allocateGroups(listOfParticipants);
+        competition.allocateGroups();
     }
 }

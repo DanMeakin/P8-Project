@@ -27,7 +27,7 @@ public class CompetitionSinclair extends Competition {
     private static final double FEMALE_WRH_BODYWEIGHT = 148.026;
 
     @Override
-    public void allocateGroups(List<Participant> list, int number) {
+    public List<List<Participant>> allocateGroups() {
         List<Participant> bigList;
         List<List<Participant>> subGroupsMen = new ArrayList<>();
         List<List<Participant>> subGroupsWomen = new ArrayList<>();
@@ -44,6 +44,8 @@ public class CompetitionSinclair extends Competition {
         // make a list of lists where subgroups can be added
         subGroupsMen = splitListIntoSubGroups(listMale);
         subGroupsWomen = splitListIntoSubGroups(listFemale);
+
+        return subGroupsMen;
     }
 
     /**
