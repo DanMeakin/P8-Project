@@ -12,6 +12,26 @@ th.date {
   text-align: right;
 }
 
+th.center-heading {
+  text-align: center;
+}
+
+td.pass-lift {
+    color: green;
+}
+
+td.fail-lift {
+    color: red;
+    text-decoration: line-through;
+}
+
+td.abstain-lift {
+}
+
+td.best-lift {
+    font-weight: bold;
+}
+
 ul.past-results {
   list-style: none;
   padding-left: 0;
