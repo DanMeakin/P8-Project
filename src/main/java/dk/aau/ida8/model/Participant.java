@@ -6,6 +6,7 @@ import org.omg.CORBA.DynAnyPackage.Invalid;
 
 import javax.persistence.*;
 import java.security.InvalidParameterException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -125,6 +126,28 @@ public class Participant {
      */
     public int getLiftsRemaining() {
         return 6 - getLiftsCount();
+    }
+
+    /**
+     * Gets a count of the number of snatch lifts yet to be completed
+     * by the participant.
+     *
+     * @return the number of snatch lifts yet to be completed by the
+     *         participant
+     */
+    public int getSnatchesRemaining() {
+        return 3 - snatchCount();
+    }
+
+    /**
+     * Gets a count of the number of clean & jerk lifts yet to be completed
+     * by the participant.
+     *
+     * @return the number of clean & jerk lifts yet to be completed by the
+     *         participant
+     */
+    public int getCleanAndJerksRemaining() {
+        return 3 - cleanAndJerkCount();
     }
 
     /**
@@ -388,14 +411,34 @@ public class Participant {
     }
 
     /**
+     * Gets a list of all snatches completed.
+     *
+     * @return list of snatches
+     */
+    public List<Lift> getSnatchLifts() {
+        return getLifts().stream()
+                .filter(l -> l.isSnatch())
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Counts the number of snatch lifts completed.
      *
      * @return the number of snatch lifts completed by this participant
      */
     public int snatchCount() {
-        return (int) (getLifts().stream()
-                .filter(l -> l.isSnatch())
-                .count());
+        return getSnatchLifts().size();
+    }
+
+    /**
+     * Gets a list of all clean & jerk lifts completed.
+     *
+     * @return list of clean & jerk lifts
+     */
+    public List<Lift> getCleanAndJerkLifts() {
+        return getLifts().stream()
+                .filter(l -> l.isCleanAndJerk())
+                .collect(Collectors.toList());
     }
 
     /**
@@ -404,9 +447,7 @@ public class Participant {
      * @return the number of clean & jerk lifts completed by this participant
      */
     public int cleanAndJerkCount() {
-        return (int) (getLifts().stream()
-                .filter(l -> l.isCleanAndJerk())
-                .count());
+        return getCleanAndJerkLifts().size();
     }
 
      /**
@@ -497,6 +538,10 @@ public class Participant {
         return getLifter().getDateOfBirth();
     }
 
+    public String getDateOfBirthString() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy");
+        return dateFormat.format(getDateOfBirth());
+    }
     public String getClubName() {
         return getLifter().getClubName();
     }
