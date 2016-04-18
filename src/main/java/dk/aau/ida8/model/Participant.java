@@ -310,18 +310,6 @@ public class Participant {
         setWeightChanges(getWeightChanges() - 1);
     }
 
-    /**
-     * Calculates the total score for this participation.
-     *
-     * This method uses the ScoreStrategy associated with the Competition
-     * in which this participation takes place. The strategy calculates the
-     * proper score, and this method returns this score.
-     *
-     * @return the total score for this participation
-     */
-    public double getTotalScore() {
-        return getCompetition().calculateScore(this);
-    }
 
     /**
      * Gets the combined total value of the best snatch and best clean & jerk
@@ -329,7 +317,7 @@ public class Participant {
      *
      * @return the combined total of the best snatch and best clean & jerk
      */
-    public int getBestTotal() {
+    public int getTotalScore() {
         return getBestSnatch() + getBestCleanAndJerk();
 
     }
@@ -521,9 +509,9 @@ public class Participant {
         }
     }
 
-    /****************************
-     * LIFTER ATTRIBUTE GETTERS *
-     ****************************/
+    /*********************************
+     * PARTICIPANT ATTRIBUTE GETTERS *
+     *********************************/
 
 
     public Lifter.Gender getGender() {
@@ -568,10 +556,15 @@ public class Participant {
     }
 
     /**
-     * Gets this partipant's score
-     * @return this participant's score
+     * Calculates the total score for this participation.
+     *
+     * This method uses the ScoreStrategy associated with the Competition
+     * in which this participation takes place. The strategy calculates the
+     * proper score, and this method returns this score.
+     *
+     * @return the total score for this participation
      */
-    public double getScore(){
-        return getCompetition().calculateScore(this);
+    public double getSinclairScore(){
+        return new SinclairCalculator().apply(this);
     }
 }
