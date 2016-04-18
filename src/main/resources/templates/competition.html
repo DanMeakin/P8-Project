@@ -63,9 +63,9 @@
               th:each="i : ${#numbers.sequence(1, p.cleanAndJerksRemaining)}"
               class="incomplete-lift"></td>
           <td class="best-lift" th:text="${p.bestCleanAndJerk}"></td>
-          <td th:text="${p.bestTotal}"></td>
-          <td></td>
-          <td></td>
+          <td th:text="${p.totalScore}"></td>
+          <td th:text="${p.sinclairScore}"></td>
+          <td th:text="${p.rank}"></td>
         </tr>
       </tbody>
     </table>
