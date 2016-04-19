@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ClubRepository extends CrudRepository<Club, Long> {
 
+    Club findByName(String name);
+
 }

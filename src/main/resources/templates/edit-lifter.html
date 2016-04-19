@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="layouts/main">
+<head>
+    <title>Weightlifting Management System</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <h1>Edit lifter</h1>
+            <form th:action="@{/club/lifter/save}" th:object="${lifter}" method="POST">
+                <div class="form-group">
+                    <label for="name">Firstname:</label>
+                    <input type="text" name="name" id="name" th:field="*{forename}" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="lastname">Lastname:</label>
+                    <input type="text"  name="lastname" id="lastname" th:field="*{surname}" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="birthday">Date of birth:</label>
+                    <div class="input-group">
+                        <input type="text" name="birthday" id="birthday" th:field="*{dateOfBirth}" placeholder="01-01-2010" class="form-control" />
+                        <div class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="male">
+                        Male:
+                        <input type="radio" name="gender" id="male" th:field="*{gender}" th:value="MALE" />
+                    </label>
+                    <label for="female">
+                        Female:
+                        <input type="radio" name="gender" id="female" th:field="*{gender}" th:value="FEMALE" />
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label for="isLifterActive">
+                        Active:
+                        <input type="radio" name="isLifterActive" id="isLifterActive" th:field="*{active}" th:value="true" />
+                    </label>
+                    <label for="isLifterInActive">
+                        Inactive:
+                        <input type="radio" name="isLifterActive" id="isLifterInActive" th:field="*{active}" th:value="false" />
+                    </label>
+                </div>
+                <div class="form-group">
+                    <input type="hidden" name="lifter-id" id="lifter-id" th:field="*{id}" />
+                    <input type="hidden" name="lifter-club" id="lifter-club-update" th:field="*{club}" />
+                </div>
+                <input type="submit" value="Create lifter" class="btn btn-primary" id="lifter-club-submit-update" />
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
