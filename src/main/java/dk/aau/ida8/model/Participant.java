@@ -501,6 +501,7 @@ public class Participant {
      */
     private void addLift(Lift lift) {
         lifts.add(lift);
+        competition.updateCurrentGroup();
     }
 
     /**
