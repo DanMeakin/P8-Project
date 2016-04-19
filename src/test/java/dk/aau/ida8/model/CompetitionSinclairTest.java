@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -193,6 +194,22 @@ public class CompetitionSinclairTest {
         correctList.add(p1);
         correctList.add(p2);
         */
+    }
+
+    @Test
+    public void instanTests() throws Exception {
+
+
+
+        Instant instant = Instant.now();
+        Instant instant2 = Instant.now();
+
+        instant.isAfter(instant2);
+
+        System.out.println(instant.isAfter(instant2));
+
+        assertNotEquals(instant, instant2);
+
     }
 
     @Test
