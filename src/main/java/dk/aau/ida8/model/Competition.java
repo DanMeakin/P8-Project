@@ -155,13 +155,28 @@ public abstract class Competition {
      *
      * @return sorted list of participants
      */
-    public List<Participant> determineParticipationOrder() {
-        Collections.sort(getParticipants(), new Comparator<Participant>() {
+    public List<Participant> determineParticipationOrder(List<Participant> list) {
+        Collections.sort(list, new Comparator<Participant>() {
             @Override
             public int compare(Participant p1, Participant p2) {
                 int weightComp = p1.getCurrentWeight() - p2.getCurrentWeight();
                 int attemptsComp = p1.getLiftsCount() - p2.getLiftsCount();
+
                 int timestampComp = 0;
+                if ((p1.getLiftsCount() > 0 && p1.getLiftsCount() < 3) && (p2.getLiftsCount() > 0 && p2.getLiftsCount() < 3)) {
+                    if (p1.getLifts().get(0).getTimeLiftCompleted().isBefore(p2.getLifts().get(0).getTimeLiftCompleted())){
+                        timestampComp = 1;
+                    } else {
+                        timestampComp = -1;
+                    }
+                } else {
+                    if (p1.getLifts().get(3).getTimeLiftCompleted().isBefore(p2.getLifts().get(3).getTimeLiftCompleted())){
+                        timestampComp = 1;
+                    } else {
+                        timestampComp = -1;
+                    }
+                }
+
                 long idComp = p1.getLifter().getId() - p2.getLifter().getId();
 
 
@@ -174,9 +189,9 @@ public abstract class Competition {
                         return 0;
                     }
                 } else {
-                    // Check for lowest weight
+                    // Check if the weights are the same
                     if(weightComp == 0){
-                        // Check for lowest amount of attempts
+                        // Check if the attempts are the same
                         if(attemptsComp == 0){
                             // Check for who had their first lift
                             if(timestampComp == 0){
@@ -184,6 +199,7 @@ public abstract class Competition {
                                 return (int) idComp;
                             } else {
                                 // Else - lifter who had their first lift first goes first
+                                return timestampComp;
                             }
                         } else {
                             return attemptsComp;
