@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import java.security.InvalidParameterException;
+import java.time.Instant;
 
 /**
  * This class represents one lift carried out within a weightlifting
@@ -46,6 +47,7 @@ public class Lift {
     private LiftOutcome outcome;
     private LiftType liftType;
     private int weight;
+    private Instant timeLiftCompleted;
 
     @ManyToOne
     private Participant participant;
@@ -95,6 +97,9 @@ public class Lift {
         this.liftType = liftType;
         this.outcome = outcome;
         this.weight = weight;
+
+        // also instantiate an instant when the lift was completed
+        this.timeLiftCompleted = Instant.now();
     }
 
     @Override
@@ -171,5 +176,9 @@ public class Lift {
 
     public boolean isAbstained() {
         return (getOutcome().equals(LiftOutcome.ABSTAIN));
+    }
+
+    public Instant getTimeLiftCompleted() {
+        return timeLiftCompleted;
     }
 }

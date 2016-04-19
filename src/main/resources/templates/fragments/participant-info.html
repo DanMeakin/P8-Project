@@ -8,14 +8,19 @@
     <div th:fragment="participant-info" th:object="${participant}">
         <div class="row">
             <div class="col-xs-1">
-                <span class="label label-primary"
-                 th:text="${participant.rank}"/>
-            </div>
-            <div class="col-xs-11"
-                 th:text="${participant.fullName} + ' (' + ${participant.genderInitial} + ')'">
+
             </div>
         </div>
         <table class="table">
+            <thead>
+                <th class="right-header">
+                    <span class="label label-primary"
+                     th:text="${participant.rank}"/>
+                </th>
+                <th th:text="${participant.forename} + ' ' +
+                             ${#strings.toUpperCase(participant.surname)} +
+                             ' (' + ${participant.genderInitial} + ')'"></th>
+            </thead>
             <tbody>
             <tr>
                 <td>Body Weight:</td>
@@ -35,7 +40,7 @@
             </tr>
             <tr>
                 <td>Sinclair Total:</td>
-                <td th:text="${participant.sinclairScore}"></td>
+                <td th:text="${#numbers.formatDecimal(participant.sinclairScore, 1, 1)}"></td>
             </tr>
             </tbody>
         </table>
