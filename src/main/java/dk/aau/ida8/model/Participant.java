@@ -179,6 +179,14 @@ public class Participant {
         return previousWeight;
     }
 
+    public String getForename() {
+        return getLifter().getForename();
+    }
+
+    public String getSurname() {
+        return getLifter().getSurname();
+    }
+
     public String getFullName() {
         return getLifter().getFullName();
     }
@@ -318,8 +326,13 @@ public class Participant {
      * @return the combined total of the best snatch and best clean & jerk
      */
     public int getTotalScore() {
-        return getBestSnatch() + getBestCleanAndJerk();
-
+        int total;
+        if (getBestSnatch() == 0 || getBestCleanAndJerk() == 0) {
+            total = 0;
+        } else {
+            total = getBestSnatch() + getBestCleanAndJerk();
+        }
+        return total;
     }
 
     /**
