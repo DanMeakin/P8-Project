@@ -10,4 +10,14 @@ $(document).ready(function () {
     $('#birthday').datepicker({
         format: "dd-mm-yyyy"
     });
+
+    $('#list-clubs-submit').on('click', function() {
+        var value = $('#list-clubs :selected').val()
+        $('#list-clubs-id').val(value);
+    });
+
+    $('#lifter-club-submit').on('click', function() {
+        var value = $('#lifter-club :selected').val();
+        $('#lifter-club-id').val(value);
+    });
 });
