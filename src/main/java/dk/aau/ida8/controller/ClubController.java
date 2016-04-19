@@ -28,15 +28,12 @@ public class ClubController {
 
     @RequestMapping("/club/new-lifter")
     public String newLifter(@RequestParam(value = "id", required = false, defaultValue = "1") Long id, Model model) {
-
-        Club akjyden = clubService.findOne(1L);
-        akjyden.addLifter(new Lifter("Nicklas", "Holm", akjyden, Lifter.Gender.MALE, new Date(), 70.0));
-
         Club currentClub = clubService.findOne(id);
 
         model.addAttribute("clubs", clubService.findAll());
         model.addAttribute("lifters", currentClub.getLifters());
         model.addAttribute("lifter", new Lifter());
+
         return "club-lifters";
     }
 
@@ -50,10 +47,28 @@ public class ClubController {
         return "redirect:/club/new-lifter";
     }
 
-    @RequestMapping("/club/delete/{id}")
-    public String deleteLifter(@PathVariable Long id) {
-        lifterService.deleteLifter(id);
-        return "redirect:/club-lifters";
+    @RequestMapping("/club/remove/{id}")
+    public String removeLifter(@PathVariable Long id) {
+        Lifter lifter = lifterService.findOne(id);
+        Club club = clubService.findByName(lifter.getClubName());
+        lifter.setClub(null);
+        club.removeLifter(lifter);
+        lifterService.saveLifter(lifter);
+        clubService.saveClub(club);
+        return "redirect:/club/new-lifter";
+    }
+
+    @RequestMapping("/club/lifter/{id}")
+    public String updateLifter(@PathVariable Long id, Model model) {
+        model.addAttribute("lifter", lifterService.findOne(id));
+        return "edit-lifter";
+    }
+
+    @RequestMapping(value="club/lifter/save", method = RequestMethod.POST)
+    public String saveUpdatedLifter(Lifter lifter) {
+        lifterService.saveLifter(lifter);
+
+        return "redirect:/club/new-lifter";
     }
 
 }
