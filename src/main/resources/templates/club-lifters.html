@@ -16,11 +16,10 @@
             <form th:action="@{/club/save}" th:object="${lifter}" method="POST">
                 <div class="form-group">
                     <label>Select club</label>
-                    <select class="form-control">
+                    <select class="form-control" id="lifter-club">
                         <option th:each="club : ${clubs}"
-                                th:value="${club.name}"
-                                th:text="${club.name}"
-                                th:field="*{club}">AK Jyden</option>
+                                th:value="${club.id}"
+                                th:text="${club.name}">AK Jyden</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -48,22 +47,27 @@
                         <input type="radio" name="female" id="female" />
                     </label>
                 </div>
-                <input type="submit" value="Create lifter" class="btn btn-primary" />
+                <div class="form-group">
+                    <input type="hidden" name="lifter-club-id" id="lifter-club-id" value="" />
+                </div>
+                <input type="submit" value="Create lifter" class="btn btn-primary" id="lifter-club-submit" />
             </form>
         </div>
         <div class="col-md-6">
-            <div class="form-group">
                 <form th:action="@{/club/new-lifter}" method="GET">
+                    <div class="form-group">
                     <label>Select club</label>
-                    <select class="form-control">
+                    <select class="form-control" id="list-clubs">
                         <option th:each="club : ${clubs}"
                                 th:value="${club.id}"
                                 th:text="${club.name}">AK Jyden</option>
                     </select>
-                    <input type="hidden" name="id" value="2" />
-                    <input type="submit" value="send" />
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" name="id" id="list-clubs-id" value="" />
+                    </div>
+                    <input type="submit" value="Submit" id="list-clubs-submit" class="btn btn-default pull-right" />
                 </form>
-            </div>
             <table class="table table-hover table-striped">
                 <thead>
                     <tr>
