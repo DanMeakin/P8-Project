@@ -1,6 +1,7 @@
 package dk.aau.ida8.model;
 
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 import java.util.*;
 
 /**
@@ -14,7 +15,10 @@ public class CompetitionTotalWeight extends Competition {
     private double[] weightClassesMen = {56, 62, 69, 77, 85, 94, 105};
     private double[] weightClassesWomen = {48, 53, 58, 63, 69, 75};
 
+    @Transient
     private List<Participant> groupsMen;
+
+    @Transient
     private List<Participant> groupsWomen;
 
     public CompetitionTotalWeight() {
