@@ -31,6 +31,14 @@ public class LifterController {
         return "lifter-view";
     }
 
+    /**
+     * Each row needs an id == lifter.id
+     * That id needs to be passed to popup form
+     *
+     * @param lifter
+     * @return
+     */
+
     @RequestMapping(value="/lifter/update", method = RequestMethod.POST)
     public String updateLifter(Lifter lifter) {
         lifterService.saveLifter(lifter);
