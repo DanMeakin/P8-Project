@@ -5,6 +5,7 @@
 <head>
     <title>Weightlifting Management System</title>
 </head>
+
 <body>
 
 <div layout:fragment="content">
@@ -23,12 +24,14 @@
           <th rowspan="2">Sex</th>
           <!--<th rowspan="2">DoB</th>-->
           <th rowspan="2">Club</th>
-          <!--<th rowspan="2">BW</th>-->
+          <th rowspan="2">Body<br />Weight</th>
+          <th rowspan="2">Lifting</th>
           <th class="center-heading" colspan="4">Snatch</th>
           <th class="center-heading" colspan="4">Clean&amp;Jerk</th>
           <th rowspan="2">Total</th>
           <th rowspan="2">Sinclair</th>
           <th rowspan="2">Ranking</th>
+          <th rowspan="2"></th>
         </tr>
       <tr>
         <th>1</th>
@@ -48,7 +51,8 @@
           <td th:text="${p.genderInitial}">M</td>
           <!--<td th:text="${p.dateOfBirthString}">Date of birth</td>-->
           <td th:text="${p.clubName}">AK Jyden</td>
-          <!--<td th:text="${p.bodyWeight}">Bodyweight</td>-->
+          <td th:text="${p.bodyWeight} + ' kg'">Bodyweight</td>
+          <td th:text="${p.currentWeight} + ' kg'"></td>
           <td th:each="l : ${p.snatchLifts}"
               th:text="${l.isAbstained()}? '-' : ${l.weight}"
               th:class="${l.outcome.toString().toLowerCase()} + '-lift'" />
@@ -64,12 +68,42 @@
               class="incomplete-lift"></td>
           <td class="best-lift" th:text="${p.bestCleanAndJerk}"></td>
           <td th:text="${p.totalScore}"></td>
-          <td th:text="${p.sinclairScore}"></td>
+          <td th:text="${#numbers.formatDecimal(p.sinclairScore, 1, 1)}"></td>
           <td th:text="${p.rank}"></td>
+          <td>
+            <div class="btn-group">
+              <button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                 <span class="glyphicon glyphicon-option-vertical"></span>
+              </button>
+              <ul class="dropdown-menu">
+                <li><a href="#"
+                       data-toggle="modal" data-target="#competition-modal"
+                       class="increase-weight" th:id="'increase-weight-' + ${p.id}">Increase Weight</a></li>
+                <li><a href="#">Correct Weight</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="#">Lifter Info</a></li>
+              </ul>
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
+
+  <div class="modal fade" id="competition-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  </div>
+
+<script>
+  $( document ).ready(function() {
+    $( ".increase-weight" ).click(function(event) {
+      var pathElems = event.target.id.split("-");
+      var path = "/competition/" + pathElems[0] + "-" + pathElems[1] + "/" + pathElems[2];
+      $.get(path, function(data) {
+        $( "#competition-modal" ).html(data);
+      });
+    });
+  });
+</script>
 </div>
 </body>
 </html>

@@ -159,6 +159,7 @@ public abstract class Competition {
         Collections.sort(getParticipants(), new Comparator<Participant>() {
             @Override
             public int compare(Participant p1, Participant p2) {
+                int completionComp = 0;
                 int weightComp = p1.getCurrentWeight() - p2.getCurrentWeight();
                 int attemptsComp = p1.getLiftsCount() - p2.getLiftsCount();
                 int timestampComp = 0;
@@ -166,31 +167,25 @@ public abstract class Competition {
 
                 if (p1.liftsComplete() || p2.liftsComplete()) {
                     if (p1.liftsComplete()) {
-                        return 1;
+                        completionComp = 1;
                     } else if (p2.liftsComplete()) {
-                        return -1;
-                    } else {
-                        return 0;
-                    }
-                } else {
-                    // Check for lowest weight
-                    if(weightComp == 0){
-                        // Check for lowest amount of attempts
-                        if(attemptsComp == 0){
-                            // Check for who had their first lift
-                            if(timestampComp == 0){
-                                // If no one had their first lift yet - lifter with lowest ID goes first
-                                return (int) idComp;
-                            } else {
-                                // Else - lifter who had their first lift first goes first
-                            }
-                        } else {
-                            return attemptsComp;
-                        }
-                    } else {
-                        return weightComp;
+                        completionComp = -1;
                     }
                 }
+
+                List<Integer> comparators = Arrays.asList(
+                        completionComp,
+                        weightComp,
+                        attemptsComp,
+                        timestampComp,
+                        (int) idComp
+                );
+                for (Integer comparatorValue : comparators) {
+                    if (comparatorValue != 0) {
+                        return comparatorValue;
+                    }
+                }
+                return 0;
             }
         });
         return getParticipants();
