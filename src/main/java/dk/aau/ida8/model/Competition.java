@@ -163,7 +163,9 @@ public abstract class Competition {
                 int weightComp = p1.getCurrentWeight() - p2.getCurrentWeight();
                 int attemptsComp = p1.getLiftsCount() - p2.getLiftsCount();
 
+
                 int timestampComp = 0;
+                /**
                 if ((p1.getLiftsCount() > 0 && p1.getLiftsCount() < 3) && (p2.getLiftsCount() > 0 && p2.getLiftsCount() < 3)) {
                     if (p1.getLifts().get(0).getTimeLiftCompleted().isBefore(p2.getLifts().get(0).getTimeLiftCompleted())){
                         timestampComp = 1;
@@ -177,7 +179,7 @@ public abstract class Competition {
                         timestampComp = -1;
                     }
                 }
-
+                **/
                 long idComp = p1.getLifter().getId() - p2.getLifter().getId();
 
                 if (p1.liftsComplete() || p2.liftsComplete()) {
