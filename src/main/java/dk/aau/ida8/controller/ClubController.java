@@ -66,9 +66,10 @@ public class ClubController {
 
     @RequestMapping(value="club/lifter/save", method = RequestMethod.POST)
     public String saveUpdatedLifter(Lifter lifter) {
+        Club club = clubService.findByName(lifter.getClubName());
         lifterService.saveLifter(lifter);
 
-        return "redirect:/club/new-lifter";
+        return "redirect:/club/new-lifter?id=" + club.getId();
     }
 
 }
