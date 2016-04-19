@@ -1,7 +1,6 @@
 package dk.aau.ida8.controller;
 
 import dk.aau.ida8.model.Club;
-import dk.aau.ida8.model.Lift;
 import dk.aau.ida8.model.Lifter;
 import dk.aau.ida8.service.ClubService;
 import dk.aau.ida8.service.LifterService;
@@ -13,9 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Controller
 public class ClubController {
@@ -44,8 +41,12 @@ public class ClubController {
     }
 
     @RequestMapping(value="/club/save", method = RequestMethod.POST)
-    public String saveLifter(Lifter lifter) {
-        Lifter savedLifter = lifterService.saveLifter(lifter);
+    public String saveLifter(@RequestParam(value = "lifter-club-id", required = false, defaultValue = "1") Long id, Lifter lifter) {
+        Club currentClub = clubService.findOne(id);
+        lifter.setClub(currentClub);
+        currentClub.addLifter(lifter);
+        lifterService.saveLifter(lifter);
+
         return "redirect:/club/new-lifter";
     }
 
