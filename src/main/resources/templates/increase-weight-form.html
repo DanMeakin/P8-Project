@@ -5,14 +5,30 @@
     <title>Increase Weight</title>
 </head>
 <body>
-    <h3>Increase Weight</h3>
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Increase Weight</h4>
+    </div>
+    <div class="modal-body">
+
     <p th:text="${msg}"></p>
 
-    <form action="/competition/increase-weight/" method="post" th:object="${participant}" >
+    <form id="increase-weight-form" action="/competition/increase-weight/" method="post" th:object="${participant}" >
         <p th:text="'Participant: ' + *{fullName}"></p>
         <input type="hidden" th:field="*{id}" name="participantID"/>
         <p><input type="text" th:field="*{currentWeight}" /></p>
-        <input type="submit" value="Increase Weight" name="action"/>
     </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button id="increase-weight-submit" type="button" class="btn btn-primary">Save</button>
+    </div>
+</div>
+<script>
+    $( '#increase-weight-submit' ).click(function(event) {
+        $('#increase-weight-form').trigger('submit');
+    });
+</script>
 </body>
 </html>
