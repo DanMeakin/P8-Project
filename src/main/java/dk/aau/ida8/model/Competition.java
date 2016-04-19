@@ -160,7 +160,11 @@ public abstract class Competition {
             @Override
             public int compare(Participant p1, Participant p2) {
                 int weightComp = p1.getCurrentWeight() - p2.getCurrentWeight();
+                int attemptsComp = p1.getLiftsCount() - p2.getLiftsCount();
+                int timestampComp = 0;
                 long idComp = p1.getLifter().getId() - p2.getLifter().getId();
+
+
                 if (p1.liftsComplete() || p2.liftsComplete()) {
                     if (p1.liftsComplete()) {
                         return 1;
@@ -169,10 +173,24 @@ public abstract class Competition {
                     } else {
                         return 0;
                     }
-                } else if (weightComp == 0) {
-                    return (int) idComp;
                 } else {
-                    return weightComp;
+                    // Check for lowest weight
+                    if(weightComp == 0){
+                        // Check for lowest amount of attempts
+                        if(attemptsComp == 0){
+                            // Check for who had their first lift
+                            if(timestampComp == 0){
+                                // If no one had their first lift yet - lifter with lowest ID goes first
+                                return (int) idComp;
+                            } else {
+                                // Else - lifter who had their first lift first goes first
+                            }
+                        } else {
+                            return attemptsComp;
+                        }
+                    } else {
+                        return weightComp;
+                    }
                 }
             }
         });
