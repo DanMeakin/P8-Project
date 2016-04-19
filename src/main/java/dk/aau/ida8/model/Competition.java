@@ -164,7 +164,6 @@ public abstract class Competition {
                 int timestampComp = 0;
                 long idComp = p1.getLifter().getId() - p2.getLifter().getId();
 
-
                 if (p1.liftsComplete() || p2.liftsComplete()) {
                     if (p1.liftsComplete()) {
                         return 1;
