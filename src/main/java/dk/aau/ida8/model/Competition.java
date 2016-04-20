@@ -37,9 +37,9 @@ public abstract class Competition {
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Participant> participants;
 
-    private List<Group> groupList;
-
-    private Group currentGroup;
+    // group list variables. Marked as transient so as not to persist them in the database
+    private transient List<Group> groupList;
+    private transient Group currentGroup;
 
     private String competitionName;
     private CompetitionType competitionType;
