@@ -76,9 +76,19 @@
                  <span class="glyphicon glyphicon-option-vertical"></span>
               </button>
               <ul class="dropdown-menu">
-                <li><a href="#"
-                       data-toggle="modal" data-target="#competition-modal"
-                       class="increase-weight" th:id="'increase-weight-' + ${p.id}">Increase Weight</a></li>
+                <li th:switch="${p.canChangeWeight()}">
+                  <a th:case="true"
+                     href="#"
+                     data-toggle="modal" data-target="#competition-modal"
+                     class="increase-weight"
+                     th:id="'increase-weight-' + ${p.id}">Increase Weight</a>
+                  <a th:case="false"
+                     href="#"
+                     class="disabled"
+                     data-toggle="tooltip"
+                     data-placement="top"
+                     title="Participant has increased weight twice since previous lift."><s>Increase Weight</s></a>
+                </li>
                 <li><a href="#">Correct Weight</a></li>
                 <li role="separator" class="divider"></li>
                 <li><a href="#">Lifter Info</a></li>
@@ -101,6 +111,10 @@
       $.get(path, function(data) {
         $( "#competition-modal" ).html(data);
       });
+    });
+
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
     });
   });
 </script>
