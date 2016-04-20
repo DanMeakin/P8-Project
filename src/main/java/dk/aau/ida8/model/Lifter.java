@@ -23,7 +23,15 @@ public class Lifter {
      * Defines genders options for a Lifter.
      */
     public enum Gender {
-        MALE, FEMALE
+        MALE, FEMALE;
+
+        public String toString() {
+            switch(this) {
+                case MALE: return "M";
+                case FEMALE: return "F";
+                default: return "N/A";
+            }
+        }
     }
 
     @Id
@@ -32,6 +40,7 @@ public class Lifter {
 
     private String forename;
     private String surname;
+    private boolean active;
 
     @ManyToOne
     private Club club;
@@ -45,7 +54,7 @@ public class Lifter {
     private List<Participant> participants;
 
     public Lifter() {
-
+        this.active = true;
     }
 
     public Lifter(String forename, String surname, Club club, Gender gender, Date dateOfBirth, double bodyWeight) {
@@ -56,6 +65,7 @@ public class Lifter {
         this.dateOfBirth = dateOfBirth;
         this.bodyWeight = bodyWeight;
         this.participants = new ArrayList<>();
+        this.active = true;
     }
 
     /**
@@ -103,7 +113,13 @@ public class Lifter {
     }
 
     public void setClub(Club club) {
-        this.club = club;
+
+        if(club != null) {
+            this.club = club;
+        } else {
+            this.club = null;
+        }
+
     }
 
     public String getClubName() {
@@ -143,5 +159,13 @@ public class Lifter {
 
     public List<Participant> getParticipants() {
         return participants;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

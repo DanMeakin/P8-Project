@@ -1,5 +1,6 @@
 package dk.aau.ida8.controller;
 
+import com.google.gson.Gson;
 import dk.aau.ida8.model.*;
 import dk.aau.ida8.service.CompetitionService;
 import dk.aau.ida8.service.LiftService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.security.InvalidParameterException;
 import java.util.Date;
+import java.util.HashMap;
 
 @Controller
 @RequestMapping("/competition")
@@ -161,29 +163,35 @@ public class CompetitionController {
      *         correct lift form view with an error message if an invalid weight
      *         is passed
      */
+    @ResponseBody
     @RequestMapping(value = "/correct-lift", method = RequestMethod.POST)
     public String submitCorrectedLift(Model model,
                                       @RequestParam("id") long liftID,
                                       @RequestParam("weight") String weightStr) {
         Lift l = liftService.findOne(liftID);
         model.addAttribute("lift", l);
+        HashMap<String, String> map = new HashMap<>();
         try {
             int weight = Integer.parseInt(weightStr);
             l.setWeight(weight);
             liftService.saveLift(l);
-            return "correct-lift-form-result";
+            map.put("msg", "All good!");
+            map.put("code", "200");
         } catch (NumberFormatException e) {
             String msg = "unable to process input weight '" + weightStr +
                     "' (a number is required)";
-            model.addAttribute("msg", msg);
-            return "correct-lift-form";
+            map.put("msg", msg);
+            map.put("code", "400");
         } catch (InvalidParameterException e) {
             String msg = "unable to process input weight '" + weightStr +
                     "' (new weight must be 1kg or greater)";
-            model.addAttribute("msg", msg);
-            return "correct-lift-form";
+            map.put("msg", msg);
+            map.put("code", "400");
         }
+        Gson gson = new Gson();
+        return gson.toJson(map);
     }
+
 
     @RequestMapping(value = "/increase-weight/{participantID}", method = RequestMethod.GET)
     public String increaseWeightForm(Model model,
@@ -199,31 +207,39 @@ public class CompetitionController {
         return "increase-weight-form";
     }
 
+    @ResponseBody
     @RequestMapping(value = "/increase-weight", method = RequestMethod.POST)
     public String increaseWeight(Model model,
                                  @RequestParam("id") long participantID,
                                  @RequestParam("currentWeight") String weightStr) {
         Participant p = participantService.findOne(participantID);
         model.addAttribute("participant", p);
+        HashMap<String, String> map = new HashMap<>();
         try {
             int weight = Integer.parseInt(weightStr);
             p.increaseWeight(weight);
             participantService.saveParticipant(p);
+            map.put("msg","All good!");
+            map.put("code", "200");
         } catch (NumberFormatException e) {
             String msg = "unable to process input weight '" + weightStr +
                     "' (a number is required)";
-            model.addAttribute("msg", msg);
+            map.put("msg", msg);
+            map.put("code", "400");
         } catch (InvalidParameterException e) {
             String msg = "unable to process input weight '" + weightStr +
                     "' (new weight must be greater than previous weight)";
-            model.addAttribute("msg", msg);
+            map.put("msg", msg);
+            map.put("code", "400");
         } catch (UnsupportedOperationException e) {
             String msg = "unable to increase weight: this participant has " +
                     "already increased their lift weight twice since " +
                     "previous lift";
-            model.addAttribute("msg", msg);
+            map.put("msg", msg);
+            map.put("code", "400");
         }
-        return "increase-weight-form";
+        Gson gson = new Gson();
+        return gson.toJson(map);
     }
 
     @RequestMapping(value = "/participant-info/{participantID}", method = RequestMethod.GET)

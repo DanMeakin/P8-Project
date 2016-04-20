@@ -20,4 +20,9 @@ $(document).ready(function () {
         var value = $('#lifter-club :selected').val();
         $('#lifter-club-id').val(value);
     });
+
+    $('i .glyphicon-pencil').on('click', function() {
+        var id = $('i .glyphicon-pencil').closest('td .lifter-list-id').html();
+        $('.lifter-id').val(id);
+    });
 });

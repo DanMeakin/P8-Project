@@ -25,4 +25,12 @@ public class ClubService {
         return clubRepository.findOne(id);
     }
 
+    public Club findByName(String name) {
+        return clubRepository.findByName(name);
+    }
+
+    public Club saveClub(Club club) {
+        return clubRepository.save(club);
+    }
+
 }
