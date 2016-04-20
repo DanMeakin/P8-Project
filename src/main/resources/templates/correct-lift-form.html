@@ -1,19 +1,59 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="UTF-8" />
-    <title>Title</title>
-</head>
-<body>
-    <h3>Correct Lift Weight</h3>
-    <p th:text="${msg}"></p>
+<div class="row">
+    <div class="col-sm-4 col-sm-offset-4">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Correct Lifts</h4>
+            </div>
+            <div class="modal-body">
+                <p class="bg-danger" id="error-message" th:text="${msg}"></p>
 
-    <form action="/competition/correct-lift/" method="post" th:object="${lift}" >
-        <p th:text="'Lifter: ' + *{participant}"></p>
-        <p th:text="'Lift type: ' + *{liftType}"></p>
-        <input type="hidden" th:field="*{id}" name="liftID"/>
-        <p><input type="text" th:field="*{weight}" /></p>
-        <input type="submit" value="CORRECT" name="action"/>
-    </form>
-</body>
-</html>
+                <form id="correct-lift-form" class="form-horizontal"
+                      action="javascript:void(0);" method="post"
+                      th:object="${participant}">
+                    <input type="hidden" th:field="*{id}" name="participantID"/>
+                    <div class="form-group"
+                         th:each="i : ${#numbers.sequence(0, 5)}">
+                        <p class="col-sm-4 control-label"
+                               th:for="'lift-' + ${i}"
+                               th:text="${i &lt; 3}? 'Snatch #' + ${i+1} : 'Clean &amp; Jerk #' + ${i-2}"></p>
+                        <div class="col-sm-8">
+                            <input th:if="${participant.liftsCount &gt; i}"
+                                   class="form-control" th:id="'lift-' + ${i}"
+                                   th:name="'lift'"
+                                   type="text"
+                                   th:value="${participant.lifts.get(i).weight}"/>
+                            <input th:unless="${participant.liftsCount &gt; i}"
+                                   class="form-control" th:id="'lift-' + ${i}"
+                                   type="text" disabled="disabled" />
+                        </div>
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button id="correct-lifts-submit" type="button" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function submitRequest() {
+
+        $.post("/competition/correct-lifts/", $('#correct-lift-form').serialize(), function(data) {
+            console.log(data);
+            var response = $.parseJSON(data);
+            if(response.code == "200"){
+                console.log("trying to reload");
+                location.reload();
+            } else if(response.code == "400"){
+                console.log("error message");
+                $("#error-message").text("" + response.msg);
+            }
+        });
+    }
+
+    $( '#correct-lifts-submit' ).click(submitRequest);
+
+</script>

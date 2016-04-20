@@ -15,7 +15,7 @@
     <div class="col-md-4" th:include="fragments/lift-register-form :: register-lift" />
   </div>
 
-  <div class="col-md-12">
+  <div class="row">
     <table class="table table-hover table-competition">
       <thead>
         <tr>
@@ -89,7 +89,16 @@
                      data-placement="top"
                      title="Participant has increased weight twice since previous lift."><s>Increase Weight</s></a>
                 </li>
-                <li><a href="#">Correct Weight</a></li>
+                <li><a href="#"
+                       data-toggle="modal" data-target="#competition-modal"
+                       class="correct-weight"
+                       th:id="'correct-weight-' + ${p.id}">Correct Weight</a>
+                </li>
+                <li role="separator" class="divider"></li>
+                <li><a href="#"
+                       data-toggle="modal" data-target="#competition-modal"
+                       class="correct-lifts"
+                       th:id="'correct-lifts-' + ${p.id}">Correct Lifts</a></li>
                 <li role="separator" class="divider"></li>
                 <li><a href="#">Lifter Info</a></li>
               </ul>
@@ -105,7 +114,7 @@
 
 <script>
   $( document ).ready(function() {
-    $( ".increase-weight" ).click(function(event) {
+    $( ".increase-weight, .correct-weight, .correct-lifts" ).click(function(event) {
       var pathElems = event.target.id.split("-");
       var path = "/competition/" + pathElems[0] + "-" + pathElems[1] + "/" + pathElems[2];
       $.get(path, function(data) {
