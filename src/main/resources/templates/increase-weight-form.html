@@ -1,11 +1,3 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="UTF-8" />
-    <title>Increase Weight</title>
-</head>
-<body>
-
 <div class="row">
     <div class="col-md-4 col-md-offset-4">
 <div class="modal-content">
@@ -17,10 +9,14 @@
 
     <p class="bg-danger" id="error-message" th:text="${msg}"></p>
 
-    <form id="increase-weight-form" action="javascript:void(0);" method="post" th:object="${participant}" >
+    <form id="increase-weight-form" class="form-inline"
+          action="javascript:void(0);" method="post" th:object="${participant}" >
         <p th:text="'Participant: ' + *{fullName}"></p>
         <input type="hidden" th:field="*{id}" name="participantID"/>
-        <p><input class="form-control" id="weight-input" type="text" th:field="*{currentWeight}" /></p>
+        <div class="form-group">
+            <label for="weight-input">New Weight (kg):</label>
+            <input class="form-control" id="weight-input" type="text" th:field="*{currentWeight}" />
+        </div>
     </form>
     </div>
     <div class="modal-footer">
@@ -53,9 +49,4 @@
             submitRequest()
         }
     })
-
-
-
 </script>
-</body>
-</html>
