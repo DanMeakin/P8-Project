@@ -236,8 +236,8 @@ public class CompetitionTotalWeight extends Competition {
     }
 
     @Override
-    public List<Participant> calculateRankings() {
-        return null;
+    public void calculateRankings() {
+
     }
 
     @Override
@@ -247,7 +247,9 @@ public class CompetitionTotalWeight extends Competition {
      * @return the passed participant's rank
      */
     public int getRank(Participant participant){
-        return calculateRankings().indexOf(participant) + 1;
+        // TODO obsolete method. reimplement to instead provide a ranking based on yet-to-be-implemented ranking groups
+        return 1000;
+        //return calculateRankings().indexOf(participant) + 1;
     }
 
 }
