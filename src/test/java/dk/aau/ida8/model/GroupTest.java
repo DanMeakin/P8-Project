@@ -81,7 +81,8 @@ public class GroupTest {
     @Test
     public void groupTest() throws Exception {
 
-        Group group = competition.allocateGroups().get(0);
+        competition.allocateGroups();
+        Group group = competition.getGroupList().get(0);
 
         group.determineParticipationOrder();
         Participant p1 = group.determineParticipationOrder().get(0);
