@@ -37,7 +37,7 @@ public class CompetitionTotalWeight extends Competition {
      *
      */
     @Override
-    public List<Group> allocateGroups() {
+    public void allocateGroups() {
         List<Group> completeList = new ArrayList<>();
 
         // 1st step - divide by gender
@@ -69,8 +69,7 @@ public class CompetitionTotalWeight extends Competition {
             }
         }
 
-
-        return completeList;
+        setGroupList(completeList);
     }
 
     public void divideParticipantsByGender(List<Participant> list){

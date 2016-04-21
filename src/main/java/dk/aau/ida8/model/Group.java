@@ -10,9 +10,41 @@ public class Group {
 
     private List<Participant> participantList;
 
-
     public Group(List<Participant> participantList) {
         this.participantList = participantList;
+    }
+
+    public Lifter.Gender getGroupGender() {
+        return getParticipantList().get(0).getGender();
+    }
+
+    @Override
+    public String toString() {
+        return "Group: " + getNumberOfParticipants() + " " +
+                getParticipantList().get(0).getGender() + " participants";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Group) {
+            return equals((Group) o);
+        } else {
+            return false;
+        }
+    }
+
+    public boolean equals(Group g) {
+        if (this.getNumberOfParticipants() != g.getNumberOfParticipants()) {
+            return false;
+        } else {
+            this.determineParticipationOrder();
+            g.determineParticipationOrder();
+            if (this.getParticipantList().equals(g.getParticipantList())) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
     /**
