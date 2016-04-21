@@ -47,7 +47,7 @@ public class Lift {
     private LiftOutcome outcome;
     private LiftType liftType;
     private int weight;
-    private Instant timeLiftCompleted;
+    private transient Instant timeLiftCompleted;
 
     @ManyToOne
     private Participant participant;
