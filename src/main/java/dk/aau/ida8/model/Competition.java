@@ -177,7 +177,7 @@ public abstract class Competition {
      *
      * @return participants for this competition, ranked in order
      */
-    public abstract List<Participant> calculateRankings();
+    public abstract void calculateRankings();
 
     public String getCompetitionName() {
         return competitionName;
@@ -266,7 +266,9 @@ public abstract class Competition {
      * @return the passed participant's rank
      */
     public int getRank(Participant participant){
-        return calculateRankings().indexOf(participant) + 1;
+        // TODO obsolete method. reimplement to instead provide a ranking based on yet-to-be-implemented ranking groups
+        return 10000;
+        //return calculateRankings().indexOf(participant) + 1;
     }
 
 }

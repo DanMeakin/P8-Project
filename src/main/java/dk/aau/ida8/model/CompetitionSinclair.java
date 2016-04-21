@@ -8,8 +8,11 @@ import java.util.stream.Collectors;
 @Entity
 public class CompetitionSinclair extends Competition {
 
+    private transient List<Group> winnerGroups;
+
     public CompetitionSinclair(String competitionName, Club host, Address location, CompetitionType competitionType, Date date, Date lastRegistrationDate, int maxNumParticipants){
-            super(competitionName, host, location, competitionType, date, lastRegistrationDate, maxNumParticipants);
+        super(competitionName, host, location, competitionType, date, lastRegistrationDate, maxNumParticipants);
+        winnerGroups = new ArrayList<>();
     }
 
     public CompetitionSinclair() {
@@ -79,9 +82,27 @@ public class CompetitionSinclair extends Competition {
      * @return participants for this competition, ranked in order
      */
     @Override
-    public List<Participant> calculateRankings() {
-        return getParticipants().stream()
-                .sorted((p1, p2) -> (int) Math.round(p2.getSinclairScore() - p1.getSinclairScore()))
+    public void calculateRankings() {
+        List<Participant> listOfAllParticipants = getParticipants();
+
+        List<Group> combinedListOfWinners = new ArrayList<>();
+
+        List<Participant> groupsMen = splitListByGender(listOfAllParticipants, Lifter.Gender.MALE);
+        List<Participant> groupsWomen = splitListByGender(listOfAllParticipants, Lifter.Gender.FEMALE);
+
+        combinedListOfWinners.add(Group.createGroup(
+                sortListBasedOnSinclairScore(groupsWomen)
+        ));
+        combinedListOfWinners.add(Group.createGroup(
+                sortListBasedOnSinclairScore(groupsMen)
+        ));
+
+        winnerGroups = combinedListOfWinners;
+    }
+
+    private List<Participant> sortListBasedOnSinclairScore(List<Participant> list){
+        return list.stream()
+                .sorted((p1,p2) -> (int) Math.round(p2.getSinclairScore() - p1.getSinclairScore()))
                 .collect(Collectors.toList());
     }
 
@@ -91,6 +112,8 @@ public class CompetitionSinclair extends Competition {
      * @return the passed participant's rank
      */
     public int getRank(Participant participant){
-        return calculateRankings().indexOf(participant) + 1;
+        // TODO obsolete method. reimplement to instead provide a ranking based on yet-to-be-implemented ranking groups
+        return 1000;
+        //return calculateRankings().indexOf(participant) + 1;
     }
 }

@@ -79,7 +79,7 @@ public class GroupTest {
     }
 
     @Test
-    public void groupTest() throws Exception {
+    public void determineOrderOnSortByStartingWeight() throws Exception {
 
         competition.allocateGroups();
         Group group = competition.getGroupList().get(0);

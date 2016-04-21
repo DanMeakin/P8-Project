@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorator="layouts/main">
+<head>
+    <title>Weightlifting Management System</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Competition details</h1>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <table class="table table-striped table-hover">
+            <tbody>
+            <tr>
+                <td>Club name</td>
+                <td>AK Jyden</td>
+            </tr>
+            <tr>
+                <td>Address</td>
+                <td>Skydebanevej 12</td>
+            </tr>
+            <tr>
+                <td>Date</td>
+                <td>01-01-2015</td>
+            </tr>
+            <tr>
+                <td>Registration date</td>
+                <td>01-01-2015</td>
+            </tr>
+            <tr>
+                <td>No. participants</td>
+                <td>13/50</td>
+            </tr>
+            <tr>
+                <td>Type</td>
+                <td>Sinclair</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+                <th>Start no.</th>
+                <th>Name</th>
+                <th>Club</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="p : ${participants}">
+                <td th:text="${p.startNumber}">1</td>
+                <td th:text="${p.forename}">Lotte</td>
+                <td>AK Jyden</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-md-6">
+        <form th:action="|@{/competition/}${competition.id}/signup|" method="GET">
+            <div class="form-group">
+                <label>Select club</label>
+                <select class="form-control" id="list-clubs">
+                    <option th:each="club : ${clubs}"
+                            th:value="${club.id}"
+                            th:text="${club.name}">AK Jyden</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="hidden" name="id" id="list-clubs-id" value="" />
+            </div>
+            <input type="submit" value="Submit" id="list-clubs-submit" class="btn btn-default pull-right" />
+        </form>
+        <table class="table table-hover table-striped">
+            <thead>
+            <tr>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Gender</th>
+                <th>Date of Birth</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="lifter : ${lifters}">
+                <td th:text="${lifter.forename}">Name</td>
+                <td th:text="${lifter.surname}"></td>
+                <td th:text="${lifter.Gender}">gender</td>
+                <td th:text="${#calendars.format(lifter.dateOfBirth, 'dd-MM-yyyy')}">01-01-2010</td>
+                <td>
+                    <form th:action="|@{/competition/}${competition.id}/signup?id=${lifter.id}|" method="POST"><input type="submit" value="+" /></form></td>
+                <td class="lifter-id" style="visibility: hidden;" th:text="${lifter.id}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>

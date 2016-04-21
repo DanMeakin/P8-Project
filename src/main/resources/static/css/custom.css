@@ -107,3 +107,7 @@ td.current-edit {
 table.table-competition {
   margin-top: 40px;
 }
+
+.label a {
+    color: white;
+}
