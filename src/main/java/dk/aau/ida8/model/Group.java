@@ -1,27 +1,45 @@
 package dk.aau.ida8.model;
 
 
-import java.util.Arrays;
+import dk.aau.ida8.model.groupComparators.CompetingComparator;
+import dk.aau.ida8.model.groupComparators.SinclairRankingComparator;
+import dk.aau.ida8.model.groupComparators.TotalWeightRankingComparator;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 public class Group {
 
-    private List<Participant> participantList;
+    private List<Participant> participants;
+    private Comparator<Participant> groupComparator;
 
-    public Group(List<Participant> participantList) {
-        this.participantList = participantList;
+    public Group competingGroup(List<Participant> participants) {
+        return new Group(participants, new CompetingComparator());
+    }
+
+    public Group sinclairRankingGroup(List<Participant> participants) {
+        return new Group(participants, new SinclairRankingComparator());
+    }
+
+    public Group totalWeightRankingGroup(List<Participant> participants) {
+        return new Group(participants, new TotalWeightRankingComparator());
+    }
+
+    private Group(List<Participant> participants,
+                 Comparator<Participant> comparator) {
+        this.participants = participants;
+        this.groupComparator = comparator;
     }
 
     public Lifter.Gender getGroupGender() {
-        return getParticipantList().get(0).getGender();
+        return getParticipants().get(0).getGender();
     }
 
     @Override
     public String toString() {
-        return "Group: " + getNumberOfParticipants() + " " +
-                getParticipantList().get(0).getGender() + " participants";
+        return "Group: " + getParticipantsCount() + " " +
+                getParticipants().get(0).getGender() + " participants";
     }
 
     @Override
@@ -34,17 +52,25 @@ public class Group {
     }
 
     public boolean equals(Group g) {
-        if (this.getNumberOfParticipants() != g.getNumberOfParticipants()) {
+        if (this.getParticipantsCount() != g.getParticipantsCount()) {
             return false;
         } else {
-            this.determineParticipationOrder();
-            g.determineParticipationOrder();
-            if (this.getParticipantList().equals(g.getParticipantList())) {
+            this.sortParticipants();
+            g.sortParticipants();
+            if (this.getParticipants().equals(g.getParticipants())) {
                 return true;
             } else {
                 return false;
             }
         }
+    }
+
+    public List<Participant> getParticipants() {
+        return participants;
+    }
+
+    public int getParticipantsCount() {
+        return participants.size();
     }
 
     /**
@@ -54,72 +80,12 @@ public class Group {
      * participant has chosen the lowest weight to lift. If two or more lifters
      * are to be lifting the same weight, the next participant is determined
      * by taking the lowest of these lifters' ID#.
-     *
-     * @return sorted list of participants
      */
-    public List<Participant> determineParticipationOrder() {
-        Collections.sort(participantList, new Comparator<Participant>() {
-            @Override
-            public int compare(Participant p1, Participant p2) {
-                int completionComp = 0;
-                int weightComp = p1.getCurrentWeight() - p2.getCurrentWeight();
-                int attemptsComp = p1.getLiftsCount() - p2.getLiftsCount();
-
-                int timestampComp = 0;
-                if (p1.getLiftsCount() > 0 && p2.getLiftsCount() > 0) {
-                    if ((p1.getLiftsCount() < 3) && (p2.getLiftsCount() < 3)) {
-                        if (p1.getLifts().get(0).getTimeLiftCompleted().isBefore(p2.getLifts().get(0).getTimeLiftCompleted())) {
-                            timestampComp = 1;
-                        } else {
-                            timestampComp = -1;
-                        }
-                    } else if (p1.getLiftsCount() > 3 && p2.getLiftsCount() > 3) {
-                        if (p1.getLifts().get(3).getTimeLiftCompleted().isBefore(p2.getLifts().get(3).getTimeLiftCompleted())) {
-                            timestampComp = 1;
-                        } else {
-                            timestampComp = -1;
-                        }
-                    }
-                }
-
-                long idComp = p1.getLifter().getId() - p2.getLifter().getId();
-
-                if (p1.liftsComplete() || p2.liftsComplete()) {
-                    if (p1.liftsComplete()) {
-                        completionComp = 1;
-                    } else if (p2.liftsComplete()) {
-                        completionComp = -1;
-                    }
-                }
-
-                List<Integer> comparators = Arrays.asList(
-                        completionComp,
-                        weightComp,
-                        attemptsComp,
-                        timestampComp,
-                        (int) idComp
-                );
-                for (Integer comparatorValue : comparators) {
-                    if (comparatorValue != 0) {
-                        return comparatorValue;
-                    }
-                }
-                return 0;
-            }
-        });
-        return participantList;
+    public void sortParticipants() {
+        Collections.sort(getParticipants(), getGroupComparator());
     }
 
-
-    public List<Participant> getParticipantList() {
-        return participantList;
-    }
-
-    public int getNumberOfParticipants () {
-        return participantList.size();
-    }
-
-    public static Group createGroup(List<Participant> participantList) {
-        return new Group(participantList);
+    public Comparator<Participant> getGroupComparator() {
+        return groupComparator;
     }
 }
