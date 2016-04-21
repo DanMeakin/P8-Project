@@ -12,6 +12,10 @@ import java.util.*;
 @Entity
 public class CompetitionTotalWeight extends Competition {
 
+    public enum WEIGHTCLASS {
+        WEIGHTCLASS1, WEIGHTCLASS2, WEIGHTCLASS3, WEIGHTCLASS4, WEIGHTCLASS5, WEIGHTCLASS6, WEIGHTCLASS7, WEIGHTCLASS8
+    }
+
     private double[] weightClassesMen = {56, 62, 69, 77, 85, 94, 105};
     private double[] weightClassesWomen = {48, 53, 58, 63, 69, 75};
 
@@ -20,6 +24,8 @@ public class CompetitionTotalWeight extends Competition {
 
     @Transient
     private List<Participant> groupsWomen;
+
+    private List<Group> rankedGroups;
 
     public CompetitionTotalWeight() {
 
@@ -30,6 +36,7 @@ public class CompetitionTotalWeight extends Competition {
         super(competitionName, host, location, competitionType, date, lastRegistrationDate, maxNumParticipants);
         this.groupsMen = new ArrayList<>();
         this.groupsWomen = new ArrayList<>();
+        this.rankedGroups = new ArrayList<>();
     }
 
     /**
@@ -68,7 +75,6 @@ public class CompetitionTotalWeight extends Competition {
                 }
             }
         }
-
 
         return completeList;
     }
@@ -120,14 +126,6 @@ public class CompetitionTotalWeight extends Competition {
                 // Throw exception
         }
 
-        System.out.println();
-        for(List<Participant> l : sortedList){
-            //System.out.println("List object: " + l + " contains:");
-            for(Participant p : l){
-                //System.out.println("Participant gender: " + p.getGender() + " and weight: " + p.getBodyWeight());
-            }
-        }
-        System.out.println();
         return sortedList;
     }
 
@@ -168,36 +166,6 @@ public class CompetitionTotalWeight extends Competition {
         Collections.sort(list, (p1, p2) -> (int) p1.getBodyWeight() - (int) p2.getBodyWeight());
         return list;
     }
-/*
-    private List<List<Participant>> createSubgroups(ArrayList<Participant> listOfParticipants) {
-        // The list to be populated and returned
-        List<List<Participant>> list = new ArrayList<>();
-
-        // Sorted list
-        ArrayList<Participant> sortedList = sortList(listOfParticipants);
-
-        int j = 0;
-
-        // For every tenth participant, a new list is made so that every list will contain a max of
-        // ten participants.
-        for (int i = 1; i < sortedList.size(); i++){
-            if (i % 10 == 0) {
-                j = i;
-                list.add(sortedList
-                        .subList(i-10, i)
-                );
-            }
-        }
-        // The remaining participants are allocated to a list
-
-        // Check if possible to create a list
-        if((j - sortedList.size() - 1) > 0) {
-            list.add(sortedList
-                    .subList(j, sortedList.size()));
-        }
-
-        return list;
-    }*/
 
     /**
      * Splits a supplied list into a list of lists corresponding to subgroups of the total number of participants
@@ -213,12 +181,12 @@ public class CompetitionTotalWeight extends Competition {
 
         if (totalSizeOfList <= 10) {
             // if under 10 participants, just add to the list
-            finalList.add(Group.createGroup(list));
+            finalList.add(new Group(list));
             return finalList;
         } else {
             // add participants in groups of 10
             for (int i = 0; i < totalSizeOfList - remainder; i = i + chunk) {
-                finalList.add(Group.createGroup((list.subList(
+                finalList.add(new Group((list.subList(
                         i, i + chunk
                 ))));
             }
@@ -226,7 +194,7 @@ public class CompetitionTotalWeight extends Competition {
             // check if there is a remainder. If there is, add the missing participants
             if (remainder > 0) {
                 // add the remaining participants
-                finalList.add(Group.createGroup(list.subList(
+                finalList.add(new Group(list.subList(
                         (totalSizeOfList - remainder), totalSizeOfList
                 )));
             }
@@ -236,8 +204,70 @@ public class CompetitionTotalWeight extends Competition {
     }
 
     @Override
-    public List<Participant> calculateRankings() {
-        return null;
+    public void calculateRankings() {
+        List<Group> allGroups = getGroupList();
+
+        List<Group> tempMenGroups = getGenderSortedGroup(allGroups, Lifter.Gender.MALE);
+        List<Group> tempWomenGroups = getGenderSortedGroup(allGroups, Lifter.Gender.FEMALE);
+
+        List<Group> tempSortedMenGroups = sortGroupsByWeightclass(tempMenGroups, Lifter.Gender.MALE);
+        List<Group> tempSortedWomenGroups = sortGroupsByWeightclass(tempWomenGroups, Lifter.Gender.FEMALE);
+
+        List<Group> rankedGroupList = new ArrayList<>();
+        moveGroupsToRankedList(rankedGroupList, tempSortedMenGroups);
+        moveGroupsToRankedList(rankedGroupList, tempSortedWomenGroups);
+
+        this.rankedGroups = rankedGroupList;
+    }
+
+    private List<Group> sortGroupsByWeightclass(List<Group> allGroups, Lifter.Gender gender){
+        List<Group> weightclassGroups = createWeightclassGroups(gender);
+        allocateParticipantsToWeightclassGroups(allGroups, weightclassGroups);
+
+        return weightclassGroups;
+    }
+
+    private void moveGroupsToRankedList(List<Group> rankedGroupList, List<Group> rankedGenderGroups){
+        for(Group subGroup : rankedGenderGroups){
+            if(subGroup.getParticipantList().size() > 0) {
+                rankedGroupList.add(subGroup);
+            }
+        }
+    }
+
+    private void allocateParticipantsToWeightclassGroups(List<Group> allGroups, List<Group> weightclassGroups){
+        for(Group subGroup : allGroups){
+            for(Group weightclass : weightclassGroups) {
+                if (subGroup.getWeightClass().equals(weightclass.getWeightClass())) {
+                    addParticipantToWeightclassGroup(subGroup, weightclass);
+                }
+            }
+        }
+    }
+
+    private void addParticipantToWeightclassGroup(Group competitiongroup, Group weightclassgroup){
+        for(Participant p : competitiongroup.getParticipantList()){
+            weightclassgroup.addParticipant(p);
+        }
+    }
+
+    private List<Group> createWeightclassGroups(Lifter.Gender gender){
+        List<Group> weightClassGroups = new ArrayList<>();
+            for(WEIGHTCLASS w : WEIGHTCLASS.values()){
+                weightClassGroups.add(new Group(gender, w));
+            }
+        return weightClassGroups;
+    }
+
+    private List<Group> getGenderSortedGroup(List<Group> allGroups, Lifter.Gender gender){
+        List<Group> genderSortedGroups = new ArrayList<>();
+        for(Group g : allGroups){
+            if(g.getGenderOfGroup().equals(gender)){
+                genderSortedGroups.add(g);
+            }
+        }
+
+        return genderSortedGroups;
     }
 
     @Override

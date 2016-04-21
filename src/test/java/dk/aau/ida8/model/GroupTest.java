@@ -53,7 +53,6 @@ public class GroupTest {
             competition.addParticipant(lifter, listOfStartingWeights[i]);
 
             expectedParticipantList.add(competition.selectParticipationByLifter(lifter));
-
         }
 
         Collections.sort(expectedParticipantList, (p1, p2) -> p1.getStartingWeight() - p2.getStartingWeight());

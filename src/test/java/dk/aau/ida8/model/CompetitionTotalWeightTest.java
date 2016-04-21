@@ -159,30 +159,7 @@ public class CompetitionTotalWeightTest {
     }
 
     @Test
-    public void createSubGroupsTest() throws Exception {
-
-        /*
-
-
-        //List<List<Participant>> completeList = competition.createSubgroups((ArrayList<Participant>) listOfParticipants);
-
-        //System.out.println(completeList.get(1).get(0).getBodyWeight());
-
-        List<List<Participant>> completeList = competition.allocateGroups();
-        System.out.println("The size of the completeList is " + completeList.size());
-        for(List<Participant> lp : completeList) {
-            System.out.println("This is a sublist: ");
-            for(Participant p : lp) {
-                System.out.println("Participants weight: "+ p.getBodyWeight() + " and gender: " +p.getGender());
-            }
-        }
-
-        //assertEquals(checkList.get(1), completeList.get(1));
-
-        assertEquals(mixedList, completeList);
-
-        */
-
+    public void sortWeightclassesTest() throws Exception {
 
     }
 

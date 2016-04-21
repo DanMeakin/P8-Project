@@ -10,9 +10,16 @@ public class Group {
 
     private List<Participant> participantList;
 
+    private Lifter.Gender genderOfGroup;
+    private CompetitionTotalWeight.WEIGHTCLASS weightClass;
 
     public Group(List<Participant> participantList) {
         this.participantList = participantList;
+    }
+
+    public Group(Lifter.Gender gender, CompetitionTotalWeight.WEIGHTCLASS WEIGHTCLASS){
+        this.genderOfGroup = gender;
+        this.weightClass = WEIGHTCLASS;
     }
 
     /**
@@ -32,8 +39,8 @@ public class Group {
                 int completionComp = 0;
                 int weightComp = p1.getCurrentWeight() - p2.getCurrentWeight();
                 int attemptsComp = p1.getLiftsCount() - p2.getLiftsCount();
-
                 int timestampComp = 0;
+
                 if (p1.getLiftsCount() > 0 && p2.getLiftsCount() > 0) {
                     if ((p1.getLiftsCount() < 3) && (p2.getLiftsCount() < 3)) {
                         if (p1.getLifts().get(0).getTimeLiftCompleted().isBefore(p2.getLifts().get(0).getTimeLiftCompleted())) {
@@ -78,6 +85,25 @@ public class Group {
         return participantList;
     }
 
+    public void addParticipant(Participant p){
+        this.getParticipantList().add(p);
+    }
+
+    public Lifter.Gender getGenderOfGroup() {
+        return genderOfGroup;
+    }
+
+    public void setGenderOfGroup(Lifter.Gender genderOfGroup) {
+        this.genderOfGroup = genderOfGroup;
+    }
+
+    public CompetitionTotalWeight.WEIGHTCLASS getWeightClass() {
+        return weightClass;
+    }
+
+    public void setWeightClass(CompetitionTotalWeight.WEIGHTCLASS weightClass) {
+        this.weightClass = weightClass;
+    }
 
     public List<Participant> getParticipantList() {
         return participantList;
@@ -87,7 +113,4 @@ public class Group {
         return participantList.size();
     }
 
-    public static Group createGroup(List<Participant> participantList) {
-        return new Group(participantList);
-    }
 }
