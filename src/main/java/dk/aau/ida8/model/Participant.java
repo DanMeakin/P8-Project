@@ -9,6 +9,7 @@ import java.security.InvalidParameterException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 /**
@@ -50,6 +51,8 @@ public class Participant {
 
     private int currentWeight;
 
+    private int startNumber;
+
     /**
      * This integer tracks the weight previously selected by the lifter. This
      * is used where it is necessary to revert to the previously selected
@@ -88,6 +91,7 @@ public class Participant {
         this.currentWeight = startingWeight;
         this.previousWeight = startingWeight;
         this.lifts = new ArrayList<>();
+        this.startNumber = ThreadLocalRandom.current().nextInt(1, competition.getMaxNumParticipants() + 1);
     }
 
     public Lifter getLifter() {
@@ -580,5 +584,13 @@ public class Participant {
      */
     public double getSinclairScore(){
         return new SinclairCalculator().apply(this);
+    }
+
+    public int getStartNumber() {
+        return startNumber;
+    }
+
+    public void setStartNumber(int startNumber) {
+        this.startNumber = startNumber;
     }
 }

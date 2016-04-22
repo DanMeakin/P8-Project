@@ -2,12 +2,11 @@ package dk.aau.ida8.controller;
 
 import com.google.gson.Gson;
 import dk.aau.ida8.model.*;
-import dk.aau.ida8.service.CompetitionService;
-import dk.aau.ida8.service.LiftService;
-import dk.aau.ida8.service.LifterService;
-import dk.aau.ida8.service.ParticipantService;
+import dk.aau.ida8.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,13 +26,15 @@ public class CompetitionController {
     private LifterService lifterService;
     private ParticipantService participantService;
     private LiftService liftService;
+    private ClubService clubService;
 
     @Autowired
-    public CompetitionController(LiftService liftService,LifterService lifterService, CompetitionService competitionService, ParticipantService participantService) {
+    public CompetitionController(LiftService liftService,LifterService lifterService, CompetitionService competitionService, ParticipantService participantService, ClubService clubService) {
         this.liftService = liftService;
         this.lifterService = lifterService;
         this.competitionService = competitionService;
         this.participantService = participantService;
+        this.clubService = clubService;
     }
 
     /**
@@ -107,6 +108,27 @@ public class CompetitionController {
         model.addAttribute("participants", competition.getParticipants());
         model.addAttribute("participant", competition.currentParticipant());
         return "competition";
+    }
+
+    @RequestMapping("/{competitionID}/signup")
+    public String competitionSignup(@RequestParam(value = "id", required = false, defaultValue = "1") Long id, Model model, @PathVariable long competitionID) {
+        Competition competition = competitionService.findOne(competitionID);
+        Club currentClub = clubService.findOne(id);
+
+        model.addAttribute("competition", competition);
+        model.addAttribute("participants", competition.getParticipants());
+        model.addAttribute("clubs", clubService.findAll());
+        model.addAttribute("lifters", currentClub.getLifters());
+        return "competition-signup";
+    }
+
+    @RequestMapping(value = "/{competitionID}/signup", method = RequestMethod.POST)
+    public String signupLifterToCompetition(@RequestParam(value = "id", required = false) Long id, @PathVariable long competitionID) {
+        Competition competition = competitionService.findOne(competitionID);
+        Lifter lifter = lifterService.findOne(id);
+        competition.addParticipant(lifter, 0);
+        competitionService.save(competition);
+        return "redirect:/competition/" + competition.getId() + "/signup";
     }
 
     /**

@@ -102,6 +102,15 @@ public abstract class Competition {
      */
     public void addParticipant(Lifter lifter, int startingWeight){
         Participant p = new Participant(lifter, this, startingWeight);
+        addParticipant(p);
+    }
+
+    /**
+     * Adds a new participant to the competition.
+     *
+     * @param p the participant to add to the competition
+     */
+    public void addParticipant(Participant p) {
         participants.add(p);
     }
 
@@ -138,7 +147,7 @@ public abstract class Competition {
         return ps.get(0);
     }
 
-    public abstract List<Group> allocateGroups();
+    public abstract void allocateGroups();
 
     /**
      * Finds the participant who is to carry out a lift next.
@@ -168,7 +177,7 @@ public abstract class Competition {
      *
      * @return participants for this competition, ranked in order
      */
-    public abstract List<Participant> calculateRankings();
+    public abstract void calculateRankings();
 
     public String getCompetitionName() {
         return competitionName;
@@ -222,7 +231,7 @@ public abstract class Competition {
         return groupList;
     }
 
-    public void setGroupList(List<Group> groupList) {
+    protected void setGroupList(List<Group> groupList) {
         this.groupList = groupList;
     }
 
@@ -257,7 +266,9 @@ public abstract class Competition {
      * @return the passed participant's rank
      */
     public int getRank(Participant participant){
-        return calculateRankings().indexOf(participant) + 1;
+        // TODO obsolete method. reimplement to instead provide a ranking based on yet-to-be-implemented ranking groups
+        return 10000;
+        //return calculateRankings().indexOf(participant) + 1;
     }
 
 }

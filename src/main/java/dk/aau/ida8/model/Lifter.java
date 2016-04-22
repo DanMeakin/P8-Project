@@ -168,4 +168,9 @@ public class Lifter {
     public void setActive(boolean active) {
         this.active = active;
     }
+
+    @Override
+    public String toString() {
+        return forename;
+    }
 }

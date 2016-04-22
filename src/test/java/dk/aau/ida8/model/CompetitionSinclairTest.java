@@ -1,14 +1,12 @@
 package dk.aau.ida8.model;
 
+import org.hibernate.metamodel.relational.Tuple;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
@@ -26,7 +24,14 @@ public class CompetitionSinclairTest {
     private static Lifter lifter;
     private static Club club;
     private static Address address;
+
+    // Values used to create Competition.
     private static Competition competition;
+    private static Date competitionDate;
+    private static Date lastSignUpDate;
+    private static int maxParticipants;
+    private static List<Participant> maleParticipants;
+    private static List<Participant> femaleParticipants;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -35,9 +40,90 @@ public class CompetitionSinclairTest {
         club = mock(Club.class);
         address = mock(Address.class);
 
+        competitionDate = new GregorianCalendar(2016, 6, 1).getTime();
+        lastSignUpDate = new GregorianCalendar(2016, 5, 1).getTime();
+        maxParticipants = 50;
+
         // instantiate the class under test
         competition = new CompetitionSinclair(
-                "lol", club, address, Competition.CompetitionType.SINCLAIR, new Date(), new Date(), 50
+                "Test Sinclair",
+                club,
+                address,
+                Competition.CompetitionType.SINCLAIR,
+                competitionDate,
+                lastSignUpDate,
+                maxParticipants
+        );
+
+        List<Integer> snatchWeights = Arrays.asList(
+                50,
+                50,
+                55,
+                60,
+                62,
+                66,
+                67,
+                67,
+                71,
+                72,
+                75,
+                79,
+                81,
+                85,
+                86,
+                90,
+                90,
+                90,
+                95,
+                95,
+                100,
+                100,
+                110,
+                110,
+                112,
+                113,
+                115,
+                119,
+                120,
+                120,
+                121,
+                130,
+                140,
+                160,
+                161,
+                190,
+                200,
+                250,
+                300,
+                1000
+        );
+        Collections.shuffle(snatchWeights);
+
+        maleParticipants = new ArrayList<>();
+        femaleParticipants = new ArrayList<>();
+
+        for (int i = 0; i < 40; i++) {
+            Participant p = mock(Participant.class);
+            Lifter l = mock(Lifter.class);
+            when(l.getId()).thenReturn((long) i);
+            when(p.getCurrentWeight()).thenReturn(snatchWeights.get(i));
+            when(p.getLifter()).thenReturn(l);
+            // Create 30 male lifters
+            if (i < 30) {
+                when(p.getGender()).thenReturn(Lifter.Gender.MALE);
+                maleParticipants.add(p);
+            // and create 10 female lifters
+            } else {
+                when(p.getGender()).thenReturn(Lifter.Gender.FEMALE);
+                femaleParticipants.add(p);
+            }
+            competition.addParticipant(p);
+        }
+
+        // Sort by starting weight
+        Collections.sort(
+                maleParticipants,
+                (p1, p2) -> p1.getStartingWeight() - p2.getStartingWeight()
         );
 
 
@@ -47,6 +133,7 @@ public class CompetitionSinclairTest {
 
          *************************************/
 
+        /*
         // initialize the list of expected results
         ExpectedList = new ArrayList<>();
         ExpectedList.add(new ArrayList<>());
@@ -107,6 +194,7 @@ public class CompetitionSinclairTest {
         Participant lastParticipantMale = thirdExpectedList.get(lastIndexOfFirstListMale);
         thirdExpectedList.remove(lastParticipantMale);
         fourthExpectedList.add(lastParticipantMale);
+        */
     }
 
 
@@ -212,35 +300,22 @@ public class CompetitionSinclairTest {
 
     }
 
+    /**
+     * Tests the allocateGroups method on the CompetitionSinclair class.
+     */
     @Test
     public void testAllocateGroups() throws Exception {
-
-        /*
-
-        // split the expected lists up
-        List<Participant> firstExpectedList = ExpectedList.get(0);
-        List<Participant> secondExpectedList = ExpectedList.get(1);
-        List<Participant> thirdExpectedList = ExpectedList.get(2);
-        List<Participant> fourthExpectedList = ExpectedList.get(3);
-
-        // get the actual list
-        List<Group> actualList = competition.allocateGroups();
-
-        // split up the actual list
-        List<Participant> firstSimpleActualList = actualList.get(0);
-        List<Participant> secondSimpleActualList = actualList.get(1);
-        List<Participant> thirdSimpleActualList = actualList.get(2);
-        List<Participant> fourthSimpleActualList = actualList.get(3);
-
-        assertEquals(firstExpectedList, firstSimpleActualList);
-        assertEquals(secondExpectedList, secondSimpleActualList);
-        assertEquals(thirdExpectedList, thirdSimpleActualList);
-        assertEquals(fourthExpectedList, fourthSimpleActualList);
-
-        // it actually works comparing nested lists!!!
-        assertEquals(ExpectedList, actualList);
-
-        */
+        List<Group> expectedGs = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            expectedGs.add(new Group(maleParticipants.subList(i*10, (i+1)*10)));
+        }
+        expectedGs.add(new Group(femaleParticipants));
+        competition.allocateGroups();
+        List<Group> actualGs = competition.getGroupList();
+        assertTrue(
+                expectedGs.containsAll(actualGs) &&
+                actualGs.containsAll(expectedGs)
+        );
     }
 
     @Test

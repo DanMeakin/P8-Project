@@ -8,18 +8,29 @@ import java.util.stream.Collectors;
 @Entity
 public class CompetitionSinclair extends Competition {
 
+    private transient List<Group> winnerGroups;
+
     public CompetitionSinclair(String competitionName, Club host, Address location, CompetitionType competitionType, Date date, Date lastRegistrationDate, int maxNumParticipants){
-            super(competitionName, host, location, competitionType, date, lastRegistrationDate, maxNumParticipants);
+        super(competitionName, host, location, competitionType, date, lastRegistrationDate, maxNumParticipants);
+        winnerGroups = new ArrayList<>();
     }
 
     public CompetitionSinclair() {
     }
 
+    /**
+     * Allocates groupings for a particular Sinclair competition.
+     *
+     * The Sinclair competition requires participants to be split into groups
+     * based on gender and the participant's chosen snatch starting weight.
+     *
+     * Each group consists of, at most, ten participants. Each group will only
+     * contain lifters of one gender.
+     */
     @Override
-    public List<Group> allocateGroups() {
+    public void allocateGroups() {
         List<Participant> bigList = getParticipants();
-        List<Group> subGroupsMen;
-        List<Group> subGroupsWomen;
+        List<Group> subGroups;
 
         // sort the big list based on snatch starting weight
         Collections.sort(bigList, (p1,p2) -> p1.getStartingWeight() - p2.getStartingWeight());
@@ -29,57 +40,31 @@ public class CompetitionSinclair extends Competition {
         List<Participant> listFemale = splitListByGender(bigList, Lifter.Gender.FEMALE);
 
         // make a list of lists where subgroups can be added
-        subGroupsMen = splitListIntoSubGroups(listMale);
-        subGroupsWomen = splitListIntoSubGroups(listFemale);
-
-        // the final list that is to be returned, which is a list concatenated with female and male groups
-        List<Group> returnList = new ArrayList<>();
-
-        for (Group subGroupWomen : subGroupsWomen) {
-            returnList.add(subGroupWomen);
-        }
-
-        for (Group subGroupMen : subGroupsMen) {
-            returnList.add(subGroupMen);
-        }
-
-        return returnList;
+        subGroups = splitListIntoSubGroups(listMale);
+        subGroups.addAll(splitListIntoSubGroups(listFemale));
+        setGroupList(subGroups);
     }
 
     /**
-     * Splits a supplied list into a list of lists corresponding to subgroups of the total number of participants
-     * in the competition.
+     * Splits a supplied list into a list of lists corresponding to sub-groups
+     * of the total number of participants in the competition.
+     *
+     * Each sub-group cannot include more than 10 participants.
+     *
      * @param list Takes a list of participants of one or the other gender.
-     * @return List of lists of participants reflecting subgroups of the competition
+     * @return List of lists of participants reflecting subgroups of the
+     *         competition
      */
     private List<Group> splitListIntoSubGroups(List<Participant> list) {
         List<Group> finalList = new ArrayList<>();
-        int remainder = list.size() % 10;
-        int totalSizeOfList = list.size();
-        int chunk = 10;
+        int subGroupSize = 10;
 
-        if (totalSizeOfList <= 10) {
-            // if under 10 participants, just add to the list
-            finalList.add(Group.createGroup(list));
-            return finalList;
-        } else {
-            // add participants in groups of 10
-            for (int i = 0; i < totalSizeOfList - remainder; i = i + chunk) {
-                finalList.add(Group.createGroup(list.subList(
-                        i, i + chunk
-                )));
-            }
-
-            // check if there is a remainder. If there is, add the missing participants
-           if (remainder > 0) {
-                // add the remaining participants
-                finalList.add(Group.createGroup(list.subList(
-                        (totalSizeOfList - remainder), totalSizeOfList
-                )));
-            }
-
-            return finalList;
+        for (int i = 0; i < list.size(); i = Math.min(i+subGroupSize, list.size())) {
+            int endIdx = Math.min(i+subGroupSize, list.size());
+            finalList.add(new Group(list.subList(i, endIdx)));
         }
+
+        return finalList;
     }
 
     private List<Participant> splitListByGender(List<Participant> list, Lifter.Gender gender) {
@@ -97,9 +82,27 @@ public class CompetitionSinclair extends Competition {
      * @return participants for this competition, ranked in order
      */
     @Override
-    public List<Participant> calculateRankings() {
-        return getParticipants().stream()
-                .sorted((p1, p2) -> (int) Math.round(p2.getSinclairScore() - p1.getSinclairScore()))
+    public void calculateRankings() {
+        List<Participant> listOfAllParticipants = getParticipants();
+
+        List<Group> combinedListOfWinners = new ArrayList<>();
+
+        List<Participant> groupsMen = splitListByGender(listOfAllParticipants, Lifter.Gender.MALE);
+        List<Participant> groupsWomen = splitListByGender(listOfAllParticipants, Lifter.Gender.FEMALE);
+
+        combinedListOfWinners.add(Group.createGroup(
+                sortListBasedOnSinclairScore(groupsWomen)
+        ));
+        combinedListOfWinners.add(Group.createGroup(
+                sortListBasedOnSinclairScore(groupsMen)
+        ));
+
+        winnerGroups = combinedListOfWinners;
+    }
+
+    private List<Participant> sortListBasedOnSinclairScore(List<Participant> list){
+        return list.stream()
+                .sorted((p1,p2) -> (int) Math.round(p2.getSinclairScore() - p1.getSinclairScore()))
                 .collect(Collectors.toList());
     }
 
@@ -109,6 +112,8 @@ public class CompetitionSinclair extends Competition {
      * @return the passed participant's rank
      */
     public int getRank(Participant participant){
-        return calculateRankings().indexOf(participant) + 1;
+        // TODO obsolete method. reimplement to instead provide a ranking based on yet-to-be-implemented ranking groups
+        return 1000;
+        //return calculateRankings().indexOf(participant) + 1;
     }
 }

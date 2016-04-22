@@ -36,7 +36,6 @@ public class CompetitionTotalWeight extends Competition {
         super(competitionName, host, location, competitionType, date, lastRegistrationDate, maxNumParticipants);
         this.groupsMen = new ArrayList<>();
         this.groupsWomen = new ArrayList<>();
-        this.rankedGroups = new ArrayList<>();
     }
 
     /**
@@ -44,7 +43,7 @@ public class CompetitionTotalWeight extends Competition {
      *
      */
     @Override
-    public List<Group> allocateGroups() {
+    public void allocateGroups() {
         List<Group> completeList = new ArrayList<>();
 
         // 1st step - divide by gender
@@ -76,7 +75,7 @@ public class CompetitionTotalWeight extends Competition {
             }
         }
 
-        return completeList;
+        setGroupList(completeList);
     }
 
     public void divideParticipantsByGender(List<Participant> list){
@@ -181,12 +180,12 @@ public class CompetitionTotalWeight extends Competition {
 
         if (totalSizeOfList <= 10) {
             // if under 10 participants, just add to the list
-            finalList.add(new Group(list));
+            finalList.add(Group.createGroup(list));
             return finalList;
         } else {
             // add participants in groups of 10
             for (int i = 0; i < totalSizeOfList - remainder; i = i + chunk) {
-                finalList.add(new Group((list.subList(
+                finalList.add(Group.createGroup((list.subList(
                         i, i + chunk
                 ))));
             }
@@ -194,7 +193,7 @@ public class CompetitionTotalWeight extends Competition {
             // check if there is a remainder. If there is, add the missing participants
             if (remainder > 0) {
                 // add the remaining participants
-                finalList.add(new Group(list.subList(
+                finalList.add(Group.createGroup(list.subList(
                         (totalSizeOfList - remainder), totalSizeOfList
                 )));
             }
@@ -277,7 +276,9 @@ public class CompetitionTotalWeight extends Competition {
      * @return the passed participant's rank
      */
     public int getRank(Participant participant){
-        return calculateRankings().indexOf(participant) + 1;
+        // TODO obsolete method. reimplement to instead provide a ranking based on yet-to-be-implemented ranking groups
+        return 1000;
+        //return calculateRankings().indexOf(participant) + 1;
     }
 
 }
