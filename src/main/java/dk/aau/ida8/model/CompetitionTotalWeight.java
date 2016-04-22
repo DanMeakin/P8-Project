@@ -302,7 +302,8 @@ public class CompetitionTotalWeight extends Competition {
     private void allocateParticipantsToRankedGroups(List<Group> allGroups){
         for(Group subGroup : allGroups){
             for(Group rankedGroup : this.rankedGroups) {
-                if (subGroup.getWeightClass().equals(rankedGroup.getWeightClass())) {
+                if (subGroup.getWeightClass().equals(rankedGroup.getWeightClass()) &&
+                        subGroup.getGroupGender().equals(rankedGroup.getGroupGender())) {
                     addParticipantToRankedGroup(subGroup, rankedGroup);
                 }
             }
