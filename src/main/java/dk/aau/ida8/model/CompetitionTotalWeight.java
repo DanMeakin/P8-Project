@@ -206,7 +206,7 @@ public class CompetitionTotalWeight extends Competition {
     /**
      * Populates ranked groups with participants.
      *
-     * This method is to be called once during a competition, after the weight-in
+     * This method is to be called once during a competition, which is after the weight-in
      * and before competition start.
      */
     public void populateRankedGroups(){
@@ -251,8 +251,16 @@ public class CompetitionTotalWeight extends Competition {
     private List<Group> createRankedGroups(){
         List<Group> rankedGroups = new ArrayList<>();
 
-        List<Group> maleRankedGroup = createRankedGroupsForGender(Lifter.Gender.MALE);
         List<Group> femaleRankedGroup = createRankedGroupsForGender(Lifter.Gender.FEMALE);
+        List<Group> maleRankedGroup = createRankedGroupsForGender(Lifter.Gender.MALE);
+
+        /*
+         * Printing for testing purposes
+
+        for(Group g : maleRankedGroup){
+            System.out.println("This is a group of gender: " + g.getGroupGender().toString() + " and weight class: " + g.getWeightClass().toString());
+        }
+        */
 
         //Adds every group in femaleRankedGroup to rankedGroups
         rankedGroups.addAll(femaleRankedGroup);
@@ -268,10 +276,10 @@ public class CompetitionTotalWeight extends Competition {
      *
      * META-NOTE TO CODE:
      * The method does have a workaround on the foreach loop of every
-     * enum weightclass value. The WEIGHTCLASS enum has eight values because
-     * men have eight weightclasses. However, women have only seven. Thus,
-     * the while loop has been included to limit the number of rankedGroups
-     * added to the list to seven.
+     * enum weight class value. The WEIGHTCLASS enum has eight values because
+     * men have eight weight classes. However, women have only seven weight classes.
+     * Thus, an if-statement has been included to break the loop when seven ranked groups
+     * have been created.
      *
      * @param gender The general gender of the ranked groups to be created
      * @return List of non-populated ranked groups for a gender
@@ -280,13 +288,20 @@ public class CompetitionTotalWeight extends Competition {
         List<Group> rankedGroups = new ArrayList<>();
         if(gender.equals(Lifter.Gender.FEMALE)) {
             int counter = 0;
-            while(counter < 8) {
                 for (WEIGHTCLASS w : WEIGHTCLASS.values()) {
                     counter++;
+                    if(counter > 7){
+                        break;
+                    }
                     rankedGroups.add(Group.totalWeightRankingGroup(gender, w));
                 }
+
+        } else {
+            for(WEIGHTCLASS w : WEIGHTCLASS.values()){
+                rankedGroups.add(Group.totalWeightRankingGroup(gender, w));
             }
         }
+
         return rankedGroups;
     }
 
@@ -339,5 +354,8 @@ public class CompetitionTotalWeight extends Competition {
         //return calculateRankings().indexOf(participant) + 1;
     }
 
+    public List<Group> getRankedGroups() {
+        return rankedGroups;
+    }
 }
 

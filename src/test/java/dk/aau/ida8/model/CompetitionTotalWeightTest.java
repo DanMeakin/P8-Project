@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.*;
 //import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -42,6 +42,12 @@ public class CompetitionTotalWeightTest {
     private static Club club;
     private static Address address;
 
+
+
+    //Test setup for createRankedGroups
+    public static List<Group> expectedEmptyRankedGroups;
+    //Test setup for populateRankedGroups
+    public static List<Group> expectedPopulatedRankedGroups;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -108,7 +114,6 @@ public class CompetitionTotalWeightTest {
         }
 
         // Populating list with Male lifters in weight class 2
-
         for(int j = 0; j < 1; j++) {
 
             List<Participant> subListOfps = new ArrayList<>();
@@ -156,10 +161,48 @@ public class CompetitionTotalWeightTest {
 
         //listOfLists.get(1).add(listOfParticipants.get(listOfParticipants.size() - 1));
 
+
+        /**
+         * Setup for createRankedGroupsTest
+         */
+        expectedEmptyRankedGroups = new ArrayList<>();
+        // Adding ranked groups for females
+        expectedEmptyRankedGroups.add(Group.totalWeightRankingGroup(Lifter.Gender.FEMALE, CompetitionTotalWeight.WEIGHTCLASS.WEIGHTCLASS1));
+        expectedEmptyRankedGroups.add(Group.totalWeightRankingGroup(Lifter.Gender.FEMALE, CompetitionTotalWeight.WEIGHTCLASS.WEIGHTCLASS2));
+        expectedEmptyRankedGroups.add(Group.totalWeightRankingGroup(Lifter.Gender.FEMALE, CompetitionTotalWeight.WEIGHTCLASS.WEIGHTCLASS3));
+        expectedEmptyRankedGroups.add(Group.totalWeightRankingGroup(Lifter.Gender.FEMALE, CompetitionTotalWeight.WEIGHTCLASS.WEIGHTCLASS4));
+        expectedEmptyRankedGroups.add(Group.totalWeightRankingGroup(Lifter.Gender.FEMALE, CompetitionTotalWeight.WEIGHTCLASS.WEIGHTCLASS5));
+        expectedEmptyRankedGroups.add(Group.totalWeightRankingGroup(Lifter.Gender.FEMALE, CompetitionTotalWeight.WEIGHTCLASS.WEIGHTCLASS6));
+        expectedEmptyRankedGroups.add(Group.totalWeightRankingGroup(Lifter.Gender.FEMALE, CompetitionTotalWeight.WEIGHTCLASS.WEIGHTCLASS7));
+
+        //Adding ranked groups for males - starting at index 7
+        expectedEmptyRankedGroups.add(Group.totalWeightRankingGroup(Lifter.Gender.MALE, CompetitionTotalWeight.WEIGHTCLASS.WEIGHTCLASS1));
+        expectedEmptyRankedGroups.add(Group.totalWeightRankingGroup(Lifter.Gender.MALE, CompetitionTotalWeight.WEIGHTCLASS.WEIGHTCLASS2));
+        expectedEmptyRankedGroups.add(Group.totalWeightRankingGroup(Lifter.Gender.MALE, CompetitionTotalWeight.WEIGHTCLASS.WEIGHTCLASS3));
+        expectedEmptyRankedGroups.add(Group.totalWeightRankingGroup(Lifter.Gender.MALE, CompetitionTotalWeight.WEIGHTCLASS.WEIGHTCLASS4));
+        expectedEmptyRankedGroups.add(Group.totalWeightRankingGroup(Lifter.Gender.MALE, CompetitionTotalWeight.WEIGHTCLASS.WEIGHTCLASS5));
+        expectedEmptyRankedGroups.add(Group.totalWeightRankingGroup(Lifter.Gender.MALE, CompetitionTotalWeight.WEIGHTCLASS.WEIGHTCLASS6));
+        expectedEmptyRankedGroups.add(Group.totalWeightRankingGroup(Lifter.Gender.MALE, CompetitionTotalWeight.WEIGHTCLASS.WEIGHTCLASS7));
+        expectedEmptyRankedGroups.add(Group.totalWeightRankingGroup(Lifter.Gender.MALE, CompetitionTotalWeight.WEIGHTCLASS.WEIGHTCLASS8));
+
+        /**
+         * Setup for populateRankedGroupsTest
+         */
+        expectedPopulatedRankedGroups.addAll(expectedEmptyRankedGroups);
     }
 
     @Test
     public void sortWeightclassesTest() throws Exception {
+
+    }
+
+    @Test
+    public void createRankedGroupsTest() throws Exception {
+        assertEquals(expectedEmptyRankedGroups, competition.getRankedGroups());
+    }
+
+    @Test
+    public void populateRankedGroupsTest() throws Exception {
 
     }
 
