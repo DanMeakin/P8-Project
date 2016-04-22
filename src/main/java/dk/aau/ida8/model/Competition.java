@@ -155,7 +155,8 @@ public abstract class Competition {
      * @return the participant next to left
      */
     public Participant currentParticipant() {
-        return getCurrentGroup().determineParticipationOrder().get(0);
+        getCurrentGroup().sortParticipants();
+        return getCurrentGroup().getParticipants().get(0);
     }
 
     public List<Participant> getParticipants() {
@@ -251,7 +252,7 @@ public abstract class Competition {
 
     private Group findCurrentGroup() {
         for(Group g : getGroupList()){
-            for (Participant p : g.getParticipantList()){
+            for (Participant p : g.getParticipants()){
                 if (p.getLiftsCount() < 6) {
                     return g;
                 }

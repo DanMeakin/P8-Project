@@ -1,7 +1,10 @@
 package dk.aau.ida8.model;
 
 
-import java.util.Arrays;
+import dk.aau.ida8.model.groupComparators.CompetingComparator;
+import dk.aau.ida8.model.groupComparators.SinclairRankingComparator;
+import dk.aau.ida8.model.groupComparators.TotalWeightRankingComparator;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -10,29 +13,38 @@ public class Group {
 
     private List<Participant> participants;
     private Comparator<Participant> groupComparator;
-
-    public Group competingGroup(List<Participant> participants) {
-        return new Group(participants, new CompetingComparator());
-    }
-    private Lifter.Gender genderOfGroup;
+    private Lifter.Gender groupGender;
     private CompetitionTotalWeight.WEIGHTCLASS weightClass;
 
-    public Group sinclairRankingGroup(List<Participant> participants) {
+    public static Group competingGroup(List<Participant> participants) {
+        return new Group(participants, new CompetingComparator());
+    }
+
+    public static Group sinclairRankingGroup(List<Participant> participants) {
         return new Group(participants, new SinclairRankingComparator());
     }
 
-    public Group totalWeightRankingGroup(List<Participant> participants) {
-        return new Group(participants, new TotalWeightRankingComparator());
+    public static Group totalWeightRankingGroup(Lifter.Gender gender,
+                                                CompetitionTotalWeight.WEIGHTCLASS weightclass) {
+        return new Group(
+                new TotalWeightRankingComparator(),
+                gender,
+                weightclass);
     }
 
     private Group(List<Participant> participants,
-                 Comparator<Participant> comparator) {
+                  Comparator<Participant> comparator) {
         this.participants = participants;
         this.groupComparator = comparator;
     }
 
-    public Lifter.Gender getGroupGender() {
-        return getParticipants().get(0).getGender();
+    private Group(Comparator<Participant> comparator,
+                  Lifter.Gender gender,
+                  CompetitionTotalWeight.WEIGHTCLASS weightclass) {
+        this.participants = participants;
+        this.groupComparator = comparator;
+        this.groupGender = gender;
+        this.weightClass = weightclass;
     }
 
     @Override
@@ -72,11 +84,6 @@ public class Group {
         return participants.size();
     }
 
-    public Group(Lifter.Gender gender, CompetitionTotalWeight.WEIGHTCLASS WEIGHTCLASS){
-        this.genderOfGroup = gender;
-        this.weightClass = WEIGHTCLASS;
-    }
-
     /**
      * Sorts and returns the list of participants.
      *
@@ -91,5 +98,21 @@ public class Group {
 
     public Comparator<Participant> getGroupComparator() {
         return groupComparator;
+    }
+
+    public Lifter.Gender getGroupGender() {
+        if(!this.groupGender.equals(null)) {
+            return groupGender;
+        } else {
+            return this.getParticipants().get(0).getGender();
+        }
+    }
+
+    public CompetitionTotalWeight.WEIGHTCLASS getWeightClass() {
+        return weightClass;
+    }
+
+    public void addParticipant(Participant p){
+        getParticipants().add(p);
     }
 }

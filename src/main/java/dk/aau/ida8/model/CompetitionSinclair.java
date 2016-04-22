@@ -61,7 +61,7 @@ public class CompetitionSinclair extends Competition {
 
         for (int i = 0; i < list.size(); i = Math.min(i+subGroupSize, list.size())) {
             int endIdx = Math.min(i+subGroupSize, list.size());
-            finalList.add(new Group(list.subList(i, endIdx)));
+            finalList.add(Group.sinclairRankingGroup(list.subList(i, endIdx)));
         }
 
         return finalList;
@@ -90,10 +90,10 @@ public class CompetitionSinclair extends Competition {
         List<Participant> groupsMen = splitListByGender(listOfAllParticipants, Lifter.Gender.MALE);
         List<Participant> groupsWomen = splitListByGender(listOfAllParticipants, Lifter.Gender.FEMALE);
 
-        combinedListOfWinners.add(Group.createGroup(
+        combinedListOfWinners.add(Group.sinclairRankingGroup(
                 sortListBasedOnSinclairScore(groupsWomen)
         ));
-        combinedListOfWinners.add(Group.createGroup(
+        combinedListOfWinners.add(Group.sinclairRankingGroup(
                 sortListBasedOnSinclairScore(groupsMen)
         ));
 
