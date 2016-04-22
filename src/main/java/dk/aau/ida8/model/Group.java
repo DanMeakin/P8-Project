@@ -5,6 +5,7 @@ import dk.aau.ida8.model.groupComparators.CompetingComparator;
 import dk.aau.ida8.model.groupComparators.SinclairRankingComparator;
 import dk.aau.ida8.model.groupComparators.TotalWeightRankingComparator;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -41,7 +42,7 @@ public class Group {
     private Group(Comparator<Participant> comparator,
                   Lifter.Gender gender,
                   CompetitionTotalWeight.WEIGHTCLASS weightclass) {
-        this.participants = participants;
+        this.participants = new ArrayList<>();
         this.groupComparator = comparator;
         this.groupGender = gender;
         this.weightClass = weightclass;
