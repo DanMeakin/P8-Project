@@ -36,6 +36,7 @@ public class CompetitionTotalWeight extends Competition {
         super(competitionName, host, location, competitionType, date, lastRegistrationDate, maxNumParticipants);
         this.groupsMen = new ArrayList<>();
         this.groupsWomen = new ArrayList<>();
+        this.rankedGroups = createRankedGroups();
     }
 
     /**
@@ -60,7 +61,7 @@ public class CompetitionTotalWeight extends Competition {
         for (List<Participant> l : womenListSorted) {
             List<Group> subList = splitListIntoSubGroups(l);
             for(Group g : subList){
-                if(g.getNumberOfParticipants() > 0) {
+                if(g.getParticipantsCount() > 0) {
                     completeList.add(g);
                 }
             }
@@ -69,7 +70,7 @@ public class CompetitionTotalWeight extends Competition {
         for (List<Participant> l : menListSorted) {
                 List<Group> subList = splitListIntoSubGroups(l);
             for(Group g: subList){
-                if(g.getNumberOfParticipants() > 0) {
+                if(g.getParticipantsCount() > 0) {
                     completeList.add(g);
                 }
             }
@@ -180,12 +181,12 @@ public class CompetitionTotalWeight extends Competition {
 
         if (totalSizeOfList <= 10) {
             // if under 10 participants, just add to the list
-            finalList.add(Group.createGroup(list));
+            finalList.add(Group.competingGroup(list));
             return finalList;
         } else {
             // add participants in groups of 10
             for (int i = 0; i < totalSizeOfList - remainder; i = i + chunk) {
-                finalList.add(Group.createGroup((list.subList(
+                finalList.add(Group.competingGroup((list.subList(
                         i, i + chunk
                 ))));
             }
@@ -193,7 +194,7 @@ public class CompetitionTotalWeight extends Competition {
             // check if there is a remainder. If there is, add the missing participants
             if (remainder > 0) {
                 // add the remaining participants
-                finalList.add(Group.createGroup(list.subList(
+                finalList.add(Group.competingGroup(list.subList(
                         (totalSizeOfList - remainder), totalSizeOfList
                 )));
             }
@@ -202,66 +203,122 @@ public class CompetitionTotalWeight extends Competition {
         }
     }
 
-    @Override
-    public void calculateRankings() {
+    /**
+     * Populates ranked groups with participants.
+     *
+     * This method is to be called once during a competition, after the weight-in
+     * and before competition start.
+     */
+    public void populateRankedGroups(){
         List<Group> allGroups = getGroupList();
 
         List<Group> tempMenGroups = getGenderSortedGroup(allGroups, Lifter.Gender.MALE);
         List<Group> tempWomenGroups = getGenderSortedGroup(allGroups, Lifter.Gender.FEMALE);
 
-        List<Group> tempSortedMenGroups = sortGroupsByWeightclass(tempMenGroups, Lifter.Gender.MALE);
-        List<Group> tempSortedWomenGroups = sortGroupsByWeightclass(tempWomenGroups, Lifter.Gender.FEMALE);
+        allocateParticipantsToRankedGroups(tempMenGroups);
+        allocateParticipantsToRankedGroups(tempWomenGroups);
 
-        List<Group> rankedGroupList = new ArrayList<>();
-        moveGroupsToRankedList(rankedGroupList, tempSortedMenGroups);
-        moveGroupsToRankedList(rankedGroupList, tempSortedWomenGroups);
+        removeEmptyRankedGroups();
 
-        this.rankedGroups = rankedGroupList;
+        //Initial sort of ranking for each ranked group
+        calculateRankings();
     }
 
-    private List<Group> sortGroupsByWeightclass(List<Group> allGroups, Lifter.Gender gender){
-        List<Group> weightclassGroups = createWeightclassGroups(gender);
-        allocateParticipantsToWeightclassGroups(allGroups, weightclassGroups);
-
-        return weightclassGroups;
-    }
-
-    private void moveGroupsToRankedList(List<Group> rankedGroupList, List<Group> rankedGenderGroups){
-        for(Group subGroup : rankedGenderGroups){
-            if(subGroup.getParticipantList().size() > 0) {
-                rankedGroupList.add(subGroup);
+    /**
+     * Trims the list of ranked groups removing empty groups.
+     */
+    private void removeEmptyRankedGroups(){
+        for(Iterator<Group> g = this.rankedGroups.iterator(); g.hasNext();){
+            Group group = g.next();
+            if(group.getParticipantsCount() == 0){
+                g.remove();
             }
         }
     }
 
-    private void allocateParticipantsToWeightclassGroups(List<Group> allGroups, List<Group> weightclassGroups){
+    @Override
+    public void calculateRankings() {
+        this.rankedGroups.forEach(Group::sortParticipants);
+    }
+
+    /**
+     * Creates a list of empty ranked groups.
+     * One ranked group per gender per weightclass will be added
+     * to the list.
+     *
+     * @return List of non-populated ranked groups
+     */
+    private List<Group> createRankedGroups(){
+        List<Group> rankedGroups = new ArrayList<>();
+
+        List<Group> maleRankedGroup = createRankedGroupsForGender(Lifter.Gender.MALE);
+        List<Group> femaleRankedGroup = createRankedGroupsForGender(Lifter.Gender.FEMALE);
+
+        //Adds every group in femaleRankedGroup to rankedGroups
+        rankedGroups.addAll(femaleRankedGroup);
+        //Same for maleRankedGroup
+        rankedGroups.addAll(maleRankedGroup);
+
+        return rankedGroups;
+    }
+
+    /**
+     * Creates a list with non-populated empty groups for one gender.
+     * Creates one group per weightclass and adds it to the list.
+     *
+     * META-NOTE TO CODE:
+     * The method does have a workaround on the foreach loop of every
+     * enum weightclass value. The WEIGHTCLASS enum has eight values because
+     * men have eight weightclasses. However, women have only seven. Thus,
+     * the while loop has been included to limit the number of rankedGroups
+     * added to the list to seven.
+     *
+     * @param gender The general gender of the ranked groups to be created
+     * @return List of non-populated ranked groups for a gender
+     */
+    private List<Group> createRankedGroupsForGender(Lifter.Gender gender){
+        List<Group> rankedGroups = new ArrayList<>();
+        if(gender.equals(Lifter.Gender.FEMALE)) {
+            int counter = 0;
+            while(counter < 8) {
+                for (WEIGHTCLASS w : WEIGHTCLASS.values()) {
+                    counter++;
+                    rankedGroups.add(Group.totalWeightRankingGroup(gender, w));
+                }
+            }
+        }
+        return rankedGroups;
+    }
+
+    /**
+     * Allocates participants to the ranked group they belong to based on
+     * gender and weightclass.
+     *
+     * That is a male lifter in weight class 1 would be added to the ranked group
+     * for male lifters in weight class 1.
+     *
+     * @param allGroups List of competition groups
+     */
+    private void allocateParticipantsToRankedGroups(List<Group> allGroups){
         for(Group subGroup : allGroups){
-            for(Group weightclass : weightclassGroups) {
-                if (subGroup.getWeightClass().equals(weightclass.getWeightClass())) {
-                    addParticipantToWeightclassGroup(subGroup, weightclass);
+            for(Group rankedGroup : this.rankedGroups) {
+                if (subGroup.getWeightClass().equals(rankedGroup.getWeightClass())) {
+                    addParticipantToRankedGroup(subGroup, rankedGroup);
                 }
             }
         }
     }
 
-    private void addParticipantToWeightclassGroup(Group competitiongroup, Group weightclassgroup){
-        for(Participant p : competitiongroup.getParticipantList()){
+    private void addParticipantToRankedGroup(Group competitiongroup, Group weightclassgroup){
+        for(Participant p : competitiongroup.getParticipants()){
             weightclassgroup.addParticipant(p);
         }
-    }
-
-    private List<Group> createWeightclassGroups(Lifter.Gender gender){
-        List<Group> weightClassGroups = new ArrayList<>();
-            for(WEIGHTCLASS w : WEIGHTCLASS.values()){
-                weightClassGroups.add(new Group(gender, w));
-            }
-        return weightClassGroups;
     }
 
     private List<Group> getGenderSortedGroup(List<Group> allGroups, Lifter.Gender gender){
         List<Group> genderSortedGroups = new ArrayList<>();
         for(Group g : allGroups){
-            if(g.getGenderOfGroup().equals(gender)){
+            if(g.getGroupGender().equals(gender)){
                 genderSortedGroups.add(g);
             }
         }
