@@ -105,7 +105,7 @@ public class CompetitionController {
         Competition competition = competitionService.findOne(competitionID);
         model.addAttribute("competition", competition);
         model.addAttribute("participants", competition.getParticipants());
-        model.addAttribute("participant", competition.currentParticipant());
+        //model.addAttribute("participant", competition.currentParticipant());
         return "competition";
     }
 
@@ -370,5 +370,27 @@ public class CompetitionController {
     public String displayParticipantInfo(Model model, @PathVariable long participantID){
         model.addAttribute("participant", participantService.findOne(participantID));
         return "participant-info";
+    }
+
+    @RequestMapping(value = "/{competitionID}/weigh-in", method = RequestMethod.GET)
+    public String controlWeighInParticipants(Model model, @PathVariable long competitionID) {
+        Competition competition = competitionService.findOne(competitionID);
+        model.addAttribute("competition", competition);
+        model.addAttribute("participants", competition.getParticipants());
+        return "competition-weigh-in";
+    }
+
+    @ResponseBody
+    @RequestMapping (value = "/{competitionID}/weigh-in", method = RequestMethod.POST)
+    public String registerParticipantWeighIn(Model model, @RequestParam("id") long participantID){
+        Participant participant = participantService.findOne(participantID);
+        participant.setCheckedIn(true);
+        participantService.saveParticipant(participant);
+        model.addAttribute("participants", participant.getCompetition().getParticipants());
+        HashMap<String, String> map = new HashMap<>();
+        map.put("code", "200");
+        map.put("msg", "All good!");
+        Gson gson = new Gson();
+        return gson.toJson(map);
     }
 }

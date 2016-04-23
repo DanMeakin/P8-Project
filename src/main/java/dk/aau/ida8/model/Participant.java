@@ -61,6 +61,8 @@ public class Participant {
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Lift> lifts;
 
+    private boolean checkedIn = false;
+
 
     public long getId() {
         return id;
@@ -523,10 +525,20 @@ public class Participant {
         }
     }
 
+
+
     /*********************************
      * PARTICIPANT ATTRIBUTE GETTERS *
      *********************************/
 
+
+    public boolean isCheckedIn() {
+        return checkedIn;
+    }
+
+    public void setCheckedIn(boolean checkedIn) {
+        this.checkedIn = checkedIn;
+    }
 
     public Lifter.Gender getGender() {
         return getLifter().getGender();

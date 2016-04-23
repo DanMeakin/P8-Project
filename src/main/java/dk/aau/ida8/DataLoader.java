@@ -167,6 +167,10 @@ public class DataLoader {
             c1.addParticipant(l, startingWeights.get(i));
         }
 
+        Participant p1 = c1.getParticipants().get(0);
+
+        p1.setCheckedIn(true);
+
         competitionRepository.save(c1);
 
 

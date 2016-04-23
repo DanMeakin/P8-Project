@@ -117,7 +117,7 @@
     $( ".increase-weight, .correct-weight, .correct-lifts" ).click(function(event) {
       var pathElems = event.target.id.split("-");
       var path = "/competition/" + pathElems[0] + "-" + pathElems[1] + "/" + pathElems[2];
-      $.get(path, function(data) {
+       $.get(path, function(data) {
         $( "#competition-modal" ).html(data);
       });
     });
