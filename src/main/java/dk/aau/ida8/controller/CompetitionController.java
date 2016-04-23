@@ -13,10 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("/competition")
@@ -49,7 +46,7 @@ public class CompetitionController {
      */
     @RequestMapping("/sinclair/new")
     public String newSinclairComp(Model model){
-       model.addAttribute("competition", new CompetitionSinclair());
+       model.addAttribute("competition", new Competition());
         return "new-sinclair-competition";
     }
 
@@ -60,7 +57,7 @@ public class CompetitionController {
      */
     @RequestMapping("/weightclass/new")
     public String newWeightclassComp(Model model){
-        model.addAttribute("competition", new CompetitionTotalWeight());
+        model.addAttribute("competition", new Competition());
         return "new-weightclass-competition";
     }
 
@@ -69,19 +66,8 @@ public class CompetitionController {
      * @param competition
      * @return Returns a redirect to the front page
      */
-    @RequestMapping(value="/sinclair/save", method = RequestMethod.POST)
-    public String saveComp(CompetitionSinclair competition){
-        Competition savedComp = competitionService.save(competition);
-        return "redirect:/";
-    }
-
-    /**
-     * Controller method to save a Weight group competition. The save method is called from CompetitionService.
-     * @param competition
-     * @return
-     */
-    @RequestMapping(value="/weightclass/save", method = RequestMethod.POST)
-    public String saveComp(CompetitionTotalWeight competition){
+    @RequestMapping(value={"/sinclair/save", "/weightclass/save"}, method = RequestMethod.POST)
+    public String saveComp(Competition competition){
         Competition savedComp = competitionService.save(competition);
         return "redirect:/";
     }
@@ -105,9 +91,15 @@ public class CompetitionController {
     public String competitionDashboard(Model model, @PathVariable long competitionID) {
         Competition competition = competitionService.findOne(competitionID);
         model.addAttribute("competition", competition);
-        model.addAttribute("participants", competition.getParticipants());
-        model.addAttribute("participant", competition.currentParticipant());
-        return "competition";
+
+        Optional<Group> currGroup = competition.getCurrentCompetingGroup();
+        if (currGroup.isPresent()) {
+            model.addAttribute("participants", currGroup.get().getParticipants());
+            model.addAttribute("currParticipant", competition.currentParticipant());
+            return "competition-dashboard";
+        } else {
+            return "competition-overview";
+        }
     }
 
     @RequestMapping("/{competitionID}/signup")
