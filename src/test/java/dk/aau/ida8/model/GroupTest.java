@@ -3,7 +3,6 @@ package dk.aau.ida8.model;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.data.repository.query.parser.Part;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -84,10 +83,10 @@ public class GroupTest {
         competition.allocateGroups();
         Group group = competition.getGroupList().get(0);
 
-        group.determineParticipationOrder();
-        Participant p1 = group.determineParticipationOrder().get(0);
+        group.sortParticipants();
+        Participant p1 = group.sortParticipants().get(0);
         p1.increaseWeight(164);
 
-        assertEquals(expectedParticipantList, group.getParticipantList());
+        assertEquals(expectedParticipantList, group.getParticipants());
     }
 }
