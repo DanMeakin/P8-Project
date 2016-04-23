@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * This class represents the participation of one lifter in a competition. It
@@ -47,8 +48,12 @@ public class Participant {
      * used to calculate the starting groups for a sinclair competition
      */
     private int startingWeight;
+    private int startingSnatchWeight;
+    private int startingCleanAndJerkWeight;
 
     private int currentWeight;
+
+    private int startNumber;
 
     /**
      * This integer tracks the weight previously selected by the lifter. This
@@ -78,6 +83,31 @@ public class Participant {
     /**
      * Creates a participation instance.
      *
+     * @param lifter                     the lifter participating in a
+     *                                   competition
+     * @param competition                the competition in which the lifter is
+     *                                   participating
+     * @param startingSnatchWeight       the initial weight for the first snatch
+     *                                   lift for this participant
+     * @param startingCleanAndJerkWeight the initial weight for the first clean
+     *                                   & jerk lift for this participant
+     */
+    public Participant(Lifter lifter, Competition competition,
+                       int startingSnatchWeight,
+                       int startingCleanAndJerkWeight) {
+        this.lifter = lifter;
+        this.competition = competition;
+        this.startingSnatchWeight = startingSnatchWeight;
+        this.startingCleanAndJerkWeight = startingCleanAndJerkWeight;
+        this.currentWeight = startingSnatchWeight;
+        this.previousWeight = startingSnatchWeight;
+        this.lifts = new ArrayList<>();
+        this.startNumber = generateStartNumber();
+    }
+
+    /**
+     * Creates a participation instance.
+     *
      * @param lifter         the lifter participating in a competition
      * @param competition    the competition in which the lifter is
      *                       participating
@@ -90,6 +120,36 @@ public class Participant {
         this.currentWeight = startingWeight;
         this.previousWeight = startingWeight;
         this.lifts = new ArrayList<>();
+        this.startNumber = generateStartNumber();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Participant) {
+            return equals((Participant) o);
+        } else {
+            return false;
+        }
+    }
+
+    public boolean equals(Participant p) {
+        return getId() == p.getId();
+    }
+
+    @Override
+    public String toString() {
+        return "Participant #" + getId() + ": " + getFullName();
+    }
+
+    /**
+     * Generates a random start number for a participant, between 1 and the
+     * maximum number of participants for a competition.
+     *
+     * @return a randomly generated start number
+     */
+    private int generateStartNumber() {
+        List<Integer> nums = getCompetition().availableStartNumbers();
+        return nums.get(new Random().nextInt(nums.size()));
     }
 
     public Lifter getLifter() {
@@ -130,6 +190,14 @@ public class Participant {
         return 6 - getLiftsCount();
     }
 
+    /**
+     * Determines whether a participant has completed all of their lifts.
+     *
+     * @return true if all lifts are complete, else false
+     */
+    public boolean allLiftsComplete() {
+        return getLiftsRemaining() == 0;
+    }
     /**
      * Gets a count of the number of snatch lifts yet to be completed
      * by the participant.
@@ -465,7 +533,6 @@ public class Participant {
         Lift lift = Lift.passedLift(this, getCurrentLiftType(), getCurrentWeight());
         addLift(lift);
         incrementWeight();
-        setWeightChanges(0);
     }
 
     /**
@@ -479,7 +546,6 @@ public class Participant {
         validateLiftConditions();
         Lift lift = Lift.failedLift(this, getCurrentLiftType(), getCurrentWeight());
         addLift(lift);
-        setWeightChanges(0);
     }
 
     /**
@@ -493,17 +559,36 @@ public class Participant {
         validateLiftConditions();
         Lift lift = Lift.abstainedLift(this, getCurrentLiftType(), getCurrentWeight());
         addLift(lift);
-        setWeightChanges(0);
     }
 
     /**
      * Adds a lift to a participation instance.
      *
+     * When a lift is complete, this will have an implication for the ordering
+     * of proceedings. As such, this method calls the sortParticipants methods
+     * in the current ranking and competing groups.
+     *
      * @param lift the lift to add to the participation
      */
     private void addLift(Lift lift) {
         lifts.add(lift);
-        competition.updateCurrentGroup();
+        setWeightChanges(0);
+        checkAndUpdateStartingWeight();
+    }
+
+    /**
+     * Checks if the current weight requires to be updated.
+     *
+     * Current weight required to be updated immediately after completion of
+     * all snatch lifts. This method checks whether snatches have been
+     * completed and, if so, updates the currentWeight field to the value of
+     * startingCleanAndJerk.
+     */
+    private void checkAndUpdateStartingWeight() {
+        if (getLiftsCount() == 3 &&
+                getCurrentWeight() < getStartingCleanAndJerkWeight()) {
+            setCurrentWeight(getStartingCleanAndJerkWeight());
+        }
     }
 
     /**
@@ -544,6 +629,14 @@ public class Participant {
         return getLifter().getGender();
     }
 
+    public boolean isMale() {
+        return getGender().equals(Lifter.Gender.MALE);
+    }
+
+    public boolean isFemale() {
+        return getGender().equals(Lifter.Gender.FEMALE);
+    }
+
     public String getGenderInitial() {
         return getGender().toString().substring(0, 1);
     }
@@ -573,6 +666,23 @@ public class Participant {
         this.startingWeight = startingWeight;
     }
 
+    public int getStartingSnatchWeight() {
+        return startingSnatchWeight;
+    }
+
+    public int getStartingCleanAndJerkWeight() {
+        return startingCleanAndJerkWeight;
+    }
+
+    /**
+     * Gets this participant's weight class.
+     *
+     * @return this participant's weight class
+     */
+    public int getWeightClass() {
+        return WeightClass.findWeightClass(this);
+    }
+
     /**
      * Gets this participant's rank
      * @return this participant's rank
@@ -592,5 +702,13 @@ public class Participant {
      */
     public double getSinclairScore(){
         return new SinclairCalculator().apply(this);
+    }
+
+    public int getStartNumber() {
+        return startNumber;
+    }
+
+    public void setStartNumber(int startNumber) {
+        this.startNumber = startNumber;
     }
 }

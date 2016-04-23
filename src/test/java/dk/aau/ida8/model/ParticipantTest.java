@@ -6,7 +6,9 @@ import org.junit.Test;
 import static org.mockito.Mockito.*;
 
 import java.security.InvalidParameterException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -26,6 +28,9 @@ public class ParticipantTest {
         lifter = mock(Lifter.class);
         when(lifter.getFullName()).thenReturn(lifterFullName);
         competition = mock(Competition.class);
+        when(competition.availableStartNumbers()).thenReturn(Arrays.asList(1,2,3,4,5,6,7,8,9,10));
+        when(competition.getCurrentCompetingGroup()).thenReturn(Optional.empty());
+        when(competition.getCurrentRankingGroup()).thenReturn(Optional.empty());
         participant = new Participant(lifter, competition, 10);
         participant.addPassedLift();
         participant.increaseWeight(15);
