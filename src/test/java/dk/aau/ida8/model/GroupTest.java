@@ -131,7 +131,7 @@ public class GroupTest {
         List<Group> expectedGs = new ArrayList<>();
         expectedGs.add(Group.competingGroup(sinclairCompetition, femaleParticipants));
         for (int i = 0; i < 3; i++) {
-            expectedGs.add(Group.competingGroup(sinclairCompetition, maleParticipants.subList(i*10, (i+1)*10)));
+            expectedGs.add(Group.competingGroup(sinclairCompetition, new ArrayList<>(maleParticipants.subList(i*10, (i+1)*10))));
         }
         List<Group> actualGs = Group.createCompetingGroups(sinclairCompetition);
         assertEquals(expectedGs, actualGs);
@@ -181,11 +181,11 @@ public class GroupTest {
         );
 
         List<Group> expectedGs = new ArrayList<>();
-        expectedGs.add(Group.competingGroup(totalWeightCompetition, femaleParticipants));
-        expectedGs.add(Group.competingGroup(totalWeightCompetition, maleParticipants.subList(0, 10)));
-        expectedGs.add(Group.competingGroup(totalWeightCompetition, maleParticipants.subList(10, 15)));
-        expectedGs.add(Group.competingGroup(totalWeightCompetition, maleParticipants.subList(15, 25)));
-        expectedGs.add(Group.competingGroup(totalWeightCompetition, maleParticipants.subList(25, 30)));
+        expectedGs.add(Group.competingGroup(totalWeightCompetition, new ArrayList<>(femaleParticipants)));
+        expectedGs.add(Group.competingGroup(totalWeightCompetition, new ArrayList<>(maleParticipants.subList(0, 10))));
+        expectedGs.add(Group.competingGroup(totalWeightCompetition, new ArrayList<>(maleParticipants.subList(10, 15))));
+        expectedGs.add(Group.competingGroup(totalWeightCompetition, new ArrayList<>(maleParticipants.subList(15, 25))));
+        expectedGs.add(Group.competingGroup(totalWeightCompetition, new ArrayList<>(maleParticipants.subList(25, 30))));
         List<Group> actualGs = Group.createCompetingGroups(totalWeightCompetition);
         assertEquals(expectedGs, actualGs);
     }
@@ -215,9 +215,9 @@ public class GroupTest {
         );
 
         List<Group> expectedGs = new ArrayList<>();
-        expectedGs.add(Group.competingGroup(totalWeightCompetition, femaleParticipants));
-        expectedGs.add(Group.competingGroup(totalWeightCompetition, maleParticipants.subList(0, 15)));
-        expectedGs.add(Group.competingGroup(totalWeightCompetition, maleParticipants.subList(15, 30)));
+        expectedGs.add(Group.competingGroup(totalWeightCompetition, new ArrayList<>(femaleParticipants)));
+        expectedGs.add(Group.competingGroup(totalWeightCompetition, new ArrayList<>(maleParticipants.subList(0, 15))));
+        expectedGs.add(Group.competingGroup(totalWeightCompetition, new ArrayList<>(maleParticipants.subList(15, 30))));
         List<Group> actualGs = Group.createRankingGroups(totalWeightCompetition);
         assertEquals(expectedGs, actualGs);
     }

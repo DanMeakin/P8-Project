@@ -131,7 +131,7 @@ public class Group {
     }
 
     private static List<Group> createSinclairRankingGroups(Competition competition) {
-        List<Participant> ps = competition.getParticipants();
+        List<Participant> ps = new ArrayList<>(competition.getParticipants());
         Map<Lifter.Gender, List<Participant>> pGrp = ps.stream()
                 .sorted((p1, p2) -> p1.getStartingSnatchWeight() - p2.getStartingSnatchWeight())
                 .collect(Collectors.groupingBy(Participant::getGender));
@@ -152,7 +152,7 @@ public class Group {
     }
 
     private static List<Group> createTotalWeightRankingGroups(Competition competition) {
-        List<Participant> ps = competition.getParticipants();
+        List<Participant> ps = new ArrayList<>(competition.getParticipants());
         Map<Tuple<Lifter.Gender, Integer>, List<Participant>> pGrp = ps.stream()
                 .sorted((p1, p2) -> p1.getStartingSnatchWeight() - p2.getStartingSnatchWeight())
                 .collect(Collectors.groupingBy(p -> {
@@ -191,25 +191,13 @@ public class Group {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof Group) {
-            return equals((Group) o);
-        } else {
-            return false;
-        }
+        return o instanceof Group && equals((Group) o);
     }
 
     public boolean equals(Group g) {
-        if (this.getParticipantsCount() != g.getParticipantsCount()) {
-            return false;
-        } else {
-            this.sortParticipants();
-            g.sortParticipants();
-            if (getParticipants().equals(g.getParticipants())) {
-                return true;
-            } else {
-                return false;
-            }
-        }
+        List<Participant> l1 = this.getParticipants();
+        List<Participant> l2 = g.getParticipants();
+        return l1.equals(l2);
     }
 
     public Participant getFirstParticipant() {
@@ -221,8 +209,12 @@ public class Group {
         return participants;
     }
 
+    public List<Participant> getUnsortedParticipants() {
+        return participants;
+    }
+
     public boolean containsParticipant(Participant p) {
-        return getParticipants().contains(p);
+        return participants.contains(p);
     }
 
     public int getParticipantsCount() {
@@ -238,7 +230,7 @@ public class Group {
      * by taking the lowest of these lifters' ID#.
      */
     public void sortParticipants() {
-        Collections.sort(participants, getGroupComparator());
+        participants.sort(getGroupComparator());
     }
 
     public Comparator<Participant> getGroupComparator() {
@@ -328,10 +320,10 @@ public class Group {
         List<Group> chunkedGroups = new ArrayList<>();
         for (Group g : groups) {
             for (int i = 0; i < g.getParticipantsCount(); i += chunkSize) {
-                List<Participant> subList = g.getParticipants().subList(
+                List<Participant> subList = new ArrayList<>(g.getParticipants().subList(
                                 i,
                                 Math.min(i+chunkSize, g.getParticipantsCount())
-                        );
+                        ));
                 chunkedGroups.add(competingGroup(c, subList));
             }
         }
