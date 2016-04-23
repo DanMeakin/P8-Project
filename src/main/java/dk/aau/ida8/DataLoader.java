@@ -155,6 +155,7 @@ public class DataLoader {
             c1.addParticipant(l, startingWeights.get(i));
         }
 
+        c1.allocateGroups();
         competitionRepository.save(c1);
 
 
