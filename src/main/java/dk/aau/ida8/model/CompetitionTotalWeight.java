@@ -54,7 +54,7 @@ public class CompetitionTotalWeight extends Competition {
         for (List<Participant> l : womenListSorted) {
             List<Group> subList = splitListIntoSubGroups(l);
             for(Group g : subList){
-                if(g.getNumberOfParticipants() > 0) {
+                if(g.getParticipantsCount() > 0) {
                     completeList.add(g);
                 }
             }
@@ -63,7 +63,7 @@ public class CompetitionTotalWeight extends Competition {
         for (List<Participant> l : menListSorted) {
                 List<Group> subList = splitListIntoSubGroups(l);
             for(Group g: subList){
-                if(g.getNumberOfParticipants() > 0) {
+                if(g.getParticipantsCount() > 0) {
                     completeList.add(g);
                 }
             }
@@ -212,12 +212,12 @@ public class CompetitionTotalWeight extends Competition {
 
         if (totalSizeOfList <= 10) {
             // if under 10 participants, just add to the list
-            finalList.add(Group.createGroup(list));
+            finalList.add(new Group(list));
             return finalList;
         } else {
             // add participants in groups of 10
             for (int i = 0; i < totalSizeOfList - remainder; i = i + chunk) {
-                finalList.add(Group.createGroup((list.subList(
+                finalList.add(new Group((list.subList(
                         i, i + chunk
                 ))));
             }
@@ -225,7 +225,7 @@ public class CompetitionTotalWeight extends Competition {
             // check if there is a remainder. If there is, add the missing participants
             if (remainder > 0) {
                 // add the remaining participants
-                finalList.add(Group.createGroup(list.subList(
+                finalList.add(new Group(list.subList(
                         (totalSizeOfList - remainder), totalSizeOfList
                 )));
             }

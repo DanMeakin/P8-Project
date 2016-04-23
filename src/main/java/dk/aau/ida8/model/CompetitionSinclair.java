@@ -42,7 +42,7 @@ public class CompetitionSinclair extends Competition {
         // make a list of lists where subgroups can be added
         subGroups = splitListIntoSubGroups(listMale);
         subGroups.addAll(splitListIntoSubGroups(listFemale));
-        setGroupList(subGroups);
+        setCompetingGroup(subGroups);
     }
 
     /**

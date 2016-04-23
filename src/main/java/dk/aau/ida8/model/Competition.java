@@ -3,7 +3,6 @@ package dk.aau.ida8.model;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,8 +36,16 @@ public abstract class Competition {
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Participant> participants;
 
-    // group list variables. Marked as transient so as not to persist them in the database
-    private transient List<Group> groupList;
+    /**
+     * competingGroup contains the grouping of participants for the purpose of
+     * the order of proceedings. Each group carries out all lifts in turn.
+     */
+    private transient List<Group> competingGroup;
+    /**
+     * rankingGroup contains the grouping of the participants for the purpose
+     * of ranking performance.
+     */
+    private transient List<Group> rankingGroup;
     private transient Group currentGroup;
 
     private String competitionName;
@@ -155,7 +162,9 @@ public abstract class Competition {
      * @return the participant next to left
      */
     public Participant currentParticipant() {
-        return getCurrentGroup().determineParticipationOrder().get(0);
+        Group currentGroup = getCurrentGroup();
+        currentGroup.sortParticipants();
+        return currentGroup.getParticipants().get(0);
     }
 
     public List<Participant> getParticipants() {
@@ -227,14 +236,6 @@ public abstract class Competition {
         this.host = host;
     }
 
-    public List<Group> getGroupList() {
-        return groupList;
-    }
-
-    protected void setGroupList(List<Group> groupList) {
-        this.groupList = groupList;
-    }
-
     public Group getCurrentGroup() {
         return currentGroup;
     }
@@ -250,8 +251,8 @@ public abstract class Competition {
     }
 
     private Group findCurrentGroup() {
-        for(Group g : getGroupList()){
-            for (Participant p : g.getParticipantList()){
+        for(Group g : getCompetingGroup()){
+            for (Participant p : g.getParticipants()){
                 if (p.getLiftsCount() < 6) {
                     return g;
                 }
@@ -271,4 +272,19 @@ public abstract class Competition {
         //return calculateRankings().indexOf(participant) + 1;
     }
 
+    public List<Group> getRankingGroup() {
+        return rankingGroup;
+    }
+
+    protected void setRankingGroup(List<Group> rankingGroup) {
+        this.rankingGroup = rankingGroup;
+    }
+
+    public List<Group> getCompetingGroup() {
+        return competingGroup;
+    }
+
+    protected void setCompetingGroup(List<Group> competingGroup) {
+        this.competingGroup = competingGroup;
+    }
 }

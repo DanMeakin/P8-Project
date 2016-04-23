@@ -48,6 +48,8 @@ public class Participant {
      * used to calculate the starting groups for a sinclair competition
      */
     private int startingWeight;
+    private int startingSnatchWeight;
+    private int startingCleanAndJerkWeight;
 
     private int currentWeight;
 
