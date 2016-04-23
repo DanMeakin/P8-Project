@@ -1,10 +1,13 @@
 package dk.aau.ida8.model;
 
+import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * This class represents one weightlifting competition.
@@ -22,11 +25,15 @@ import java.util.stream.Collectors;
  * {@link Participant Participant} instance.
  */
 @Entity
-public abstract class Competition {
+public class Competition {
 
     public enum CompetitionType {
         SINCLAIR,
         TOTAL_WEIGHT
+    }
+
+    public CompetitionType getCompetitionType() {
+        return competitionType;
     }
 
     @Id
@@ -36,17 +43,11 @@ public abstract class Competition {
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Participant> participants;
 
-    /**
-     * competingGroup contains the grouping of participants for the purpose of
-     * the order of proceedings. Each group carries out all lifts in turn.
-     */
-    private transient List<Group> competingGroup;
-    /**
-     * rankingGroup contains the grouping of the participants for the purpose
-     * of ranking performance.
-     */
-    private transient List<Group> rankingGroup;
-    private transient Group currentGroup;
+    @OneToMany(cascade = {CascadeType.ALL})
+    private List<Group> competingGroups;
+
+    @OneToMany(cascade = {CascadeType.ALL})
+    private List<Group> rankingGroups;
 
     private String competitionName;
     private CompetitionType competitionType;
@@ -97,6 +98,18 @@ public abstract class Competition {
         this.participants = new ArrayList<>();
     }
 
+    public boolean equals(Object o) {
+        if (o instanceof Competition) {
+            return equals((Competition) o);
+        } else {
+            return false;
+        }
+    }
+
+    public boolean equals(Competition c) {
+        return getId() == c.getId();
+    }
+
     /**
      * Adds a new participant to the competition.
      *
@@ -127,7 +140,7 @@ public abstract class Competition {
      * @param lifter who is to be removed
      */
     public void removeParticipant(Lifter lifter){
-        Participant p = selectParticipationByLifter(lifter);
+        Participant p = selectParticipantByLifter(lifter);
         removeParticipant(p);
     }
 
@@ -147,24 +160,38 @@ public abstract class Competition {
      *               instance
      * @return participation instance for the passed lifter
      */
-    public Participant selectParticipationByLifter(Lifter lifter) {
+    public Participant selectParticipantByLifter(Lifter lifter) {
         List<Participant> ps = getParticipants().stream()
                 .filter(p -> p.getLifter().equals(lifter))
                 .collect(Collectors.toList());
         return ps.get(0);
     }
 
-    public abstract void allocateGroups();
+    /**
+     * Allocates participants to competing and ranking groups.
+     *
+     * The competing and ranking groups are used to ensure the proper order
+     * of the competition, and to determine the winners of the competition
+     * after completion, respectively.
+     */
+    public void allocateGroups() {
+        setRankingGroups(Group.createRankingGroups(this));
+        setCompetingGroups(Group.createCompetingGroups(this));
+    };
 
     /**
-     * Finds the participant who is to carry out a lift next.
+     * Finds the participant who is to carry out a lift next. If the competing
+     * stage of the competition is complete, no value is returned.
      *
      * @return the participant next to left
      */
-    public Participant currentParticipant() {
-        Group currentGroup = getCurrentGroup();
-        currentGroup.sortParticipants();
-        return currentGroup.getParticipants().get(0);
+    public Optional<Participant> currentParticipant() {
+        Optional<Group> currentGroup = getCurrentCompetingGroup();
+        if (currentGroup.isPresent()) {
+            return Optional.of(currentGroup.get().getFirstParticipant());
+        } else {
+            return Optional.empty();
+        }
     }
 
     public List<Participant> getParticipants() {
@@ -177,16 +204,6 @@ public abstract class Competition {
                 .collect(Collectors.toList());
     }
 
-
-    /**
-     * Calculates and returns the rankings for this competition.
-     *
-     * The ranking uses the score for each participation calculated using the
-     * associated ScoreStrategy.
-     *
-     * @return participants for this competition, ranked in order
-     */
-    public abstract void calculateRankings();
 
     public String getCompetitionName() {
         return competitionName;
@@ -236,55 +253,83 @@ public abstract class Competition {
         this.host = host;
     }
 
-    public Group getCurrentGroup() {
-        return currentGroup;
-    }
-
-    public void updateCurrentGroup() {
-
-        Group g = findCurrentGroup();
-
-        if (!g.equals(null)){
-            this.currentGroup = g;
-        }
-
-    }
-
-    private Group findCurrentGroup() {
-        for(Group g : getCompetingGroup()){
-            for (Participant p : g.getParticipants()){
-                if (p.getLiftsCount() < 6) {
-                    return g;
-                }
+    /**
+     * Calculates a specific participant's rank within the competition.
+     *
+     * @param participant                the participant for whom the ranking
+     *                                   is being calculated
+     * @return                           the passed participant's rank
+     * @throws InvalidParameterException if participant cannot be found within
+     *                                   any ranking group
+     */
+    public int getRank(Participant participant){
+        for (Group g : getRankingGroups()) {
+            if (g.containsParticipant(participant)) {
+                return g.getRank(participant);
             }
         }
-        return null;
+        String msg = "unable to find Participant within any ranking group";
+        throw new InvalidParameterException(msg);
     }
 
     /**
-     * Calculates a specific participant's rank
-     * @param participant the participant for whom the ranking is being calculated
-     * @return the passed participant's rank
+     * Gets the competing group currently competing in the competition.
+     *
+     * This returns an optional group: if the competition is complete, there
+     * is no currently competing group and nothing is returned.
+     *
+     * @return the group currently competing, or nothing if the competition is
+     *         complete
      */
-    public int getRank(Participant participant){
-        // TODO obsolete method. reimplement to instead provide a ranking based on yet-to-be-implemented ranking groups
-        return 10000;
-        //return calculateRankings().indexOf(participant) + 1;
+    public Optional<Group> getCurrentCompetingGroup() {
+        for (Group g : getCompetingGroups()) {
+            for (Participant p : g.getParticipants()) {
+                if (!p.allLiftsComplete()) {
+                    return Optional.of(g);
+                }
+            }
+        }
+        return Optional.empty();
     }
 
-    public List<Group> getRankingGroup() {
-        return rankingGroup;
+    public Optional<Group> getCurrentRankingGroup() {
+        for (Group g : getRankingGroups()) {
+            for (Participant p : g.getParticipants()) {
+                if (!p.allLiftsComplete()) {
+                    return Optional.of(g);
+                }
+            }
+        }
+        return Optional.empty();
     }
 
-    protected void setRankingGroup(List<Group> rankingGroup) {
-        this.rankingGroup = rankingGroup;
+    public List<Group> getRankingGroups() {
+        return rankingGroups;
     }
 
-    public List<Group> getCompetingGroup() {
-        return competingGroup;
+    protected void setRankingGroups(List<Group> rankingGroups) {
+        this.rankingGroups = rankingGroups;
     }
 
-    protected void setCompetingGroup(List<Group> competingGroup) {
-        this.competingGroup = competingGroup;
+    public List<Group> getCompetingGroups() {
+        return competingGroups;
+    }
+
+    protected void setCompetingGroups(List<Group> competingGroups) {
+        this.competingGroups = competingGroups;
+    }
+
+    /**
+     * Lists all remaining available start numbers in the competition.
+     *
+     * @return list of all available start numbers
+     */
+    public List<Integer> availableStartNumbers() {
+        List<Integer> remainingNumbers = new ArrayList<>();
+        IntStream.range(1, getMaxNumParticipants())
+                .forEach(remainingNumbers::add);
+        getParticipants()
+                .forEach(p -> remainingNumbers.remove((Integer) p.getStartNumber()));
+        return remainingNumbers;
     }
 }
