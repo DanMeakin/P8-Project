@@ -52,10 +52,6 @@ public class Competition {
     private CompetitionType competitionType;
     private int maxNumParticipants;
 
-    public long getId() {
-        return id;
-    }
-
     @DateTimeFormat(pattern = "dd-mm-yyyy HH:mm")
     private Date date;
 
@@ -210,6 +206,15 @@ public class Competition {
         } else {
             return Optional.empty();
         }
+    }
+
+    /**
+     * Gets the ID# of this competition.
+     *
+     * @return the ID# of this competition
+     */
+    public long getId() {
+        return id;
     }
 
     /**
