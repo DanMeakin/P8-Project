@@ -132,15 +132,23 @@ public class CompetitionController {
     }
 
     @ResponseBody
-    @RequestMapping (value = "/{competitionID}/weigh-in", method = RequestMethod.POST)
-    public String registerParticipantWeighIn(Model model, @RequestParam("id") long participantID){
+    @RequestMapping (value = "/{competitionID}/weigh-in/", method = RequestMethod.POST)
+    public String registerParticipantWeighIn(Model model, @RequestParam("participantID") long participantID,
+                                                            @RequestParam("action") String isChecked){
         Participant participant = participantService.findOne(participantID);
-        participant.setCheckedIn(true);
+        HashMap<String, String> map = new HashMap<>();
+
+        if(isChecked.equals("checked")){
+            participant.setCheckedIn(true);
+            map.put("code", "200");
+            map.put("msg", "All good, participant checked in!");
+        } else if(isChecked.equals("unchecked")){
+            participant.setCheckedIn(false);
+            map.put("code", "200");
+            map.put("msg", "All good, participant checked out!");
+        }
         participantService.saveParticipant(participant);
         model.addAttribute("participants", participant.getCompetition().getParticipants());
-        HashMap<String, String> map = new HashMap<>();
-        map.put("code", "200");
-        map.put("msg", "All good!");
         Gson gson = new Gson();
         return gson.toJson(map);
     }

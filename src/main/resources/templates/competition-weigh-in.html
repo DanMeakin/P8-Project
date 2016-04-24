@@ -10,7 +10,7 @@
     <div layout:fragment="content">
         <div class="row">
             <div class="col-md-5">
-                <form class="form" method="post" action="">
+                <form class="form" action="javascript:void(0);">
                     <table class="table table-front">
                         <thead>
                         <tr>
@@ -26,12 +26,14 @@
                         <tbody>
                         <tr th:each="p : ${participants}" th:if="${!p.checkedIn}">
                             <td>
-                                <input class="checkbox" type="checkbox" name="participantChecked" th:checked="${p.checkedIn}" />
+                                <input class="checkbox" th:id="'participant-checkbox-' + ${p.id}" type="checkbox" name="participantChecked" th:checked="${p.checkedIn}" />
                             </td>
                             <td th:text="${p.id}"></td>
                             <td th:text="${p.fullName}"></td>
                             <td th:text="${p.clubName}"></td>
                             <td th:text="${p.bodyWeight}"></td>
+                            <td>
+                            </td>
                             <!--  <td th:text="${p.startingSnatchWeight}"></td> -->
                             <!-- <td th:text="${p.startingCleanAndJerkWeight}"></td> -->
                         </tr>
@@ -41,7 +43,7 @@
             </div>
             <div class="col-md-2"/>
             <div class="col-md-5">
-                <form class="form" method="post" action="">
+                <form class="form" action="">
                     <table class="table table-front">
                         <thead>
                         <tr>
@@ -56,7 +58,7 @@
                         <tbody>
                         <tr th:each="p : ${participants}" th:if="${p.checkedIn}">
                             <td>
-                                <input class="checkbox" type="checkbox" name="participantChecked" th:checked="${p.checkedIn}" />
+                                <input class="checkbox" th:id="'participant-checkbox-' + ${p.id}" type="checkbox" name="participantChecked" th:checked="${p.checkedIn}" />
                             </td>
                             <td th:text="${p.fullName}"></td>
                             <td th:text="${p.clubName}"></td>
@@ -74,10 +76,31 @@
         </div>
         <script>
             $(document).ready(function () {
-               $(".checkbox").on("change", function(){
+
+                /**
+                 * Checks if checkbox is checked or unchecked
+                 * @param id
+                 * @returns {*}
+                 */
+                function isChecked(id){
+                    if($("#participant-checkbox-" + id).is(":checked")){
+                        return "checked";
+                    } else if(!$("#participant-checkbox-" + id).is(":checked")){
+                        return "unchecked";
+                    }
+                }
+
+               $(".checkbox").on("change", function(event){
+                   var pathElems = event.target.id.split("-");
                    var url = window.location.href;
-                   $.post(url, function(data){
-                        location.reload();
+
+                   var requestHeader = {
+                       participantID: "" + pathElems[2],
+                       action: "" + isChecked(pathElems[2])
+                   }
+
+                   $.post(url + "/", requestHeader, function(data){
+                       location.reload();
                    });
                });
             });
