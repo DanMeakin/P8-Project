@@ -40,15 +40,17 @@ public class CompetitionTest {
 
             competition.addParticipant(p);
             competition.addParticipant(p2);
+            p.checkIn();
+            p2.checkIn();
         }
     }
 
     @Test
     public void allocateGroups() throws Exception {
-        assertNull(competition.getCompetingGroups());
-        assertNull(competition.getRankingGroups());
+        assertTrue(competition.getCompetingGroups().isEmpty());
+        assertTrue(competition.getRankingGroups().isEmpty());
 
-        competition.allocateGroups();
+        competition.finishWeighIn();
 
         assertFalse(competition.getCompetingGroups().isEmpty());
         assertFalse(competition.getRankingGroups().isEmpty());
@@ -56,7 +58,7 @@ public class CompetitionTest {
 
     @Test
     public void currentParticipant() throws Exception {
-        competition.allocateGroups();
+        competition.finishWeighIn();
         assertTrue(competition.currentParticipant().isPresent());
         Participant firstParticipant = competition.getCompetingGroups().get(0).getFirstParticipant();
         assertEquals(firstParticipant, competition.currentParticipant().get());
@@ -64,7 +66,7 @@ public class CompetitionTest {
 
     @Test
     public void getCurrentCompetingGroup() throws Exception {
-        competition.allocateGroups();
+        competition.finishWeighIn();
         assertTrue(competition.getCurrentCompetingGroup().isPresent());
         Group firstGroup = competition.getCompetingGroups().get(0);
         assertEquals(firstGroup, competition.getCurrentCompetingGroup().get());
@@ -72,7 +74,7 @@ public class CompetitionTest {
 
     @Test
     public void getCurrentRankingGroup() throws Exception {
-        competition.allocateGroups();
+        competition.finishWeighIn();
         assertTrue(competition.getCurrentRankingGroup().isPresent());
         Group firstGroup = competition.getRankingGroups().get(0);
         assertEquals(firstGroup, competition.getCurrentRankingGroup().get());
