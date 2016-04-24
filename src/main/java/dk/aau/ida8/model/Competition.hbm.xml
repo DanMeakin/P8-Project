@@ -10,7 +10,7 @@
         </id>
         <discriminator column="competition_type" type="STRING" />
         <property name="competition_name" type="STRING" />
-        <property name="date" type="DATE" />
+        <property name="competition_date" type="DATE" />
         <many-to-one name="address" class="Address">
             <column name="address_id" not-null="true" />
         </many-to-one>

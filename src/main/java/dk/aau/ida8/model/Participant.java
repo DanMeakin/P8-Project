@@ -624,6 +624,10 @@ public class Participant {
         return !isCheckedIn();
     }
 
+    public void checkIn() {
+        setCheckedIn(true);
+    }
+
     public void setCheckedIn(boolean checkedIn) {
         this.checkedIn = checkedIn;
     }
