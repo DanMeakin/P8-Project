@@ -35,7 +35,7 @@ public class CompetingComparator implements Comparator<Participant> {
                 compareWeights(),
                 compareAttempts(),
                 compareTimestamps(),
-                compareIds()
+                compareStartNumbers()
         );
 
         for (Integer comparatorValue : comparators) {
@@ -162,8 +162,8 @@ public class CompetingComparator implements Comparator<Participant> {
      *
      * @return comparator value after carrying-out comparison
      */
-    private int compareIds() {
-        return (int) (p1.getId() - p2.getId());
+    private int compareStartNumbers() {
+        return (int) (p1.getStartNumber() - p2.getStartNumber());
     }
 
 }
