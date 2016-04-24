@@ -1,16 +1,10 @@
 package dk.aau.ida8.model;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-import org.omg.CORBA.DynAnyPackage.Invalid;
-
 import javax.persistence.*;
 import java.security.InvalidParameterException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * This class represents the participation of one lifter in a competition. It
