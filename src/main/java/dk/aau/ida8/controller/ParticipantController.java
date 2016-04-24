@@ -102,7 +102,7 @@ public class ParticipantController {
                                        @RequestParam(value = "lift") List<String> liftStrs) {
         Participant p = participantService.findOne(participantID);
         model.addAttribute("participant", p);
-        HashMap<String, String> map = new HashMap<>();
+        String response;
         List<String> msgs = new ArrayList<>();
 
         for (int i = 0; i < liftStrs.size(); i++) {
@@ -124,14 +124,11 @@ public class ParticipantController {
             }
         }
         if (msgs.isEmpty()) {
-            map.put("msg", "All good!");
-            map.put("code", "200");
+            response = jsonResponse(200, "All good!");
         } else {
-            map.put("msg", String.join("; ", msgs));
-            map.put("code", "400");
+            response = jsonResponse(400, String.join("; ", msgs));
         }
-        Gson gson = new Gson();
-        return gson.toJson(map);
+        return response;
     }
 
     /**
@@ -179,32 +176,27 @@ public class ParticipantController {
                                  @RequestParam("currentWeight") String weightStr) {
         Participant p = participantService.findOne(participantID);
         model.addAttribute("participant", p);
-        HashMap<String, String> map = new HashMap<>();
+        String response;
         try {
             int weight = Integer.parseInt(weightStr);
             p.increaseWeight(weight);
             participantService.saveParticipant(p);
-            map.put("msg","All good!");
-            map.put("code", "200");
+            response = jsonResponse(200, "All good!");
         } catch (NumberFormatException e) {
             String msg = "unable to process input weight '" + weightStr +
                     "' (a number is required)";
-            map.put("msg", msg);
-            map.put("code", "400");
+            response = jsonResponse(400, msg);
         } catch (InvalidParameterException e) {
             String msg = "unable to process input weight '" + weightStr +
                     "' (new weight must be greater than previous weight)";
-            map.put("msg", msg);
-            map.put("code", "400");
+            response = jsonResponse(400, msg);
         } catch (UnsupportedOperationException e) {
             String msg = "unable to increase weight: this participant has " +
                     "already increased their lift weight twice since " +
                     "previous lift";
-            map.put("msg", msg);
-            map.put("code", "400");
+            response = jsonResponse(400, msg);
         }
-        Gson gson = new Gson();
-        return gson.toJson(map);
+        return response;
     }
 
     /**
@@ -246,21 +238,18 @@ public class ParticipantController {
                                 @RequestParam("currentWeight") String weightStr) {
         Participant p = participantService.findOne(participantID);
         model.addAttribute("participant", p);
-        HashMap<String, String> map = new HashMap<>();
+        String response;
         try {
             int weight = Integer.parseInt(weightStr);
             p.correctWeight(weight);
             participantService.saveParticipant(p);
-            map.put("msg","All good!");
-            map.put("code", "200");
+            response = jsonResponse(200, "All good!");
         } catch (NumberFormatException e) {
             String msg = "unable to process input weight '" + weightStr +
                     "' (a number is required)";
-            map.put("msg", msg);
-            map.put("code", "400");
+            response = jsonResponse(400, msg);
         }
-        Gson gson = new Gson();
-        return gson.toJson(map);
+        return response;
     }
 
     /**
@@ -280,9 +269,19 @@ public class ParticipantController {
         p.revertWeight();
         participantService.saveParticipant(p);
 
+        return jsonResponse(200, "All good!");
+    }
+
+    /**
+     * Generates a JSON response String for a given code and message.
+     *
+     * @param code the HTTP response code
+     * @param msg  the message to return within the JSON response
+     */
+    private String jsonResponse(int code, String msg) {
         HashMap<String, String> map = new HashMap<>();
-        map.put("code", "200");
-        map.put("msg", "All good!");
+        map.put("code", Integer.toString(code));
+        map.put("msg", msg);
         Gson gson = new Gson();
         return gson.toJson(map);
     }
