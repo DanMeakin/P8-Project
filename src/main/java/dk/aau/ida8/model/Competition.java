@@ -1,6 +1,5 @@
 package dk.aau.ida8.model;
 
-import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -13,11 +12,42 @@ import java.util.stream.IntStream;
  * This class represents one weightlifting competition.
  *
  * Each competition is hosted by a particular weightlifting club at a venue of
- * the club's choosing, and on a set date.
+ * the club's choosing, and on a set competitionDate.
+ *
+ * There are essentially five stages to a competition:-
+ *
+ *  1. Creation & open for sign-up;
+ *  2. Closed for sign-up, awaiting competition competitionDate;
+ *  3. The weigh-in;
+ *  4. The tournament itself; and
+ *  5. Announcement of results.
+ *
+ * The stage of a competition is dependent on the values contained within it.
+ * A competition is at the first stage after creation and until after the
+ * {@link #lastRegistrationDate} is reached. It is at stage two after that
+ * date and before the {@link #competitionDate} has been reached.
+ *
+ * It is at stage three on the day of the competition. At this point, it is
+ * possible to {@link Participant#setCheckedIn(boolean) check-in} participants
+ * to the competition. Once weight-in ends, the user will
+ * {@link #finishWeighIn() finish weight-in} and the tournament can begin.
+ *
+ * The tournament proceeds by registering lifts by lifters. Once this is
+ * complete, the results can be announced.
  *
  * The way in which a weightlifting competition is scored varies depending on
  * the scoring rules adopted. The participants, after weigh-in, are allocated
- * to groups
+ * to groups for competing and ranking purposes. The competition proceeds by
+ * having each competing group carry-out all of their lifts in turn, until all
+ * participants have completed their lifts.
+ *
+ * The ranking groups are then used to determine the winners within each
+ * particular division of the competition. For example, in a Sinclair
+ * competition, participants are divided into two groups based on gender. Then,
+ * the winners are announced for each of these gender groups. In a total weight
+ * competition, participants are divided into multiple groups based on both
+ * gender and weight class. Winners are announced for each of these
+ * weight/gender groupings.
  *
  * After a competition is created, weightlifters sign-up to participate, with
  * each lifter's participation encapsulated and stored within a
@@ -40,20 +70,20 @@ public class Competition {
     private long id;
 
     @OneToMany(cascade = {CascadeType.ALL})
-    private List<Participant> participants;
+    private List<Participant> participants = new ArrayList<>();
 
     @OneToMany(cascade = {CascadeType.ALL})
-    private List<Group> competingGroups;
+    private List<Group> competingGroups = new ArrayList<>();
 
     @OneToMany(cascade = {CascadeType.ALL})
-    private List<Group> rankingGroups;
+    private List<Group> rankingGroups = new ArrayList<>();
 
     private String competitionName;
     private CompetitionType competitionType;
     private int maxNumParticipants;
 
     @DateTimeFormat(pattern = "dd-mm-yyyy HH:mm")
-    private Date date;
+    private Date competitionDate;
 
     @DateTimeFormat(pattern = "dd-mm-yyyy HH:mm")
     private Date lastRegistrationDate;
@@ -68,7 +98,7 @@ public class Competition {
      * Creates a new Competition object.
      *
      * A competition requires a title, a host club, a location, a competition
-     * type and a date. These are required parameters for the creation of a
+     * type and a competitionDate. These are required parameters for the creation of a
      * Competition.
      *
      * @param competitionName the title/name of the competition
@@ -76,17 +106,16 @@ public class Competition {
      * @param location        the venue at which the competition takes place
      * @param competitionType the type of the competition, i.e. Sinclair or
      *                        total weight
-     * @param date            the date on which the competition is to take place
+     * @param competitionDate            the competitionDate on which the competition is to take place
      */
-    public Competition(String competitionName, Club host, Address location, CompetitionType competitionType, Date date, Date lastRegistrationDate, int maxNumParticipants) {
+    public Competition(String competitionName, Club host, Address location, CompetitionType competitionType, Date competitionDate, Date lastRegistrationDate, int maxNumParticipants) {
         this.competitionName = competitionName;
         this.competitionType = competitionType;
         this.location = location;
-        this.date = date;
+        this.competitionDate = competitionDate;
         this.lastRegistrationDate = lastRegistrationDate;
         this.maxNumParticipants = maxNumParticipants;
         this.host = host;
-        this.participants = new ArrayList<>();
     }
 
     /**
@@ -258,18 +287,18 @@ public class Competition {
     }
 
     /**
-     * Gets the date of this competition.
+     * Gets the competitionDate of this competition.
      *
-     * @return the date of this competition
+     * @return the competitionDate of this competition
      */
-    public Date getDate() {
-        return date;
+    public Date getCompetitionDate() {
+        return competitionDate;
     }
 
     /**
-     * Gets the date on which registration for this competition closes.
+     * Gets the competitionDate on which registration for this competition closes.
      *
-     * @return the date on which registration closes
+     * @return the competitionDate on which registration closes
      */
     public Date getLastRegistrationDate() {
         return lastRegistrationDate;
@@ -435,5 +464,70 @@ public class Competition {
                 .filter(Participant::isNotCheckedIn)
                 .forEach(this::removeParticipant);
         allocateGroups();
+    }
+
+    /**
+     * Determines whether sign-up is open.
+     *
+     * Sign-up is open until after the {@link #lastRegistrationDate}.
+     *
+     * @return true, if sign-up open, else false
+     */
+    public boolean isSignUpOpen() {
+        return getLastRegistrationDate().after(new Date());
+    }
+
+    /**
+     * Determines whether sign-up is closed.
+     *
+     * Sign-up closes after the {@link #lastRegistrationDate} is reached.
+     *
+     * @return true, if sign-up closed, else false
+     */
+    public boolean isSignUpClosed() {
+        return !isSignUpOpen();
+    }
+
+    /**
+     * Determines whether weigh-in has started but not yet completed.
+     *
+     * Weigh-in starts on the date of the competition, and ends when completion
+     * is selected by the user (see {@link #isWeighInComplete()}).
+     *
+     * @return true, if weigh-in started, else false
+     */
+    public boolean isWeightInStarted() {
+        return !isWeighInComplete() && new Date().equals(getCompetitionDate());
+    }
+
+    /**
+     * Determines whether the weigh-in is complete.
+     *
+     * A weigh-in is complete when determined by the user/competition secretary.
+     * When complete, all groups are allocated. Prior to completion, there is no
+     * allocation of groups.
+     *
+     * @return true, if weigh-in complete, else false
+     *
+     */
+    public boolean isWeighInComplete() {
+        return (!getCompetingGroups().isEmpty());
+    }
+
+    /**
+     * Determines whether the competition is complete.
+     *
+     * A competition is complete when all participants have undertaken all of
+     * the required lifts.
+     *
+     * @return true, if complete, else false
+     */
+    public boolean isCompetitionComplete() {
+        for (Participant p : getParticipants()) {
+            if (!p.allLiftsComplete()) {
+                return false;
+            }
+        }
+        return true;
     }
 }
