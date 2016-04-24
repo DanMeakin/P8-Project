@@ -16,9 +16,8 @@ import java.util.stream.IntStream;
  * the club's choosing, and on a set date.
  *
  * The way in which a weightlifting competition is scored varies depending on
- * the scoring rules adopted. These rules are encapsulated within a
- * {@link ScoreStrategy, ScoreStrategy} object associated with a Competition
- * instance.
+ * the scoring rules adopted. The participants, after weigh-in, are allocated
+ * to groups
  *
  * After a competition is created, weightlifters sign-up to participate, with
  * each lifter's participation encapsulated and stored within a
@@ -94,18 +93,37 @@ public class Competition {
         this.participants = new ArrayList<>();
     }
 
+    /**
+     * Creates an empty Competition object.
+     *
+     * An empty constructor is required by Hibernate.
+     */
     public Competition(){
         this.participants = new ArrayList<>();
     }
 
+    /**
+     * Compares this against another object.
+     *
+     * Competition is equal to another object only where it is a Competition,
+     * and the other object is equal to this as determined by the
+     * {@link Competition#equals(Competition)} method.
+     *
+     * @param o the other object to compare this against
+     * @return true if the other object is a competition and satisfies the
+     *              {@link Competition#equals(Competition)} method
+     */
+    @Override
     public boolean equals(Object o) {
-        if (o instanceof Competition) {
-            return equals((Competition) o);
-        } else {
-            return false;
-        }
+        return o instanceof Competition && equals((Competition) o);
     }
 
+    /**
+     * Compares this competition against another for equality.
+     *
+     * @param c the other competition to compare this against
+     * @return true, if both competition have the same ID number, else false
+     */
     public boolean equals(Competition c) {
         return getId() == c.getId();
     }
@@ -174,7 +192,7 @@ public class Competition {
      * of the competition, and to determine the winners of the competition
      * after completion, respectively.
      */
-    public void allocateGroups() {
+    private void allocateGroups() {
         setRankingGroups(Group.createRankingGroups(this));
         setCompetingGroups(Group.createCompetingGroups(this));
     };
@@ -194,63 +212,80 @@ public class Competition {
         }
     }
 
+    /**
+     * Gets a list of all participants signed-up to participant in this
+     * competition.
+     *
+     * @return the list of all participants signed-up to participate in this
+     *         competition
+     */
     public List<Participant> getParticipants() {
         return participants;
     }
 
+    /**
+     * Gets a list of all lifters participating in this competition.
+     *
+     * @return the list of all lifters participating in this competition
+     */
     public List<Lifter> getLifters() {
         return getParticipants().stream()
                 .map(Participant::getLifter)
                 .collect(Collectors.toList());
     }
 
-
+    /**
+     * Gets the name of this competition.
+     *
+     * @return the name of this competition
+     */
     public String getCompetitionName() {
         return competitionName;
     }
 
-    public void setCompetitionName(String competitionName) {
-        this.competitionName = competitionName;
-    }
-
+    /**
+     * Gets the location at which this competition is taking place.
+     *
+     * @return the location at which this competition takes place
+     */
     public Address getLocation() {
         return this.location;
     }
 
-    public void setLocation(Address location) {
-        this.location = location;
-    }
-
+    /**
+     * Gets the date of this competition.
+     *
+     * @return the date of this competition
+     */
     public Date getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
+    /**
+     * Gets the date on which registration for this competition closes.
+     *
+     * @return the date on which registration closes
+     */
     public Date getLastRegistrationDate() {
         return lastRegistrationDate;
     }
 
-    public void setLastRegistrationDate(Date lastRegistrationDate) {
-        this.lastRegistrationDate = lastRegistrationDate;
-    }
-
+    /**
+     * Gets the maximum number of participants permitted in this competition.
+     *
+     * @return the maximum number of participants for this competition
+     */
     public int getMaxNumParticipants() {
         return maxNumParticipants;
     }
 
-    public void setMaxNumParticipants(int maxNumParticipants) {
-        this.maxNumParticipants = maxNumParticipants;
-    }
-
+    /**
+     * Gets the host club for this competition.
+     *
+     * @return the host club for this competition
+     */
     public Club getHost() {
         return host;
-    }
-
-    public void setHost(Club host) {
-        this.host = host;
     }
 
     /**
@@ -292,6 +327,16 @@ public class Competition {
         return Optional.empty();
     }
 
+    /**
+     * Gets the ranking group containing the participants currently
+     * competing in the competition.
+     *
+     * This returns an optional group: if the competition is complete, there
+     * is no current ranking group and nothing is returned.
+     *
+     * @return the current ranking group, or nothing if the competition is
+     *         complete
+     */
     public Optional<Group> getCurrentRankingGroup() {
         for (Group g : getRankingGroups()) {
             for (Participant p : g.getParticipants()) {
@@ -303,24 +348,63 @@ public class Competition {
         return Optional.empty();
     }
 
+    /**
+     * Gets the list of ranking groups for this competition.
+     *
+     * Ranking groups are the divisions of participants based on the ranking
+     * method chosen for this competition. For example, in a Sinclair
+     * competition, participants are grouped into a maximum of two ranking
+     * groups, one for each gender. In such a competition, this method returns
+     * a list of up to two groups.
+     *
+     * @return the list of ranking groups for this competition
+     */
     public List<Group> getRankingGroups() {
         return rankingGroups;
     }
 
-    protected void setRankingGroups(List<Group> rankingGroups) {
+    /**
+     * Sets the list of ranking groups for this competition.
+     *
+     * @param rankingGroups the new list of ranking groups for this competition
+     */
+    private void setRankingGroups(List<Group> rankingGroups) {
         this.rankingGroups = rankingGroups;
     }
 
+    /**
+     * Gets the list of competing groups for this competition.
+     *
+     * Competing groups are the divisions of participants into groups for the
+     * purpose of the competition proceedings. The grouping is done in
+     * accordance with the methods contained in the {@link Group} class. This
+     * will split participants into small groups which participate together in
+     * undertaking their lifts.
+     *
+     * @return the list of ranking groups for this competition
+     */
     public List<Group> getCompetingGroups() {
         return competingGroups;
     }
 
-    protected void setCompetingGroups(List<Group> competingGroups) {
+    /**
+     * Sets the list of competing groups for this competition.
+     *
+     * @param competingGroups the new list of competing groups for this
+     *                        competition
+     */
+    private void setCompetingGroups(List<Group> competingGroups) {
         this.competingGroups = competingGroups;
     }
 
     /**
      * Lists all remaining available start numbers in the competition.
+     *
+     * Start numbers are allocated randomly from a range of numbers from 1 up
+     * to the maximum number of participants. The same number cannot be
+     * allocated twice. This method generates a range of numbers up to max
+     * participants, and excludes those already allocated. It then returns this
+     * list.
      *
      * @return list of all available start numbers
      */
@@ -331,5 +415,20 @@ public class Competition {
         getParticipants()
                 .forEach(p -> remainingNumbers.remove((Integer) p.getStartNumber()));
         return remainingNumbers;
+    }
+
+    /**
+     * Finishes the weigh-in stage of the competition.
+     *
+     * This method should be called when the weigh-in stage of the competition
+     * has been completed by the user. Any signed-up participants should be
+     * removed from the competition if they have not yet been checked-in by the
+     * time weigh-in is finished.
+     */
+    public void finishWeighIn() {
+        getParticipants().stream()
+                .filter(Participant::isNotCheckedIn)
+                .forEach(this::removeParticipant);
+        allocateGroups();
     }
 }
