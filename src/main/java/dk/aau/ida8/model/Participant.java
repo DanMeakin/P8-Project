@@ -616,9 +616,12 @@ public class Participant {
      * PARTICIPANT ATTRIBUTE GETTERS *
      *********************************/
 
-
     public boolean isCheckedIn() {
         return checkedIn;
+    }
+
+    public boolean isNotCheckedIn() {
+        return !isCheckedIn();
     }
 
     public void setCheckedIn(boolean checkedIn) {
