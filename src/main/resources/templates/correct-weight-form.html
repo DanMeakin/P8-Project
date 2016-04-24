@@ -47,7 +47,7 @@
 <script>
     function submitRequest() {
 
-        $.post("/competition/correct-weight/", $('#correct-weight-form').serialize(), function(data) {
+        $.post("/participant/correct-weight/", $('#correct-weight-form').serialize(), function(data) {
             console.log(data);
             var response = $.parseJSON(data);
             if(response.code == "200"){
@@ -61,7 +61,7 @@
     }
 
     $( '#revert-weight' ).click(function() {
-        $.post("/competition/revert-weight/", $('#correct-weight-form').serialize(), function(data) {
+        $.post("/participant/revert-weight/", $('#correct-weight-form').serialize(), function(data) {
             var response = $.parseJSON(data);
             if(response.code == "200") {
                 location.reload();

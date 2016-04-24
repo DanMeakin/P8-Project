@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="layouts/main">
+<head>
+    <meta charset="UTF-8" />
+    <title>Weightlifting Management System</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+
+            <h1>Create a new competition</h1>
+
+            <form th:action="@{/competition/new}" th:object="${competition}" method="POST">
+                <div class="form-group">
+                    <label for="competition-type-sinclair">
+                        Competition type
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="competitionType"
+                               th:field="*{competitionType}"
+                               id="competition-type-sinclair"
+                               value="SINCLAIR" />Sinclair
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="competitionType"
+                               th:field="*{competitionType}"
+                               id="competition-type-total-weight"
+                               value="TOTAL_WEIGHT" />Weight groups
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        Club
+                    </label>
+                    <select th:field="*{host}">
+                      <option th:each="club : ${allClubs}"
+                              th:value="${club.id}"
+                              th:text="${club.name}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="comp-title">
+                        Title
+                    </label>
+                    <input type="text" name="competitionName" th:field="*{competitionName}" id="comp-title" placeholder="Competition at Jyden" class="form-control"/>
+                </div>
+
+                <div class="form-group">
+                    <label for="datetimepicker1">
+                        Date and time
+                    </label>
+                    <input type="text" name="competitionDate" th:field="*{competitionDate}" id="datetimepicker1" placeholder="16-04-2016 11:08" class="form-control"/>
+                </div>
+
+                <div class="form-group">
+                    <label for="datetimepicker2">
+                        Last date and time for registration
+                    </label>
+                    <input type="datetime" name="lastRegistrationDate" th:field="*{lastRegistrationDate}" id="datetimepicker2" placeholder="16-04-2016 11:08" class="form-control"/>
+                </div>
+
+                <div class="form-group">
+                    <label for="address-building">
+                        Address
+                    </label>
+                    <input type="text" name="address-building" th:field="*{location.building}" id="address-building" class="form-control"/>
+                    <input type="text" name="address-street" th:field="*{location.street}" id="address-street" class="form-control"/>
+                    <input type="text" name="address-postcode" th:field="*{location.postcode}" id="address-postcode" class="form-control"/>
+                    <input type="text" name="address-town" th:field="*{location.town}" id="address-town" class="form-control"/>
+                </div>
+
+                <div class="form-group">
+                    <label for="comp-max-participants">
+                        Max number of participants
+                    </label>
+                    <input type="NUMBER" name="maxNumParticipants" th:field="*{maxNumParticipants}" id="comp-max-participants" min="0" max="200" value="50" class="form-control"/>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" name="comp-submit" class="btn btn-success" value="Create Competition" />
+                </div>
+            </form>
+
+        </div>
+
+
+    </div>
+</div>
+
+</body>
+</html>
