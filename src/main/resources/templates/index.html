@@ -8,7 +8,7 @@
 </head>
 <body>
 
-    <div layout:fragment="content">
+<div layout:fragment="content">
     <div class="row">
         <div class="col-md-12">
             <h1>Upcoming competitions</h1>
@@ -34,56 +34,15 @@
                 <tr th:each="comp : ${competitions}">
                     <td th:text="${comp.competitionName}" class="name">Comp name</td>
                     <td class="type">Comp type</td>
-                    <td th:text="${#calendars.format(comp.date, 'dd-MM-yyyy HH:mm')}" class="date">Comp date</td>
-                    <td th:text="${#calendars.format(comp.lastRegistrationDate, 'dd-MM-yyyy HH:mm')}" class="date">Comp date</td>
+                    <td th:text="${#calendars.format(comp.competitionDate, 'dd-MM-yyyy HH:mm')}" class="date">Comp date</td>
+                    <td th:text="${#calendars.format(comp.lastRegistrationDate, 'dd-MM-yyyy HH:mm')}" class="date">Last reg date</td>
                     <td><span class="label label-warning">Edit</span> <span class="label label-primary"><a th:href="|@{/competition/}${comp.id}/signup|">View</a></span> <span class="label label-success">Start</span></td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <h2>Other competitions</h2>
-            <table class="table table-front">
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th class="date">Date</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td class="name">Gotha</td>
-                    <td class="type">Weight classes</td>
-                    <td class="date">01-12-2016</td>
-                    <td><span class="label label-primary">View</span></td>
-                </tr>
-                <tr>
-                    <td class="name">Gotha</td>
-                    <td class="type">Weight classes</td>
-                    <td class="date">01-12-2016</td>
-                    <td><span class="label label-primary">View</span></td>
-                </tr>
-                <tr>
-                    <td class="name">Gotha</td>
-                    <td class="type">Weight classes</td>
-                    <td class="date">01-12-2016</td>
-                    <td><span class="label label-primary">View</span></td>
-                </tr>
-                <tr>
-                    <td class="name">Gotha</td>
-                    <td class="type">Weight classes</td>
-                    <td class="date">01-12-2016</td>
-                    <td><span class="label label-primary">View</span></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    </div>
+</div>
 
 </body>
 </html>

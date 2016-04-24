@@ -9,17 +9,14 @@
 <body>
 
 <div layout:fragment="content">
-  <div class="row" th:if="${currParticipant.isPresent()}">
+  <div class="row">
     <div class="col-md-4"
          th:include="fragments/participant-info :: participant-info"
-         th:with="participant=${currParticipant.get()}" />
-    <div class="col-md-4">
-      <p th:text="'Ranking groups: ' + ${competition.rankingGroups.toString()}"></p>
-      <p th:text="'Competing groups: ' + ${competition.competingGroups.toString()}"></p>
-      </div>
+         th:with="participant=${currParticipant.get()}"></div>
+    <div class="col-md-4"></div>
     <div class="col-md-4"
          th:include="fragments/lift-register-form :: register-lift"
-         th:with="participant=${currParticipant.get()}" />
+         th:with="participant=${currParticipant.get()}"></div>
   </div>
 
   <div class="row">

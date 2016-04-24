@@ -37,15 +37,12 @@ public class Group {
 
         @Override
         public boolean equals(Object o) {
-            if (o instanceof Tuple) {
-                return equals((Tuple) o);
-            } else {
-                return false;
-            }
+            return o instanceof Tuple && equals((Tuple) o);
         }
 
         public boolean equals(Tuple o) {
-            return this.fst.equals(o.fst) && this.snd.equals(o.snd);
+            return this.getFst().equals(o.getFst()) &&
+                    this.getSnd().equals(o.getSnd());
         }
 
         @Override
@@ -179,6 +176,7 @@ public class Group {
         List<Group> rankingGroups = createRankingGroups(competition);
         return chunkGroups(competition, rankingGroups, 10);
     }
+
     @Override
     public String toString() {
         String s = "Group: " + getParticipantsCount() + " " +

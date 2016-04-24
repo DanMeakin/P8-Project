@@ -154,8 +154,6 @@ public class DataLoader {
             lifters.add(l);
             c1.addParticipant(l, startingWeights.get(i));
         }
-        c1.allocateGroups();
-
         Participant p1 = c1.getParticipants().get(0);
         p1.setCheckedIn(true);
 
