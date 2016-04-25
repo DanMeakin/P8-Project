@@ -539,7 +539,7 @@ public class Competition {
      * @return true, if sign-up open, else false
      */
     public boolean isSignUpOpen() {
-        return getLastRegistrationDate().after(new GregorianCalendar().getTime());
+        return getLastRegistrationDate().after(new Date());
     }
 
     /**
@@ -550,7 +550,7 @@ public class Competition {
      * @return true, if sign-up closed, else false
      */
     public boolean isSignUpClosed() {
-        return !isSignUpOpen();
+        return new Date().after(getLastRegistrationDate());
     }
 
     /**
@@ -562,7 +562,13 @@ public class Competition {
      * @return true, if weigh-in started, else false
      */
     public boolean isWeighInStarted() {
-        return !isWeighInComplete() && new GregorianCalendar().getTime().equals(getCompetitionDate());
+        Calendar cal1 = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        cal1.setTime(new Date());
+        cal2.setTime(getCompetitionDate());
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&
+                !isWeighInComplete();
     }
 
     /**

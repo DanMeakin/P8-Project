@@ -135,12 +135,12 @@ public class DataLoader {
         );
 
         Competition c1 = new Competition(
-                "Super Awesome Competition!",
+                "Today's Competition",
                 club,
                 address,
                 Competition.CompetitionType.SINCLAIR,
-                new GregorianCalendar(2016, 5, 1).getTime(),
-                new GregorianCalendar(2015, 4, 16).getTime(),
+                new Date(),
+                new Date(),
                 50
         );
         competitionRepository.save(c1);
@@ -152,9 +152,20 @@ public class DataLoader {
                 Competition.CompetitionType.TOTAL_WEIGHT,
                 new GregorianCalendar(2016, 4, 1).getTime(),
                 new GregorianCalendar(2016, 3, 15).getTime(),
-                50
+                44
         );
         competitionRepository.save(c2);
+
+        Competition c3 = new Competition(
+                "Another amazing competition",
+                club,
+                address1,
+                Competition.CompetitionType.SINCLAIR,
+                new GregorianCalendar(2016, 5, 1).getTime(),
+                new GregorianCalendar(2016, 4, 16).getTime(),
+                30
+        );
+        competitionRepository.save(c3);
 
         List<Lifter> lifters = new ArrayList<>();
         for (int i = 0; i < names.size(); i++) {

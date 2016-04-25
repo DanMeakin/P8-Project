@@ -36,12 +36,11 @@ public class CompetitionController {
 
     /**
      * Controller method to create a new competition object when on the specified URL
-     *
      * @param model the Spring model object to pass to the view
-     * @return the new competition form view
+     * @return      the new competition form view
      */
-    @RequestMapping(value = "/new", method = RequestMethod.GET)
-    public String newCompetition(Model model) {
+    @RequestMapping(value="/new", method = RequestMethod.GET)
+    public String newCompetition(Model model){
         model.addAttribute("allClubs", clubService.findAll());
         model.addAttribute("competition", new Competition());
         return "new-competition";
@@ -55,9 +54,9 @@ public class CompetitionController {
      * @param model       the Spring model object to pass to the view
      * @return Returns a redirect to the front page
      */
-    @RequestMapping(value = "/new", method = RequestMethod.POST)
+    @RequestMapping(value="/new", method = RequestMethod.POST)
     public String createCompetition(@ModelAttribute Competition competition,
-                                    Model model) {
+                                    Model model){
         Address address = competition.getLocation();
         addressService.saveAddress(address);
         competitionService.save(competition);
@@ -84,6 +83,7 @@ public class CompetitionController {
             return "competition-dashboard";
         } else {
             return "redirect:/competition/" + competitionID + "/ranking-groups";
+            return "redirect:/competition/" + competition.getId();
         }
     }
 
@@ -108,7 +108,7 @@ public class CompetitionController {
         return "redirect:/competition/" + competition.getId() + "/sign-up";
     }
 
-    @RequestMapping(value = "/{competitionID}/remove", method = RequestMethod.POST)
+    @RequestMapping(value= "/{competitionID}/remove", method = RequestMethod.POST)
     public String removeLifterFromCompetition(@RequestParam(value = "id", required = false) Long id, @PathVariable long competitionID) {
         Competition competition = competitionService.findOne(competitionID);
         Lifter lifter = lifterService.findOne(id);
@@ -120,12 +120,12 @@ public class CompetitionController {
     /**
      * Participant information partial view.
      *
-     * @param model         the Spring model to pass to the view
+     * @param model the Spring model to pass to the view
      * @param participantID the ID# of the participant for whom to display info
      * @return the participant's information
      */
     @RequestMapping(value = "/participant-info/{participantID}", method = RequestMethod.GET)
-    public String displayParticipantInfo(Model model, @PathVariable long participantID) {
+    public String displayParticipantInfo(Model model, @PathVariable long participantID){
         model.addAttribute("participant", participantService.findOne(participantID));
         return "participant-info";
     }
@@ -139,12 +139,12 @@ public class CompetitionController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/{competitionID}/weigh-in/check-in", method = RequestMethod.POST)
+    @RequestMapping (value = "/{competitionID}/weigh-in/check-in", method = RequestMethod.POST)
     public String checkInParticipant(Model model,
                                      @RequestParam("participantID") long participantID,
                                      @RequestParam("bodyWeight") String bodyWeight,
                                      @RequestParam("startingSnatch") String startingSnatch,
-                                     @RequestParam("startingCJ") String startingCJ) {
+                                     @RequestParam("startingCJ") String startingCJ){
 
         Participant participant = participantService.findOne(participantID);
         HashMap<String, String> map = new HashMap<>();
