@@ -83,7 +83,6 @@ public class CompetitionController {
             return "competition-dashboard";
         } else {
             return "redirect:/competition/" + competitionID + "/ranking-groups";
-            return "redirect:/competition/" + competition.getId();
         }
     }
 
