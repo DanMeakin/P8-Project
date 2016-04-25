@@ -9,7 +9,7 @@
     <h3>Register Lift</h3>
     <p th:text="'Lift Weight: ' + ${participant.currentWeight} + ' kg'"/>
 
-    <form action="/competition/register-lift" method="post" >
+    <form action="/participant/register-lift/" method="post" >
         <div class="form-group row">
             <input type="hidden" th:value="${participant.id}" name="participantID"/>
             <div class="col-xs-4">

@@ -34,8 +34,10 @@
                 <tr th:each="comp : ${competitions}">
                     <td th:text="${comp.competitionName}" class="name">Comp name</td>
                     <td class="type">Comp type</td>
-                    <td th:text="${#calendars.format(comp.competitionDate, 'dd-MM-yyyy HH:mm')}" class="date">Comp date</td>
-                    <td th:text="${#calendars.format(comp.lastRegistrationDate, 'dd-MM-yyyy HH:mm')}" class="date">Last reg date</td>
+                    <!--<td th:text="${#calendars.format(comp.competitionDate, 'dd-MM-yyyy HH:mm')}" class="date">Comp date</td>
+                    <td th:text="${#calendars.format(comp.lastRegistrationDate, 'dd-MM-yyyy HH:mm')}" class="date">Last reg date</td>-->
+                    <td th:text="${comp.competitionDate}"></td>
+                    <td th:text="${comp.lastRegistrationDate}"></td>
                     <td><span class="label label-warning">Edit</span> <span class="label label-primary"><a th:href="|@{/competition/}${comp.id}/signup|">View</a></span> <span class="label label-success">Start</span></td>
                 </tr>
                 </tbody>

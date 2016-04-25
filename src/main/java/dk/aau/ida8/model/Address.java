@@ -14,6 +14,7 @@ public class Address {
     private String postcode;
     private String town;
 
+
     public Address() {
 
     }
@@ -25,20 +26,43 @@ public class Address {
         this.town = town;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getBuilding() {
         return building;
+    }
+
+    public void setBuilding(String building) {
+        this.building = building;
     }
 
     public String getStreet() {
         return street;
     }
 
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
     public String getPostcode() {
         return postcode;
+    }
+
+    public void setPostcode(String postcode) {
+        this.postcode = postcode;
     }
 
     public String getTown() {
         return town;
     }
 
+    public void setTown(String town) {
+        this.town = town;
+    }
 }

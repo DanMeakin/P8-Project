@@ -31,7 +31,7 @@
 <script>
     function submitRequest() {
 
-        $.post("/competition/increase-weight/", $('#increase-weight-form').serialize(), function(data) {
+        $.post("/participant/increase-weight/", $('#increase-weight-form').serialize(), function(data) {
             console.log(data);
             var response = $.parseJSON(data);
             if(response.code == "200"){

@@ -1,5 +1,6 @@
 package dk.aau.ida8.model;
 
+import org.hibernate.annotations.Cascade;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -117,6 +118,46 @@ public class Competition {
         this.maxNumParticipants = maxNumParticipants;
         this.host = host;
     }
+
+    /*******************************
+     * SETTERS REQUIRED FOR SPRING *
+     *******************************/
+
+    public void setCompetitionName(String competitionName) {
+        this.competitionName = competitionName;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setCompetitionType(CompetitionType competitionType) {
+        this.competitionType = competitionType;
+    }
+
+    public void setHost(Club host) {
+        this.host = host;
+    }
+
+    public void setLocation(Address location) {
+        this.location = location;
+    }
+
+    public void setCompetitionDate(Date competitionDate) {
+        this.competitionDate = competitionDate;
+    }
+
+    public void setLastRegistrationDate(Date lastRegistrationDate) {
+        this.lastRegistrationDate = lastRegistrationDate;
+    }
+
+    public void setMaxNumParticipants(int maxNumParticipants) {
+        this.maxNumParticipants = maxNumParticipants;
+    }
+
+    /*************************
+     * END OF SPRING SETTERS *
+     *************************/
 
     /**
      * Creates an empty Competition object.
