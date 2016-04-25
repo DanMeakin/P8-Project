@@ -501,9 +501,10 @@ public class Competition {
      * time weigh-in is finished.
      */
     public void finishWeighIn() {
-        getParticipants().stream()
+        List<Participant> ps = getParticipants().stream()
                 .filter(Participant::isNotCheckedIn)
-                .forEach(this::removeParticipant);
+                .collect(Collectors.toList());
+        ps.forEach(this::removeParticipant);
         allocateGroups();
     }
 

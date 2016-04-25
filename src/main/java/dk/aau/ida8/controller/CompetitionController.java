@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.InvalidParameterException;
 import java.util.*;
 
 @Controller
@@ -35,8 +36,8 @@ public class CompetitionController {
 
     /**
      * Controller method to create a new competition object when on the specified URL
-     * @param model
-     * @return
+     * @param model the Spring model object to pass to the view
+     * @return      the new competition form view
      */
     @RequestMapping(value="/new", method = RequestMethod.GET)
     public String newCompetition(Model model){
@@ -46,8 +47,11 @@ public class CompetitionController {
     }
 
     /**
-     * Controller method to save a Sinclair competition. The save method is called from CompetitionService.
-     * @param competition
+     * Creates a new competition, and redirects to the index page.
+     *
+     * @param competition the Competition object created in the new competition
+     *                    page
+     * @param model       the Spring model object to pass to the view
      * @return Returns a redirect to the front page
      */
     @RequestMapping(value="/new", method = RequestMethod.POST)
@@ -74,7 +78,7 @@ public class CompetitionController {
         return "lift-register-form";
     }
 
-    @RequestMapping("/{competitionID}")
+    @RequestMapping("/{competitionID}/dashboard")
     public String competitionDashboard(Model model, @PathVariable long competitionID) {
         Competition competition = competitionService.findOne(competitionID);
         model.addAttribute("competition", competition);
@@ -110,6 +114,7 @@ public class CompetitionController {
         return "redirect:/competition/" + competition.getId() + "/signup";
     }
 
+<<<<<<< HEAD
     @RequestMapping(value= "/{competitionID}/remove", method = RequestMethod.POST)
     public String removeLifterFromCompetition(@RequestParam(value = "id", required = false) Long id, @PathVariable long competitionID) {
         Competition competition = competitionService.findOne(competitionID);
@@ -132,6 +137,8 @@ public class CompetitionController {
         return "participant-info";
     }
 
+=======
+>>>>>>> f4586ab88dd2cc017efd1ab4743e869df0d42621
     @RequestMapping(value = "/{competitionID}/weigh-in", method = RequestMethod.GET)
     public String controlWeighInParticipants(Model model, @PathVariable long competitionID) {
         Competition competition = competitionService.findOne(competitionID);
@@ -141,24 +148,72 @@ public class CompetitionController {
     }
 
     @ResponseBody
-    @RequestMapping (value = "/{competitionID}/weigh-in/", method = RequestMethod.POST)
-    public String registerParticipantWeighIn(Model model, @RequestParam("participantID") long participantID,
-                                                            @RequestParam("action") String isChecked){
+    @RequestMapping (value = "/{competitionID}/weigh-in/check-in", method = RequestMethod.POST)
+    public String checkInParticipant(Model model,
+                                     @RequestParam("participantID") long participantID,
+                                     @RequestParam("bodyWeight") String bodyWeight,
+                                     @RequestParam("startingSnatch") String startingSnatch,
+                                     @RequestParam("startingCJ") String startingCJ){
+
         Participant participant = participantService.findOne(participantID);
         HashMap<String, String> map = new HashMap<>();
 
-        if(isChecked.equals("checked")){
+        double bw = Double.parseDouble(bodyWeight);
+
+        int firstSnatch = Integer.parseInt(startingSnatch);
+        int firstCj = Integer.parseInt(startingCJ);
+
+        try {
+            participant.setBodyWeight(bw);
+            participant.setStartingSnatchWeight(firstSnatch);
+            participant.setStartingCleanAndJerkWeight(firstCj);
             participant.setCheckedIn(true);
+
             map.put("code", "200");
             map.put("msg", "All good, participant checked in!");
-        } else if(isChecked.equals("unchecked")){
-            participant.setCheckedIn(false);
-            map.put("code", "200");
-            map.put("msg", "All good, participant checked out!");
+
+        } catch (NumberFormatException e){
+            String msg = "unable to process input starting Snatch '" + startingSnatch + "' or starting Clean & Jerk '"
+                    + startingCJ + "' (a number is required)";
+            map.put("msg", msg);
+            map.put("code", "400");
+        } catch (InvalidParameterException e){
+            String msg = "unable to process input starting Snatch '" + startingSnatch + "' or starting Clean & Jerk '"
+                    + startingCJ + "' (the first lift must be greater than 0)";
+            map.put("msg", msg);
+            map.put("code", "400");
         }
+
         participantService.saveParticipant(participant);
-        model.addAttribute("participants", participant.getCompetition().getParticipants());
         Gson gson = new Gson();
         return gson.toJson(map);
     }
+
+    @ResponseBody
+    @RequestMapping (value = "/{competitionID}/weigh-in/check-out", method = RequestMethod.POST)
+    public String checkOutParticipant(Model model,
+                                      @RequestParam("participantID") long participantID){
+
+        Participant participant = participantService.findOne(participantID);
+
+        HashMap<String, String> map = new HashMap<>();
+
+        participant.setCheckedIn(false);
+        map.put("code", "200");
+        map.put("msg", "All good, participant checked out!");
+
+        participantService.saveParticipant(participant);
+
+        Gson gson = new Gson();
+        return gson.toJson(map);
+    }
+
+    @RequestMapping (value = "/{competitionID}/groups", method = RequestMethod.POST)
+    public String displayGroups(Model model, @PathVariable long competitionID){
+        Competition competition = competitionService.findOne(competitionID);
+        competition.finishWeighIn();
+        competitionService.save(competition);
+        return "competition-groups";
+    }
+
 }
