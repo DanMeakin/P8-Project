@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="ranking-groups">
+    <table class="table">
+        <thead>
+        <tr>
+            <th colspan="8"><h4 class="text-uppercase" th:text="'Ranking group ' + ${group.id}"></h4></th>
+        </tr>
+        <tr>
+            <th rowspan="2">Rank</th>
+            <th rowspan="2">Name</th>
+            <th rowspan="2">club</th>
+            <th rowspan="2">body weight</th>
+            <th rowspan="2">Sinclair score</th>
+            <th rowspan="2">Total score</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="p : ${group.getParticipants()}">
+            <td th:text="${p.rank}"></td>
+            <td th:text="${p.fullName}"></td>
+            <td th:text="${p.clubName}"></td>
+            <td th:text="${p.bodyWeight}"></td>
+            <td th:text="${p.sinclairScore}"></td>
+            <td th:text="${p.totalScore}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+</body>
+</html>

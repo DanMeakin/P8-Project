@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="layouts/main">
+<head>
+    <title>Weightlifting Management System</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div th:each="g : ${rankingGroups}">
+        <div th:include="fragments/ranking-groups-fragment :: ranking-groups"
+             th:with="group=${g}"
+        />
+    </div>
+</div>
+
+</body>
+</html>

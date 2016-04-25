@@ -9,6 +9,7 @@
 <body>
 <div layout:fragment="content">
 
+    <div th:if="${!competition.isCompetitionComplete()}"></div>
     <form th:action="'/competition/' + ${competition.id} + '/dashboard'" method="get">
         <button type="submit" class="btn btn-success">Start Competition</button>
     </form>

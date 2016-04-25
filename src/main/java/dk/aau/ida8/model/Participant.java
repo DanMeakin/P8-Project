@@ -717,13 +717,13 @@ public class Participant {
     }
 
     /**
-     * Calculates the total score for this participation.
+     * Calculates the sinclair score for this participation.
      *
      * This method uses the ScoreStrategy associated with the Competition
      * in which this participation takes place. The strategy calculates the
      * proper score, and this method returns this score.
      *
-     * @return the total score for this participation
+     * @return the sinclair score for this participation
      */
     public double getSinclairScore(){
         return new SinclairCalculator().apply(this);
