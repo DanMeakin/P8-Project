@@ -6,12 +6,12 @@
 </head>
 <body>
 <div th:fragment="competition-navigation-buttons">
-    <a class="btn btn-default" href="./participants" role="button">View Participants</a>
-    <a th:class="'btn btn-default' + (${competition.isSignUpOpen()}? '' : ' disabled')" href="./sign-up" role="button">Sign-Up</a>
-    <a th:class="'btn btn-default' + (${competition.isWeighInStarted()}? '' : ' disabled')" href="./weigh-in" role="button">Weigh-In</a>
-    <a th:class="'btn btn-default' + (${competition.isCompetitionStarted()}? '' : ' disabled')" href="./dashboard" role="button">Dashboard</a>
-    <a th:class="'btn btn-default' + (${competition.isWeighInComplete()}? '' : ' disabled')" href="./groups" role="button">View Groups</a>
-    <a th:class="'btn btn-default' + (${competition.isCompetitionComplete()}? '' : ' disabled')" href="./results" role="button">View Results</a>
+    <a class="btn btn-default" th:href="@{/competition/{id}/participants(id=${competition.id})}" role="button">View Participants</a>
+    <a th:class="'btn btn-default' + (${competition.isSignUpOpen()}? '' : ' disabled')" th:href="@{/competition/{id}/sign-up(id=${competition.id})}" role="button">Sign-Up</a>
+    <a th:class="'btn btn-default' + (${competition.isWeighInStarted()}? '' : ' disabled')" th:href="@{/competition/{id}/weigh-in(id=${competition.id})}" role="button">Weigh-In</a>
+    <a th:class="'btn btn-default' + (${competition.isCompetitionStarted()}? '' : ' disabled')" th:href="@{/competition/{id}/dashboard(id=${competition.id})}" role="button">Dashboard</a>
+    <a th:class="'btn btn-default' + (${competition.isWeighInComplete()}? '' : ' disabled')" th:href="@{/competition/{id}/groups(id=${competition.id})}" role="button">View Groups</a>
+    <a th:class="'btn btn-default' + (${competition.isCompetitionComplete()}? '' : ' disabled')" th:href="@{/competition/{id}/results(id=${competition.id})}" role="button">View Results</a>
 </div>
 
 </body>

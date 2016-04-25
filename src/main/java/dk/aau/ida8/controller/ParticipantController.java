@@ -75,7 +75,7 @@ public class ParticipantController {
         participantService.saveParticipant(p);
         Competition c = p.getCompetition();
         model.addAttribute("participant", p);
-        return "redirect:/competition/" + c.getId();
+        return "redirect:/competition/" + c.getId() + "/dashboard";
     }
 
     /**

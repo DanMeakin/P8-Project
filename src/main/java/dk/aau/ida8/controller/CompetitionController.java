@@ -82,7 +82,7 @@ public class CompetitionController {
             model.addAttribute("currParticipant", competition.currentParticipant());
             return "competition-dashboard";
         } else {
-            return "competition-overview";
+            return "redirect:/competition/" + competition.getId();
         }
     }
 
