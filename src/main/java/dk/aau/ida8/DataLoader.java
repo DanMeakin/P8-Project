@@ -134,10 +134,26 @@ public class DataLoader {
                 100
         );
 
-        Competition c1 = new Competition("Super Awesome Competition!", club, address, Competition.CompetitionType.SINCLAIR, new Date(), new Date(), 50);
+        Competition c1 = new Competition(
+                "Super Awesome Competition!",
+                club,
+                address,
+                Competition.CompetitionType.SINCLAIR,
+                new GregorianCalendar(2016, 5, 1).getTime(),
+                new GregorianCalendar(2015, 4, 16).getTime(),
+                50
+        );
         competitionRepository.save(c1);
 
-        Competition c2 = new Competition("Super Awesome Competition!", club1, address1, Competition.CompetitionType.TOTAL_WEIGHT, new Date(), new Date(), 50);
+        Competition c2 = new Competition(
+                "Super Awesome Competition!",
+                club1,
+                address1,
+                Competition.CompetitionType.TOTAL_WEIGHT,
+                new GregorianCalendar(2016, 4, 1).getTime(),
+                new GregorianCalendar(2016, 3, 15).getTime(),
+                50
+        );
         competitionRepository.save(c2);
 
         List<Lifter> lifters = new ArrayList<>();
@@ -154,8 +170,6 @@ public class DataLoader {
             lifters.add(l);
             c1.addParticipant(l, startingWeights.get(i));
         }
-        c1.getParticipants().forEach(Participant::checkIn);
-        c1.finishWeighIn();
 
         competitionRepository.save(c1);
     }

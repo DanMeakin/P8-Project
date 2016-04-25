@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorator="layouts/main">
+<head>
+    <title>Weightlifting Management System</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <h1>Competition Details</h1>
+        </div>
+    </div>
+
+    <div class="row">
+    <div class="col-sm-9">
+        <table class="table table-striped table-hover">
+            <tbody>
+            <tr>
+                <td>Hosting Club</td>
+                <td th:text="${competition.hostName}">AK Jyden</td>
+            </tr>
+            <tr>
+                <td>Address</td>
+                <td th:text="${competition.location}">Skydebanevej 12</td>
+            </tr>
+            <tr>
+                <td>Date</td>
+                <td th:text="${#calendars.format(competition.competitionDate, 'dd-MM-yyyy HH:mm')}">01-01-2015</td>
+            </tr>
+            <tr>
+                <td>Registration date</td>
+                <td th:text="${#calendars.format(competition.lastRegistrationDate, 'dd-MM-yyyy HH:mm')}">01-01-2015</td>
+            </tr>
+            <tr>
+                <td>No. participants</td>
+                <td th:text="${competition.participants.size() + '/' + competition.maxNumParticipants}">13/50</td>
+            </tr>
+            <tr>
+                <td>Type</td>
+                <td th:text="${competition.competitionType}">Sinclair</td>
+            </tr>
+            </tbody>
+        </table>
+        <div th:text="'Sign-Up open: ' + ${competition.isSignUpOpen()}"></div>
+        <div th:text="'Sign-Up closed: ' + ${competition.isSignUpClosed()}"></div>
+        <div th:text="'Weigh-in started: ' + ${competition.isWeighInStarted()}"></div>
+        <div th:text="'Weigh-in complete: ' + ${competition.isWeighInComplete()}"></div>
+        <div th:text="'Competition started: ' + ${competition.isCompetitionStarted()}"></div>
+        <div th:text="'Competition complete: ' + ${competition.isCompetitionComplete()}"></div>
+        <div th:text="${new GregorianCalendar()}"></div>
+    </div>
+        <div class="col-sm-3">
+            <div class="btn-group visible-xs" role="group"
+                     th:include="fragments/competition-navigation-buttons :: competition-navigation-buttons"></div>
+            <div class="btn-group-vertical visible-sm visible-md visible-lg" role="group"
+                     th:include="fragments/competition-navigation-buttons :: competition-navigation-buttons"></div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

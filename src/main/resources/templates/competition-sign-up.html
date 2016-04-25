@@ -64,7 +64,7 @@
     </div>
 
     <div class="col-md-6">
-        <form th:action="|@{/competition/}${competition.id}/signup|" method="GET">
+        <form th:action="|@{/competition/}${competition.id}/sign-up|" method="GET">
             <div class="form-group">
                 <label>Select club</label>
                 <select class="form-control" id="list-clubs">
@@ -95,7 +95,7 @@
                 <td th:text="${lifter.Gender}">gender</td>
                 <td th:text="${#calendars.format(lifter.dateOfBirth, 'dd-MM-yyyy')}">01-01-2010</td>
                 <td>
-                    <form th:action="|@{/competition/}${competition.id}/signup?id=${lifter.id}|" method="POST"><input type="submit" value="+" /></form></td>
+                    <form th:action="|@{/competition/}${competition.id}/sign-up?id=${lifter.id}|" method="POST"><input type="submit" value="+" /></form></td>
                 <td class="lifter-id" style="visibility: hidden;" th:text="${lifter.id}"></td>
             </tr>
             </tbody>

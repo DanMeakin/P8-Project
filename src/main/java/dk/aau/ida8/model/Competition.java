@@ -58,8 +58,18 @@ import java.util.stream.IntStream;
 public class Competition {
 
     public enum CompetitionType {
-        SINCLAIR,
-        TOTAL_WEIGHT
+        SINCLAIR("Sinclair"),
+        TOTAL_WEIGHT("Total weight");
+
+        private final String name;
+
+        private CompetitionType(String name) {
+            this.name = name;
+        }
+
+        public String toString() {
+            return name;
+        }
     }
 
     public CompetitionType getCompetitionType() {
@@ -364,6 +374,19 @@ public class Competition {
     }
 
     /**
+     * Gets the name of the club hosting this competition.
+     *
+     * @return the name of the hosting club
+     */
+    public String getHostName() {
+        if (host == null) {
+            return "";
+        } else {
+            return host.getName();
+        }
+    }
+
+    /**
      * Calculates a specific participant's rank within the competition.
      *
      * @param participant                the participant for whom the ranking
@@ -484,9 +507,9 @@ public class Competition {
      * @return list of all available start numbers
      */
     public List<Integer> availableStartNumbers() {
-        List<Integer> remainingNumbers = new ArrayList<>();
-        IntStream.range(1, getMaxNumParticipants())
-                .forEach(remainingNumbers::add);
+        List<Integer> remainingNumbers = IntStream.range(1, getMaxNumParticipants())
+                .boxed()
+                .collect(Collectors.toList());
         getParticipants()
                 .forEach(p -> remainingNumbers.remove((Integer) p.getStartNumber()));
         return remainingNumbers;
@@ -516,7 +539,7 @@ public class Competition {
      * @return true, if sign-up open, else false
      */
     public boolean isSignUpOpen() {
-        return getLastRegistrationDate().after(new Date());
+        return getLastRegistrationDate().after(new GregorianCalendar().getTime());
     }
 
     /**
@@ -538,8 +561,8 @@ public class Competition {
      *
      * @return true, if weigh-in started, else false
      */
-    public boolean isWeightInStarted() {
-        return !isWeighInComplete() && new Date().equals(getCompetitionDate());
+    public boolean isWeighInStarted() {
+        return !isWeighInComplete() && new GregorianCalendar().getTime().equals(getCompetitionDate());
     }
 
     /**
@@ -557,6 +580,18 @@ public class Competition {
     }
 
     /**
+     * Determines whether the competition has started.
+     *
+     * A competition has started when the weigh-in is complete, and lifting has
+     * begun or is due to begin.
+     *
+     * @return true, if complete, else false
+     */
+    public boolean isCompetitionStarted() {
+        return isWeighInComplete() && !isCompetitionComplete();
+    }
+
+    /**
      * Determines whether the competition is complete.
      *
      * A competition is complete when all participants have undertaken all of
@@ -565,11 +600,15 @@ public class Competition {
      * @return true, if complete, else false
      */
     public boolean isCompetitionComplete() {
-        for (Participant p : getParticipants()) {
-            if (!p.allLiftsComplete()) {
-                return false;
+        if (isWeighInComplete()) {
+            for (Participant p : getParticipants()) {
+                if (!p.allLiftsComplete()) {
+                    return false;
+                }
             }
+            return true;
+        } else {
+            return false;
         }
-        return true;
     }
 }
