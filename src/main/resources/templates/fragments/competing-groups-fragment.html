@@ -6,8 +6,11 @@
 </head>
 <body>
 <div th:fragment="competing-groups">
-    <table>
+    <table class="table">
         <thead>
+        <tr>
+            <th colspan="8"><h4 class="text-uppercase" th:text="'Group ' + ${group.id}"></h4></th>
+        </tr>
         <tr>
             <th rowspan="2">No.</th>
             <th rowspan="2">Name</th>
@@ -15,15 +18,12 @@
             <th rowspan="2">Sex</th>
             <th rowspan="2">Club</th>
             <th rowspan="2">Body weight</th>
-            <th class="center-heading" colspan="4">Starting weight</th>
-        </tr>
-        <tr>
             <th>Snatch</th>
-            <th>Clean&amp;Jerk</th>
+            <th>Clean &amp; Jerk</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="p : participants">
+        <tr th:each="p : ${group.getParticipants()}">
             <td th:text="${p.startNumber}"></td>
             <td th:text="${p.fullName}"></td>
             <td th:text="${p.dateOfBirthString}"></td>
