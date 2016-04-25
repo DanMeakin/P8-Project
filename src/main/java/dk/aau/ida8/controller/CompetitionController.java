@@ -110,6 +110,15 @@ public class CompetitionController {
         return "redirect:/competition/" + competition.getId() + "/signup";
     }
 
+    @RequestMapping(value= "/{competitionID}/remove", method = RequestMethod.POST)
+    public String removeLifterFromCompetition(@RequestParam(value = "id", required = false) Long id, @PathVariable long competitionID) {
+        Competition competition = competitionService.findOne(competitionID);
+        Lifter lifter = lifterService.findOne(id);
+        competition.removeParticipant(lifter);
+        competitionService.save(competition);
+        return "redirect:/competition/" + competition.getId() + "/signup";
+    }
+
     /**
      * Participant information partial view.
      *
