@@ -10,9 +10,13 @@
 
 <div layout:fragment="content">
   <div class="row">
-    <div class="col-md-4" th:include="fragments/participant-info :: participant-info"/>
-    <div class="col-md-4"/>
-    <div class="col-md-4" th:include="fragments/lift-register-form :: register-lift" />
+    <div class="col-md-4"
+         th:include="fragments/participant-info :: participant-info"
+         th:with="participant=${currParticipant.get()}"></div>
+    <div class="col-md-4"></div>
+    <div class="col-md-4"
+         th:include="fragments/lift-register-form :: register-lift"
+         th:with="participant=${currParticipant.get()}"></div>
   </div>
 
   <div class="row">
@@ -116,8 +120,8 @@
   $( document ).ready(function() {
     $( ".increase-weight, .correct-weight, .correct-lifts" ).click(function(event) {
       var pathElems = event.target.id.split("-");
-      var path = "/competition/" + pathElems[0] + "-" + pathElems[1] + "/" + pathElems[2];
-      $.get(path, function(data) {
+      var path = "/participant/" + pathElems[0] + "-" + pathElems[1] + "/" + pathElems[2];
+       $.get(path, function(data) {
         $( "#competition-modal" ).html(data);
       });
     });

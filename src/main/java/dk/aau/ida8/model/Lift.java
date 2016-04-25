@@ -6,6 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import java.security.InvalidParameterException;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * This class represents one lift carried out within a weightlifting
@@ -47,7 +48,7 @@ public class Lift {
     private LiftOutcome outcome;
     private LiftType liftType;
     private int weight;
-    private transient Instant timeLiftCompleted;
+    private LocalDateTime timestamp;
 
     @ManyToOne
     private Participant participant;
@@ -99,7 +100,7 @@ public class Lift {
         this.weight = weight;
 
         // also instantiate an instant when the lift was completed
-        this.timeLiftCompleted = Instant.now();
+        this.timestamp = LocalDateTime.now();
     }
 
     @Override
@@ -178,7 +179,7 @@ public class Lift {
         return (getOutcome().equals(LiftOutcome.ABSTAIN));
     }
 
-    public Instant getTimeLiftCompleted() {
-        return timeLiftCompleted;
+    public LocalDateTime getTimestamp() {
+        return timestamp;
     }
 }

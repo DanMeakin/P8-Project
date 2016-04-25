@@ -134,14 +134,14 @@ public class DataLoader {
                 100
         );
 
-        Competition c1 = new CompetitionSinclair("Super Awesome Competition!", club, address, Competition.CompetitionType.SINCLAIR, new Date(), new Date(), 50);
+        Competition c1 = new Competition("Super Awesome Competition!", club, address, Competition.CompetitionType.SINCLAIR, new Date(), new Date(), 50);
         competitionRepository.save(c1);
 
-        Competition c2 = new CompetitionTotalWeight("Super Awesome Competition!", club1, address1, Competition.CompetitionType.TOTAL_WEIGHT, new Date(), new Date(), 50);
+        Competition c2 = new Competition("Super Awesome Competition!", club1, address1, Competition.CompetitionType.TOTAL_WEIGHT, new Date(), new Date(), 50);
         competitionRepository.save(c2);
 
         List<Lifter> lifters = new ArrayList<>();
-        for (int i = 0; i < names.size() - 5; i++) {
+        for (int i = 0; i < names.size(); i++) {
             Lifter l = new Lifter(
                     names.get(i),
                     surnames.get(i),
@@ -154,14 +154,9 @@ public class DataLoader {
             lifters.add(l);
             c1.addParticipant(l, startingWeights.get(i));
         }
+        c1.getParticipants().forEach(Participant::checkIn);
+        c1.finishWeighIn();
 
         competitionRepository.save(c1);
-
-
-    }
-
-    public void addLifter() {
-        this.createLifters();
-
     }
 }

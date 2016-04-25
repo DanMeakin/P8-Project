@@ -68,6 +68,19 @@ public class Lifter {
         this.active = true;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Lifter) {
+            return equals((Lifter) o);
+        } else {
+            return false;
+        }
+    }
+
+    public boolean equals(Lifter l) {
+        return getId() == l.getId();
+    }
+
     /**
      * Adds a Participant instance for this Lifter.
      *

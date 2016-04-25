@@ -41,7 +41,7 @@
 <script>
     function submitRequest() {
 
-        $.post("/competition/correct-lifts/", $('#correct-lift-form').serialize(), function(data) {
+        $.post("/participant/correct-lifts/", $('#correct-lift-form').serialize(), function(data) {
             console.log(data);
             var response = $.parseJSON(data);
             if(response.code == "200"){

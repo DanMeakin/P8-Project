@@ -35,7 +35,7 @@ public class CompetingComparator implements Comparator<Participant> {
                 compareWeights(),
                 compareAttempts(),
                 compareTimestamps(),
-                compareIds()
+                compareStartNumbers()
         );
 
         for (Integer comparatorValue : comparators) {
@@ -74,15 +74,27 @@ public class CompetingComparator implements Comparator<Participant> {
             return 1;
         }
 
-        if(p1Count < 3 ^ p2Count < 3) {
-            Lift p1FirstSnatch = p1.getLifts().get(0);
-            Lift p2FirstSnatch = p2.getLifts().get(0);
-            return p1FirstSnatch.getTimeLiftCompleted().compareTo(p2FirstSnatch.getTimeLiftCompleted());
+        if (p1Count < 3 ^ p2Count < 3) {
+            if (p1.getLiftsCount() == 0) {
+                return -1;
+            } else if (p2.getLiftsCount() == 0) {
+                return 1;
+            } else {
+                Lift p1FirstSnatch = p1.getLifts().get(0);
+                Lift p2FirstSnatch = p2.getLifts().get(0);
+                return p1FirstSnatch.getTimestamp().compareTo(p2FirstSnatch.getTimestamp());
+            }
 
-        } else if(p1Count > 3 ^ p2Count > 3){
-            Lift p1FirstCJ = p1.getLifts().get(3);
-            Lift p2FirstCJ = p2.getLifts().get(3);
-            return p1FirstCJ.getTimeLiftCompleted().compareTo(p2FirstCJ.getTimeLiftCompleted());
+        } else if (p1Count > 3 ^ p2Count > 3){
+            if (p1.getLiftsCount() <= 3) {
+                return -1;
+            } else if (p2.getLiftsCount() <= 3) {
+                return 1;
+            } else {
+                Lift p1FirstCJ = p1.getLifts().get(3);
+                Lift p2FirstCJ = p2.getLifts().get(3);
+                return p1FirstCJ.getTimestamp().compareTo(p2FirstCJ.getTimestamp());
+            }
         }
 
         return 0;
@@ -150,8 +162,8 @@ public class CompetingComparator implements Comparator<Participant> {
      *
      * @return comparator value after carrying-out comparison
      */
-    private int compareIds() {
-        return (int) (p1.getId() - p2.getId());
+    private int compareStartNumbers() {
+        return (int) (p1.getStartNumber() - p2.getStartNumber());
     }
 
 }
