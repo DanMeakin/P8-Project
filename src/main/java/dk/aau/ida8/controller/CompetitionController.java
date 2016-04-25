@@ -114,7 +114,6 @@ public class CompetitionController {
         return "redirect:/competition/" + competition.getId() + "/signup";
     }
 
-<<<<<<< HEAD
     @RequestMapping(value= "/{competitionID}/remove", method = RequestMethod.POST)
     public String removeLifterFromCompetition(@RequestParam(value = "id", required = false) Long id, @PathVariable long competitionID) {
         Competition competition = competitionService.findOne(competitionID);
@@ -137,8 +136,6 @@ public class CompetitionController {
         return "participant-info";
     }
 
-=======
->>>>>>> f4586ab88dd2cc017efd1ab4743e869df0d42621
     @RequestMapping(value = "/{competitionID}/weigh-in", method = RequestMethod.GET)
     public String controlWeighInParticipants(Model model, @PathVariable long competitionID) {
         Competition competition = competitionService.findOne(competitionID);
@@ -213,6 +210,9 @@ public class CompetitionController {
         Competition competition = competitionService.findOne(competitionID);
         competition.finishWeighIn();
         competitionService.save(competition);
+
+        model.addAttribute("competingGroups", competition.getCompetingGroups());
+        model.addAttribute("competition", competition);
         return "competition-groups";
     }
 
