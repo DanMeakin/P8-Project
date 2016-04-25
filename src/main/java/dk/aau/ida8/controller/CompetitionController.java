@@ -63,19 +63,12 @@ public class CompetitionController {
         return "redirect:/";
     }
 
-    /**
-     * Displays the view to allow the users to register a new lift for a given
-     * Participant.
-     *
-     * @param model the Spring model object to pass to the view
-     * @param participantID the ID# of the participant for whom to register a
-     *                      lift
-     * @return lift register form view
-     */
-    @RequestMapping(value = "/register-lift/{participantID}", method = RequestMethod.GET)
-    public String liftOutcomeForm(Model model, @PathVariable long participantID) {
-        model.addAttribute("participant", participantService.findOne(participantID));
-        return "lift-register-form";
+
+    @RequestMapping("/{competitionID}")
+    public String competitionOverview(Model model, @PathVariable long competitionID) {
+        Competition competition = competitionService.findOne(competitionID);
+        model.addAttribute("competition", competition);
+        return "competition-overview";
     }
 
     @RequestMapping("/{competitionID}/dashboard")
@@ -93,7 +86,7 @@ public class CompetitionController {
         }
     }
 
-    @RequestMapping("/{competitionID}/signup")
+    @RequestMapping("/{competitionID}/sign-up")
     public String competitionSignup(@RequestParam(value = "id", required = false, defaultValue = "1") Long id, Model model, @PathVariable long competitionID) {
         Competition competition = competitionService.findOne(competitionID);
         Club currentClub = clubService.findOne(id);
@@ -102,16 +95,16 @@ public class CompetitionController {
         model.addAttribute("participants", competition.getParticipants());
         model.addAttribute("clubs", clubService.findAll());
         model.addAttribute("lifters", currentClub.getLifters());
-        return "competition-signup";
+        return "competition-sign-up";
     }
 
-    @RequestMapping(value = "/{competitionID}/signup", method = RequestMethod.POST)
+    @RequestMapping(value = "/{competitionID}/sign-up", method = RequestMethod.POST)
     public String signupLifterToCompetition(@RequestParam(value = "id", required = false) Long id, @PathVariable long competitionID) {
         Competition competition = competitionService.findOne(competitionID);
         Lifter lifter = lifterService.findOne(id);
         competition.addParticipant(lifter, 0);
         competitionService.save(competition);
-        return "redirect:/competition/" + competition.getId() + "/signup";
+        return "redirect:/competition/" + competition.getId() + "/sign-up";
     }
 
     @RequestMapping(value= "/{competitionID}/remove", method = RequestMethod.POST)

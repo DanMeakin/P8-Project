@@ -51,7 +51,6 @@
                 <th>Start no.</th>
                 <th>Name</th>
                 <th>Club</th>
-                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -59,14 +58,13 @@
                 <td th:text="${p.startNumber}">1</td>
                 <td th:text="${p.forename}">Lotte</td>
                 <td>AK Jyden</td>
-                <td><form th:action="|@{/competition/}${competition.id}/remove?id=${p.getLifter().getId()}|" method="POST"><input type="submit" value="-" /></form></td>
             </tr>
             </tbody>
         </table>
     </div>
 
     <div class="col-md-6">
-        <form th:action="|@{/competition/}${competition.id}/signup|" method="GET">
+        <form th:action="|@{/competition/}${competition.id}/sign-up|" method="GET">
             <div class="form-group">
                 <label>Select club</label>
                 <select class="form-control" id="list-clubs">
@@ -96,7 +94,9 @@
                 <td th:text="${lifter.surname}"></td>
                 <td th:text="${lifter.Gender}">gender</td>
                 <td th:text="${#calendars.format(lifter.dateOfBirth, 'dd-MM-yyyy')}">01-01-2010</td>
-                <td><form th:action="|@{/competition/}${competition.id}/signup?id=${lifter.id}|" method="POST"><input type="submit" value="+" /></form></td>
+                <td>
+                    <form th:action="|@{/competition/}${competition.id}/sign-up?id=${lifter.id}|" method="POST"><input type="submit" value="+" /></form></td>
+                <td class="lifter-id" style="visibility: hidden;" th:text="${lifter.id}"></td>
             </tr>
             </tbody>
         </table>

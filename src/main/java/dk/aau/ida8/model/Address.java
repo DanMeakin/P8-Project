@@ -1,6 +1,7 @@
 package dk.aau.ida8.model;
 
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -24,6 +25,11 @@ public class Address {
         this.street = street;
         this.postcode = postcode;
         this.town = town;
+    }
+
+    public String toString() {
+        return getStreet() + " " + getBuilding() + ", " +
+                getPostcode() + " " + getTown();
     }
 
     public long getId() {
