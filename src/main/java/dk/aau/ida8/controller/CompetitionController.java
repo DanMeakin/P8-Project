@@ -36,8 +36,8 @@ public class CompetitionController {
 
     /**
      * Controller method to create a new competition object when on the specified URL
-     * @param model
-     * @return
+     * @param model the Spring model object to pass to the view
+     * @return      the new competition form view
      */
     @RequestMapping(value="/new", method = RequestMethod.GET)
     public String newCompetition(Model model){
@@ -47,8 +47,11 @@ public class CompetitionController {
     }
 
     /**
-     * Controller method to save a Sinclair competition. The save method is called from CompetitionService.
-     * @param competition
+     * Creates a new competition, and redirects to the index page.
+     *
+     * @param competition the Competition object created in the new competition
+     *                    page
+     * @param model       the Spring model object to pass to the view
      * @return Returns a redirect to the front page
      */
     @RequestMapping(value="/new", method = RequestMethod.POST)
@@ -75,7 +78,7 @@ public class CompetitionController {
         return "lift-register-form";
     }
 
-    @RequestMapping("/{competitionID}")
+    @RequestMapping("/{competitionID}/dashboard")
     public String competitionDashboard(Model model, @PathVariable long competitionID) {
         Competition competition = competitionService.findOne(competitionID);
         model.addAttribute("competition", competition);
