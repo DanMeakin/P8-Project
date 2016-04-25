@@ -154,8 +154,7 @@ public class DataLoader {
             lifters.add(l);
             c1.addParticipant(l, startingWeights.get(i));
         }
-        c1.getParticipants().forEach(Participant::checkIn);
-        c1.finishWeighIn();
+
 
         competitionRepository.save(c1);
     }
