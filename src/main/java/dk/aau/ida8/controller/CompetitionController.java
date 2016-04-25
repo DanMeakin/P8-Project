@@ -82,7 +82,7 @@ public class CompetitionController {
             model.addAttribute("currParticipant", competition.currentParticipant());
             return "competition-dashboard";
         } else {
-            return "redirect:/competition/" + competitionID + "/ranking-groups";
+            return "redirect:/competition/" + competitionID + "/results";
         }
     }
 
@@ -218,7 +218,7 @@ public class CompetitionController {
         return "competition-groups";
     }
 
-    @RequestMapping(value = "/{competitionID}/ranking-groups", method = RequestMethod.GET)
+    @RequestMapping(value = "/{competitionID}/results", method = RequestMethod.GET)
     public String viewRankingGroups(Model model, @PathVariable long competitionID) {
         Competition competition = competitionService.findOne(competitionID);
         model.addAttribute("rankingGroups", competition.getRankingGroups());

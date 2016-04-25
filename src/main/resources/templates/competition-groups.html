@@ -9,10 +9,11 @@
 <body>
 <div layout:fragment="content">
 
-    <div th:if="${!competition.isCompetitionComplete()}"></div>
-    <form th:action="'/competition/' + ${competition.id} + '/dashboard'" method="get">
-        <button type="submit" class="btn btn-success">Start Competition</button>
-    </form>
+    <div th:if="${!competition.isCompetitionComplete()}">
+        <form th:action="'/competition/' + ${competition.id} + '/dashboard'" method="get">
+            <button type="submit" class="btn btn-success">Start Competition</button>
+        </form>
+    </div>
 
     <div th:each="g : ${competingGroups}">
         <div th:include="fragments/competing-groups-fragment :: competing-groups"
