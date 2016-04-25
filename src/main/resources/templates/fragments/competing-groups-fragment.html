@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="competing-groups">
+    <table>
+        <thead>
+        <tr>
+            <th rowspan="2">No.</th>
+            <th rowspan="2">Name</th>
+            <th rowspan="2">Birthday</th>
+            <th rowspan="2">Sex</th>
+            <th rowspan="2">Club</th>
+            <th rowspan="2">Body weight</th>
+            <th class="center-heading" colspan="4">Starting weight</th>
+        </tr>
+        <tr>
+            <th>Snatch</th>
+            <th>Clean&amp;Jerk</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="p : participants">
+            <td th:text="${p.startNumber}"></td>
+            <td th:text="${p.fullName}"></td>
+            <td th:text="${p.dateOfBirthString}"></td>
+            <td th:text="${p.genderInitial}"></td>
+            <td th:text="${p.clubName}"></td>
+            <td th:text="${p.bodyWeight}"></td>
+            <td th:text="${p.startingSnatchWeight}"></td>
+            <td th:text="${p.startingCleanAndJerkWeight}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

@@ -107,6 +107,28 @@ public class CompetitionController {
         return "redirect:/competition/" + competition.getId() + "/sign-up";
     }
 
+    @RequestMapping(value= "/{competitionID}/remove", method = RequestMethod.POST)
+    public String removeLifterFromCompetition(@RequestParam(value = "id", required = false) Long id, @PathVariable long competitionID) {
+        Competition competition = competitionService.findOne(competitionID);
+        Lifter lifter = lifterService.findOne(id);
+        competition.removeParticipant(lifter);
+        competitionService.save(competition);
+        return "redirect:/competition/" + competition.getId() + "/signup";
+    }
+
+    /**
+     * Participant information partial view.
+     *
+     * @param model the Spring model to pass to the view
+     * @param participantID the ID# of the participant for whom to display info
+     * @return the participant's information
+     */
+    @RequestMapping(value = "/participant-info/{participantID}", method = RequestMethod.GET)
+    public String displayParticipantInfo(Model model, @PathVariable long participantID){
+        model.addAttribute("participant", participantService.findOne(participantID));
+        return "participant-info";
+    }
+
     @RequestMapping(value = "/{competitionID}/weigh-in", method = RequestMethod.GET)
     public String controlWeighInParticipants(Model model, @PathVariable long competitionID) {
         Competition competition = competitionService.findOne(competitionID);
@@ -181,6 +203,9 @@ public class CompetitionController {
         Competition competition = competitionService.findOne(competitionID);
         competition.finishWeighIn();
         competitionService.save(competition);
+
+        model.addAttribute("competingGroups", competition.getCompetingGroups());
+        model.addAttribute("competition", competition);
         return "competition-groups";
     }
 
