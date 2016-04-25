@@ -32,6 +32,19 @@ public class ParticipantController {
     }
 
     /**
+     * Participant information partial view.
+     *
+     * @param model the Spring model to pass to the view
+     * @param participantID the ID# of the participant for whom to display info
+     * @return the participant's information
+     */
+    @RequestMapping(value = "/{participantID}", method = RequestMethod.GET)
+    public String displayParticipantInfo(Model model, @PathVariable long participantID){
+        model.addAttribute("participant", participantService.findOne(participantID));
+        return "fragments/participant-info";
+    }
+
+    /**
      * Creates a new lift for a particular Participant.
      *
      * @param model the Spring model object to pass to the view

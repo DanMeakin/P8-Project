@@ -111,19 +111,6 @@ public class CompetitionController {
         return "redirect:/competition/" + competition.getId() + "/signup";
     }
 
-    /**
-     * Participant information partial view.
-     *
-     * @param model the Spring model to pass to the view
-     * @param participantID the ID# of the participant for whom to display info
-     * @return the participant's information
-     */
-    @RequestMapping(value = "/participant-info/{participantID}", method = RequestMethod.GET)
-    public String displayParticipantInfo(Model model, @PathVariable long participantID){
-        model.addAttribute("participant", participantService.findOne(participantID));
-        return "participant-info";
-    }
-
     @RequestMapping(value = "/{competitionID}/weigh-in", method = RequestMethod.GET)
     public String controlWeighInParticipants(Model model, @PathVariable long competitionID) {
         Competition competition = competitionService.findOne(competitionID);
