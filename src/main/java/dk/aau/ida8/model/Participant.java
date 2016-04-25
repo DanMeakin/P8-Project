@@ -658,6 +658,14 @@ public class Participant {
         return getLifter().getBodyWeight();
     }
 
+    /**
+     * used to set participant weight at weigh-in. Also updates lifters weight as it is
+     * the latest measurement of a lifters body weight.
+     */
+    public void setBodyWeight(double weight){
+        getLifter().setBodyWeight(weight);
+    }
+
     // added getter and setter for the new startingWeight value
     public int getStartingWeight() {
         return startingWeight;
@@ -673,6 +681,22 @@ public class Participant {
 
     public int getStartingCleanAndJerkWeight() {
         return startingCleanAndJerkWeight;
+    }
+
+    public void setStartingSnatchWeight(int startingSnatchWeight) {
+        if (startingSnatchWeight < 1) {
+            String msg = "First Snatch must be greater than 0";
+            throw new InvalidParameterException(msg);
+        }
+        this.startingSnatchWeight = startingSnatchWeight;
+    }
+
+    public void setStartingCleanAndJerkWeight(int startingCleanAndJerkWeight) {
+        if (startingCleanAndJerkWeight < 1) {
+            String msg = "First Clean & Jerk must be greater than 0";
+            throw new InvalidParameterException(msg);
+        }
+        this.startingCleanAndJerkWeight = startingCleanAndJerkWeight;
     }
 
     /**
