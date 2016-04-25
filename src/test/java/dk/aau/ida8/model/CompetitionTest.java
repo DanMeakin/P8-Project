@@ -33,20 +33,20 @@ public class CompetitionTest {
             Participant p = mock(Participant.class);
             when(p.getGender()).thenReturn(Lifter.Gender.MALE);
             when(p.getStartingSnatchWeight()).thenReturn(50+i*10);
+            when(p.isCheckedIn()).thenReturn(true);
 
             Participant p2 = mock(Participant.class);
             when(p2.getGender()).thenReturn(FEMALE);
             when(p2.getStartingSnatchWeight()).thenReturn(40+i*3);
+            when(p.isCheckedIn()).thenReturn(true);
 
             competition.addParticipant(p);
             competition.addParticipant(p2);
-            p.checkIn();
-            p2.checkIn();
         }
     }
 
     @Test
-    public void allocateGroups() throws Exception {
+    public void finishWeighIn() throws Exception {
         assertTrue(competition.getCompetingGroups().isEmpty());
         assertTrue(competition.getRankingGroups().isEmpty());
 
@@ -54,6 +54,24 @@ public class CompetitionTest {
 
         assertFalse(competition.getCompetingGroups().isEmpty());
         assertFalse(competition.getRankingGroups().isEmpty());
+    }
+
+    @Test
+    public void finishWeighInWithRemovedParticipants() throws Exception {
+        assertTrue(competition.getCompetingGroups().isEmpty());
+        assertTrue(competition.getRankingGroups().isEmpty());
+
+        Participant p = mock(Participant.class);
+        when(p.isNotCheckedIn()).thenReturn(true);
+
+        int numParticipantsBeforeAdd = competition.getParticipants().size();
+        competition.addParticipant(p);
+
+        competition.finishWeighIn();
+
+        assertFalse(competition.getCompetingGroups().isEmpty());
+        assertFalse(competition.getRankingGroups().isEmpty());
+        assertEquals(numParticipantsBeforeAdd, competition.getParticipants().size());
     }
 
     @Test
