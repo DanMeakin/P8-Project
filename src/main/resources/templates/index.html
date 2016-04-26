@@ -36,7 +36,7 @@
                     <td class="type">Comp type</td>
                     <td th:text="${#calendars.format(comp.competitionDate, 'dd-MM-yyyy HH:mm')}" class="date">Comp date</td>
                     <td th:text="${#calendars.format(comp.lastRegistrationDate, 'dd-MM-yyyy HH:mm')}" class="date">Last reg date</td>
-                    <td><span class="label label-warning">Edit</span> <span class="label label-primary"><a th:href="|@{/competition/}${comp.id}/sign-up|">View</a></span> <span class="label label-success">Start</span></td>
+                    <td><span class="label label-primary"><a th:href="|@{/competition/}${comp.id}|">View</a></span></td>
                 </tr>
                 </tbody>
             </table>

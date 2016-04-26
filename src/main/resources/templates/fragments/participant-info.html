@@ -13,13 +13,16 @@
         </div>
         <table class="table">
             <thead>
-                <th class="right-header">
+                <th class="left-header">
                     <span class="label label-primary"
-                     th:text="${participant.rank}"/>
+                     th:text="${participant.rank}"
+                    />
+                    <span th:text="${participant.forename} + ' ' +
+                          ${#strings.toUpperCase(participant.surname)} +
+                          ' (' + ${participant.genderInitial} + ')'"
+                    />
                 </th>
-                <th th:text="${participant.forename} + ' ' +
-                             ${#strings.toUpperCase(participant.surname)} +
-                             ' (' + ${participant.genderInitial} + ')'"></th>
+                <th></th>
             </thead>
             <tbody>
             <tr>

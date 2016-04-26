@@ -33,6 +33,7 @@
                             <td th:text="${p.clubName}"></td>
                             <td>
                                 <input th:id="'body-weight-' + ${p.id}"
+                                       class="form-control"
                                        type="text"
                                        name="body-weight"
                                        th:value="${p.bodyWeight}"
@@ -42,6 +43,7 @@
                             </td>
                             <td>
                                 <input th:id="'starting-snatch-weight-' + ${p.id}"
+                                       class="form-control"
                                        type="text"
                                        name="starting-snatch-weight"
                                        th:value="${p.startingSnatchWeight}"
@@ -51,6 +53,7 @@
                             </td>
                             <td>
                                 <input th:id="'starting-clean-and-jerk-weight-' + ${p.id}"
+                                       class="form-control"
                                        type="text"
                                        name="starting-clean-and-jerk-weight"
                                        th:value="${p.startingCleanAndJerkWeight}"
@@ -95,11 +98,14 @@
                             <td th:text="${p.startingSnatchWeight}"></td>
                             <td th:text="${p.startingCleanAndJerkWeight}"></td>
                             <td>
-                                <input class="checkbox"
+                                <div class="checkbox">
+                                <input type="checkbox"
                                        th:id="'participant-checkbox-' + ${p.id}"
-                                       type="checkbox" name="participantChecked"
+                                       name="participantChecked"
                                        th:checked="${p.checkedIn}"
                                 />
+                                    <label th:for="'participant-checkbox-' + ${p.id}" ></label>
+                                </div>
                             </td>
                         </tr>
                         </tbody>
@@ -127,9 +133,10 @@
                 }
 
 
-                $(".checkbox").on("change", function (event) {
+                $(".checkbox").on("click", function (event) {
                     var pathElems = event.target.id.split("-");
                     var id = pathElems[2];
+                    var $checkbox = $(this);
 
                     /**
                      * A request header with the id of the participant and a boolean to check if the participant is weighed in or not
@@ -151,6 +158,8 @@
                         } else if (response.code == "400") {
                             console.log("error message");
                             $("#error-message").text("" + response.msg);
+                            $checkbox.prop('checked', false);
+
                         }
                     });
                 });

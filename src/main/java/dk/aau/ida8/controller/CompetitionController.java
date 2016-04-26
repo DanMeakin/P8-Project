@@ -148,17 +148,20 @@ public class CompetitionController {
         Participant participant = participantService.findOne(participantID);
         HashMap<String, String> map = new HashMap<>();
 
-        double bw = Double.parseDouble(bodyWeight);
-
-        int firstSnatch = Integer.parseInt(startingSnatch);
-        int firstCj = Integer.parseInt(startingCJ);
 
         try {
+            //parsing data received from view into expected types
+            double bw = Double.parseDouble(bodyWeight);
+            int firstSnatch = Integer.parseInt(startingSnatch);
+            int firstCj = Integer.parseInt(startingCJ);
+
+            //changing model according to values inserted by user
             participant.setBodyWeight(bw);
             participant.setStartingSnatchWeight(firstSnatch);
             participant.setStartingCleanAndJerkWeight(firstCj);
             participant.setCheckedIn(true);
 
+            //on succes send succes message with code 200
             map.put("code", "200");
             map.put("msg", "All good, participant checked in!");
 
