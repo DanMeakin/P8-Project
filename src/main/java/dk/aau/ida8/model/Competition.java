@@ -562,13 +562,7 @@ public class Competition {
      * @return true, if weigh-in started, else false
      */
     public boolean isWeighInStarted() {
-        Calendar cal1 = Calendar.getInstance();
-        Calendar cal2 = Calendar.getInstance();
-        cal1.setTime(new Date());
-        cal2.setTime(getCompetitionDate());
-        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&
-                !isWeighInComplete();
+        return isToday() && !isWeighInComplete();
     }
 
     /**
@@ -616,5 +610,30 @@ public class Competition {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Determines if the competition is due to take place today.
+     *
+     * @return true, if competition is to take place today, else false
+     */
+    public boolean isToday() {
+        return areSameDay(new Date(), getCompetitionDate());
+    }
+
+    /**
+     * Compares two Date objects to determine if they relate to the same day.
+     *
+     * @param d1 the first date to test
+     * @param d2 the second date to test
+     * @return true, if both dates relate to the same day, else false
+     */
+    private boolean areSameDay(Date d1, Date d2) {
+        Calendar cal1 = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        cal1.setTime(d1);
+        cal2.setTime(d2);
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+               cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
     }
 }
