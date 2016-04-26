@@ -1,15 +1,5 @@
-td.name {
-  width: 30%;
-}
-
-td.type {
-  width: 30%;
-}
-
-td.date,
-th.date {
-  width: 25%;
-  text-align: right;
+body {
+  font-family: 'Droid Sans', sans-serif;
 }
 
 th.center-heading {
@@ -29,6 +19,10 @@ td.abstain-lift {
 }
 
 td.best-lift {
+    font-weight: bold;
+}
+
+.bold {
     font-weight: bold;
 }
 

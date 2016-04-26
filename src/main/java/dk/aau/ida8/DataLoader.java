@@ -150,8 +150,8 @@ public class DataLoader {
                 club1,
                 address1,
                 Competition.CompetitionType.TOTAL_WEIGHT,
-                new GregorianCalendar(2016, 4, 1).getTime(),
-                new GregorianCalendar(2016, 3, 15).getTime(),
+                new GregorianCalendar(2016, 4, 1, 15, 0, 0).getTime(),
+                new GregorianCalendar(2016, 3, 15, 12, 0, 0).getTime(),
                 44
         );
         competitionRepository.save(c2);
@@ -161,8 +161,8 @@ public class DataLoader {
                 club,
                 address1,
                 Competition.CompetitionType.SINCLAIR,
-                new GregorianCalendar(2016, 5, 1).getTime(),
-                new GregorianCalendar(2016, 4, 16).getTime(),
+                new GregorianCalendar(2016, 5, 1, 13, 0, 0).getTime(),
+                new GregorianCalendar(2016, 4, 16, 12, 0, 0).getTime(),
                 30
         );
         competitionRepository.save(c3);
