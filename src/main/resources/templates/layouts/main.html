@@ -14,9 +14,11 @@
     <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
+    <link href='https://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css' />
     <link rel="stylesheet" href="static/css/normalize.css" th:href="@{/css/normalize.css}" />
     <link rel="stylesheet" href="static/css/main.css" th:href="@{/css/main.css/}" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+
     <link rel="stylesheet" href="../static/css/custom.css" th:href="@{/css/custom.css}" />
     <link rel="stylesheet" href="../static/css/custom.css" th:href="@{/css/bootstrap-datetimepicker.min.css}" />
     <link rel="stylesheet" href="../static/css/custom.css" th:href="@{/css/datepicker.css}" />
@@ -41,24 +43,6 @@
 
     <div class="container">
       <div layout:fragment="content"></div>
-    </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="new-competition-modal" tabindex="-1" role="dialog" aria-labelledby="competitionModalLabel">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">Choose competition type</h4>
-          </div>
-          <div class="modal-body clearfix">
-            <div class="col-md-6 col-md-offset-3">
-              <a th:href="@{/competition/sinclair/new}" class="btn btn-success">Sinclair</a>
-              <a th:href="@{/competition/WEIGHTCLASS/new}" class="btn btn-success">Weight classes</a>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
 
     <script th:src="@{/js/bootstrap-datetimepicker.min.js}"></script>

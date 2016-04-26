@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <title>Competition Details</title>
+</head>
+<body>
+<div th:fragment="competition-details">
+    <table class="table table-striped table-hover">
+        <tbody>
+        <tr>
+            <td class="bold">Hosting Club</td>
+            <td th:text="${competition.hostName}">AK Jyden</td>
+        </tr>
+        <tr>
+            <td class="bold">Address</td>
+            <td th:text="${competition.location}">Skydebanevej 12</td>
+        </tr>
+        <tr>
+            <td class="bold">Date &amp; starting Time</td>
+            <td th:class="${competition.isToday()}? 'text-danger' : ''"
+                th:text="${#calendars.format(competition.competitionDate, 'dd-MM-yyyy HH:mm')}">01-01-2015</td>
+        </tr>
+        <tr>
+            <td class="bold">Final date for registration</td>
+            <td th:class="${competition.isSignUpClosed()}? 'text-danger' : ''"
+                th:text="${#calendars.format(competition.lastRegistrationDate, 'dd-MM-yyyy HH:mm')}">01-01-2015</td>
+        </tr>
+        <tr>
+            <td class="bold">Number of registered lifters</td>
+            <td th:text="${competition.participants.size() + '/' + competition.maxNumParticipants}">13/50</td>
+        </tr>
+        <tr>
+            <td class="bold">Type</td>
+            <td th:text="${competition.competitionType}">Sinclair</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
