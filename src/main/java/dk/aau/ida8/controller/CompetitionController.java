@@ -82,7 +82,7 @@ public class CompetitionController {
             model.addAttribute("currParticipant", competition.currentParticipant());
             return "competition-dashboard";
         } else {
-            return "redirect:/competition/" + competition.getId();
+            return "redirect:/competition/" + competitionID + "/results";
         }
     }
 
@@ -162,12 +162,12 @@ public class CompetitionController {
             map.put("code", "200");
             map.put("msg", "All good, participant checked in!");
 
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             String msg = "unable to process input starting Snatch '" + startingSnatch + "' or starting Clean & Jerk '"
                     + startingCJ + "' (a number is required)";
             map.put("msg", msg);
             map.put("code", "400");
-        } catch (InvalidParameterException e){
+        } catch (InvalidParameterException e) {
             String msg = "unable to process input starting Snatch '" + startingSnatch + "' or starting Clean & Jerk '"
                     + startingCJ + "' (the first lift must be greater than 0)";
             map.put("msg", msg);
@@ -180,9 +180,9 @@ public class CompetitionController {
     }
 
     @ResponseBody
-    @RequestMapping (value = "/{competitionID}/weigh-in/check-out", method = RequestMethod.POST)
+    @RequestMapping(value = "/{competitionID}/weigh-in/check-out", method = RequestMethod.POST)
     public String checkOutParticipant(Model model,
-                                      @RequestParam("participantID") long participantID){
+                                      @RequestParam("participantID") long participantID) {
 
         Participant participant = participantService.findOne(participantID);
 
@@ -198,15 +198,31 @@ public class CompetitionController {
         return gson.toJson(map);
     }
 
-    @RequestMapping (value = "/{competitionID}/groups", method = RequestMethod.POST)
-    public String displayGroups(Model model, @PathVariable long competitionID){
+    @RequestMapping(value = "/{competitionID}/competing-groups", method = RequestMethod.POST)
+    public String weighInParticipants(Model model, @PathVariable long competitionID) {
         Competition competition = competitionService.findOne(competitionID);
         competition.finishWeighIn();
         competitionService.save(competition);
 
         model.addAttribute("competingGroups", competition.getCompetingGroups());
         model.addAttribute("competition", competition);
+
         return "competition-groups";
     }
 
+    @RequestMapping(value = "/{competitionID}/competing-groups", method = RequestMethod.GET)
+    public String viewCompetingGroups(Model model, @PathVariable long competitionID) {
+        Competition competition = competitionService.findOne(competitionID);
+        model.addAttribute("competingGroups", competition.getCompetingGroups());
+        model.addAttribute("competition", competition);
+        return "competition-groups";
+    }
+
+    @RequestMapping(value = "/{competitionID}/results", method = RequestMethod.GET)
+    public String viewRankingGroups(Model model, @PathVariable long competitionID) {
+        Competition competition = competitionService.findOne(competitionID);
+        model.addAttribute("rankingGroups", competition.getRankingGroups());
+        model.addAttribute("competition", competition);
+        return "ranking-groups";
+    }
 }
