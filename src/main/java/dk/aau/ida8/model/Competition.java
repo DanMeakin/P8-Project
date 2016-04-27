@@ -271,7 +271,7 @@ public class Competition {
     private void allocateGroups() {
         setRankingGroups(Group.createRankingGroups(this));
         setCompetingGroups(Group.createCompetingGroups(this));
-    };
+    }
 
     /**
      * Finds the participant who is to carry out a lift next. If the competing
