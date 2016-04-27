@@ -264,7 +264,7 @@ public class Group {
      * @throws InvalidParameterException if participant is not present within
      *                                   group
      */
-    public int getRank(Participant p) {
+    public int getRank(Participant p) throws InvalidParameterException {
         if (getParticipants().contains(p)) {
             return getRankings().get(p);
         } else {
@@ -314,7 +314,7 @@ public class Group {
      * @return          a list of groups sub-divided to no more than a certain
      *                  size
      */
-    protected static List<Group> chunkGroups(Competition c, List<Group> groups, int chunkSize) {
+    private static List<Group> chunkGroups(Competition c, List<Group> groups, int chunkSize) {
         List<Group> chunkedGroups = new ArrayList<>();
         for (Group g : groups) {
             for (int i = 0; i < g.getParticipantsCount(); i += chunkSize) {

@@ -2,7 +2,7 @@ package dk.aau.ida8.model;
 
 import java.util.function.Function;
 
-public class SinclairCalculator implements Function< Participant, Double> {
+public class SinclairCalculator implements Function<Participant, Double> {
 
     public Double apply(Participant participant){
         return calculateScore(participant);

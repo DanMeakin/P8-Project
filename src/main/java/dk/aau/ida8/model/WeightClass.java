@@ -23,7 +23,7 @@ public class WeightClass {
 
     public static int findWeightClass(Lifter l) {
         populateWeightClasses();
-        return (int) weightClasses.get(l.getGender()).stream()
+        return (int) getWeightClasses().get(l.getGender()).stream()
                 .filter(wc -> l.getBodyWeight() > wc)
                 .count() + 1;
     }
