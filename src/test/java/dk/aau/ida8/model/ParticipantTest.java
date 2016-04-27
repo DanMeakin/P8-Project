@@ -16,7 +16,6 @@ public class ParticipantTest {
 
     private static Lifter lifter;
     private static Competition competition;
-    private static ScoreStrategy scoreStrat;
     private static List<Lift> lifts;
     private static Participant participant;
 
