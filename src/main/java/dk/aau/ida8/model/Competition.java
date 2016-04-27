@@ -507,7 +507,7 @@ public class Competition {
      * @return list of all available start numbers
      */
     public List<Integer> availableStartNumbers() {
-        List<Integer> remainingNumbers = IntStream.range(1, getMaxNumParticipants())
+        List<Integer> remainingNumbers = IntStream.rangeClosed(1, getMaxNumParticipants())
                 .boxed()
                 .collect(Collectors.toList());
         getParticipants()
