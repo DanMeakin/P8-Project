@@ -128,9 +128,9 @@ public class CompetitionController {
     @RequestMapping (value = "/{competitionID}/weigh-in/check-in", method = RequestMethod.POST)
     public String checkInParticipant(Model model,
                                      @RequestParam("participantID") long participantID,
-                                     @RequestParam("bodyWeight") String bodyWeight,
-                                     @RequestParam("startingSnatch") String startingSnatch,
-                                     @RequestParam("startingCJ") String startingCJ){
+                                     @RequestParam("bodyWeight") String collectedBodyWeight,
+                                     @RequestParam("startingSnatch") String collectedStartingSnatch,
+                                     @RequestParam("startingCJ") String collectedStartingCJ){
 
         Participant participant = participantService.findOne(participantID);
         HashMap<String, String> map = new HashMap<>();
@@ -138,28 +138,25 @@ public class CompetitionController {
 
         try {
             //parsing data received from view into expected types
-            double bw = Double.parseDouble(bodyWeight);
-            int firstSnatch = Integer.parseInt(startingSnatch);
-            int firstCj = Integer.parseInt(startingCJ);
+            double bodyWeight = Double.parseDouble(collectedBodyWeight);
+            int startingSnatchWeight = Integer.parseInt(collectedStartingSnatch);
+            int startingCleanAndJerkWeight = Integer.parseInt(collectedStartingCJ);
 
             //changing model according to values inserted by user
-            participant.setBodyWeight(bw);
-            participant.setStartingSnatchWeight(firstSnatch);
-            participant.setStartingCleanAndJerkWeight(firstCj);
-            participant.setCheckedIn(true);
+            participant.weighIn(bodyWeight, startingSnatchWeight, startingCleanAndJerkWeight);
 
             //on succes send succes message with code 200
             map.put("code", "200");
             map.put("msg", "All good, participant checked in!");
 
         } catch (NumberFormatException e) {
-            String msg = "unable to process input starting Snatch '" + startingSnatch + "' or starting Clean & Jerk '"
-                    + startingCJ + "' (a number is required)";
+            String msg = "unable to process input starting Snatch '" + collectedStartingSnatch + "' or starting Clean & Jerk '"
+                    + collectedStartingCJ + "' (a number is required)";
             map.put("msg", msg);
             map.put("code", "400");
         } catch (InvalidParameterException e) {
-            String msg = "unable to process input starting Snatch '" + startingSnatch + "' or starting Clean & Jerk '"
-                    + startingCJ + "' (the first lift must be greater than 0)";
+            String msg = "unable to process input starting Snatch '" + collectedStartingSnatch + "' or starting Clean & Jerk '"
+                    + collectedStartingCJ + "' (the first lift must be greater than 0)";
             map.put("msg", msg);
             map.put("code", "400");
         }

@@ -31,6 +31,7 @@ public class ParticipantTest {
         when(competition.getCurrentCompetingGroup()).thenReturn(Optional.empty());
         when(competition.getCurrentRankingGroup()).thenReturn(Optional.empty());
         participant = new Participant(lifter, competition, 10);
+        participant.weighIn(86.0, 3, 10);
         participant.addPassedLift();
         participant.increaseWeight(15);
         participant.addPassedLift();
@@ -46,6 +47,25 @@ public class ParticipantTest {
     public void testGetFullName() throws Exception {
         assertEquals(lifterFullName, participant.getFullName());
     }
+
+    /*
+    @Test
+    public void testGetBodyWeight() throws Exception{
+        assertEquals(86.0, participant.getBodyWeight(), 0.001);
+    }
+    */
+
+    @Test
+    public void testStartingSnatch() throws Exception {
+        assertEquals(3, participant.getStartingSnatchWeight());
+    }
+
+    @Test
+    public void testStartingCleanAndJerk() throws Exception {
+        assertEquals(10, participant.getStartingCleanAndJerkWeight());
+    }
+
+
     @Test
     public void testGetTotalScore() throws Exception {
         assertEquals(expectedScore, participant.getTotalScore(), 0.001);
