@@ -19,7 +19,7 @@ public class ParticipantTest {
     private static List<Lift> lifts;
     private static Participant participant;
 
-    private static double expectedScore = 35.0;
+    private static double expectedScore = 25.0;
     private static String lifterFullName = "John Lifter";
 
     @Before
@@ -37,6 +37,8 @@ public class ParticipantTest {
         participant.addPassedLift();
         participant.increaseWeight(20);
         participant.addFailedLift();
+        // At this point, clean & jerks start, with the commensurate change in
+        // lift weight.
         participant.addPassedLift();
         participant.increaseWeight(25);
         participant.addFailedLift();
@@ -73,7 +75,7 @@ public class ParticipantTest {
 
     @Test
     public void testGetBestCleanAndJerk() throws Exception {
-        assertEquals(20, participant.getBestCleanAndJerk());
+        assertEquals(10, participant.getBestCleanAndJerk());
     }
 
     @Test
