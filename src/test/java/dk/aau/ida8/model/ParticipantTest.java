@@ -19,7 +19,7 @@ public class ParticipantTest {
     private static List<Lift> lifts;
     private static Participant participant;
 
-    private static double expectedScore = 25.0;
+    private static double expectedScore = 50.0;
     private static String lifterFullName = "John Lifter";
 
     @Before
@@ -30,17 +30,18 @@ public class ParticipantTest {
         when(competition.availableStartNumbers()).thenReturn(Arrays.asList(1,2,3,4,5,6,7,8,9,10));
         when(competition.getCurrentCompetingGroup()).thenReturn(Optional.empty());
         when(competition.getCurrentRankingGroup()).thenReturn(Optional.empty());
-        participant = new Participant(lifter, competition, 10);
-        participant.weighIn(86.0, 3, 10);
+        participant = new Participant(lifter, competition);
+        participant.weighIn(86.0, 10, 30);
         participant.addPassedLift();
         participant.increaseWeight(15);
         participant.addPassedLift();
         participant.increaseWeight(20);
         participant.addFailedLift();
         // At this point, clean & jerks start, with the commensurate change in
-        // lift weight.
+        // lift weight. Then increase again.
+        participant.increaseWeight(35);
         participant.addPassedLift();
-        participant.increaseWeight(25);
+        participant.increaseWeight(40);
         participant.addFailedLift();
         participant.addFailedLift();
     }
@@ -50,23 +51,33 @@ public class ParticipantTest {
         assertEquals(lifterFullName, participant.getFullName());
     }
 
-    /*
     @Test
     public void testGetBodyWeight() throws Exception{
-        assertEquals(86.0, participant.getBodyWeight(), 0.001);
+        assertEquals(participant.getLifter().getBodyWeight(), participant.getBodyWeight(), 0.001);
     }
-    */
 
     @Test
     public void testStartingSnatch() throws Exception {
-        assertEquals(3, participant.getStartingSnatchWeight());
+        assertEquals(10, participant.getStartingSnatchWeight());
     }
 
     @Test
     public void testStartingCleanAndJerk() throws Exception {
-        assertEquals(10, participant.getStartingCleanAndJerkWeight());
+        assertEquals(30, participant.getStartingCleanAndJerkWeight());
     }
 
+    @Test
+    public void testUpdateStartingWeight() throws Exception {
+        Participant p = new Participant(lifter, competition);
+        p.weighIn(80.3, 50, 100);
+        p.addPassedLift();
+        p.addFailedLift();
+        p.addFailedLift();
+        p.addPassedLift();
+        p.addPassedLift();
+        p.addFailedLift();
+        assertEquals(151, p.getTotalScore());
+    }
 
     @Test
     public void testGetTotalScore() throws Exception {
@@ -75,7 +86,7 @@ public class ParticipantTest {
 
     @Test
     public void testGetBestCleanAndJerk() throws Exception {
-        assertEquals(10, participant.getBestCleanAndJerk());
+        assertEquals(35, participant.getBestCleanAndJerk());
     }
 
     @Test

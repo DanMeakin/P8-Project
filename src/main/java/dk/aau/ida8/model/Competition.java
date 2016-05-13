@@ -212,10 +212,10 @@ public class Competition {
      * instance and then creates and aggregates the required Participant
      * object to the competition.
      *
-     * @param lifter the lifter to add to the competition
+     * @param lifter                     the lifter to add to the competition
      */
-    public void addParticipant(Lifter lifter, int startingWeight){
-        Participant p = new Participant(lifter, this, startingWeight);
+    public void addParticipant(Lifter lifter) {
+        Participant p = new Participant(lifter, this);
         addParticipant(p);
     }
 

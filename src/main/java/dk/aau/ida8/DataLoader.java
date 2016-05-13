@@ -121,18 +121,6 @@ public class DataLoader {
                 120.0,
                 70.0
         );
-        List <Integer> startingWeights = Arrays.asList(
-                100,
-                110,
-                120,
-                98,
-                154,
-                132,
-                110,
-                120,
-                100,
-                100
-        );
 
         Competition c1 = new Competition(
                 "Today's Competition",
@@ -179,7 +167,8 @@ public class DataLoader {
             );
             lifterRepository.save(l);
             lifters.add(l);
-            c1.addParticipant(l, startingWeights.get(i));
+            c1.addParticipant(l);
+
         }
 
         competitionRepository.save(c1);

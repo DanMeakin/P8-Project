@@ -102,7 +102,7 @@ public class CompetitionController {
     public String signupLifterToCompetition(@RequestParam(value = "id", required = false) Long id, @PathVariable long competitionID) {
         Competition competition = competitionService.findOne(competitionID);
         Lifter lifter = lifterService.findOne(id);
-        competition.addParticipant(lifter, 0);
+        competition.addParticipant(lifter);
         competitionService.save(competition);
         return "redirect:/competition/" + competition.getId() + "/sign-up";
     }

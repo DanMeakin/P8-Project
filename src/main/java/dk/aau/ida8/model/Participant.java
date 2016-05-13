@@ -81,38 +81,14 @@ public class Participant {
      *                                   competition
      * @param competition                the competition in which the lifter is
      *                                   participating
-     * @param startingSnatchWeight       the initial weight for the first snatch
-     *                                   lift for this participant
-     * @param startingCleanAndJerkWeight the initial weight for the first clean
-     *                                   & jerk lift for this participant
      */
-    public Participant(Lifter lifter, Competition competition,
-                       int startingSnatchWeight,
-                       int startingCleanAndJerkWeight) {
+    public Participant(Lifter lifter, Competition competition) {
         this.lifter = lifter;
         this.competition = competition;
         this.startingSnatchWeight = startingSnatchWeight;
         this.startingCleanAndJerkWeight = startingCleanAndJerkWeight;
         this.currentWeight = startingSnatchWeight;
         this.previousWeight = startingSnatchWeight;
-        this.lifts = new ArrayList<>();
-        this.startNumber = generateStartNumber();
-    }
-
-    /**
-     * Creates a participation instance.
-     *
-     * @param lifter         the lifter participating in a competition
-     * @param competition    the competition in which the lifter is
-     *                       participating
-     * @param startingWeight the initial weight to be lifted by the lifter
-     */
-    public Participant(Lifter lifter, Competition competition, int startingWeight) {
-        this.lifter = lifter;
-        this.competition = competition;
-        this.startingWeight = startingWeight;
-        this.currentWeight = startingWeight;
-        this.previousWeight = startingWeight;
         this.lifts = new ArrayList<>();
         this.startNumber = generateStartNumber();
     }
@@ -164,6 +140,9 @@ public class Participant {
         setBodyWeight(bodyWeight);
         setStartingSnatchWeight(startingSnatchWeight);
         setStartingCleanAndJerkWeight(startingCleanAndJerkWeight);
+        // Set current and previous weights to initial snatch weight
+        this.currentWeight = startingSnatchWeight;
+        this.previousWeight = startingSnatchWeight;
         setCheckedIn(true);
     }
 
@@ -285,13 +264,8 @@ public class Participant {
      * @param newWeight the weight this participant will be lifting next
      */
     private void setCurrentWeight(int newWeight) {
-        if(isFirstCleanAndJerk()){
-            this.previousWeight = getCurrentWeight();
-            this.currentWeight = getStartingCleanAndJerkWeight();
-        }else {
-            this.previousWeight = getCurrentWeight();
-            this.currentWeight = newWeight;
-        }
+        this.previousWeight = getCurrentWeight();
+        this.currentWeight = newWeight;
     }
 
     /**
@@ -542,22 +516,10 @@ public class Participant {
      *
      */
     public void addPassedLift() throws InvalidParameterException {
-        if(isFirstSnatch()) {
-            validateLiftConditions();
-            Lift lift = Lift.passedLift(this, Lift.LiftType.SNATCH, getStartingSnatchWeight());
-            addLift(lift);
-            incrementWeight();
-        }else if(isFirstCleanAndJerk()){
-            validateLiftConditions();
-            Lift lift = Lift.passedLift(this, Lift.LiftType.CLEAN_AND_JERK, getStartingCleanAndJerkWeight());
-            addLift(lift);
-            incrementWeight();
-        }else {
-            validateLiftConditions();
-            Lift lift = Lift.passedLift(this, getCurrentLiftType(), getCurrentWeight());
-            addLift(lift);
-            incrementWeight();
-        }
+        validateLiftConditions();
+        Lift lift = Lift.passedLift(this, getCurrentLiftType(), getCurrentWeight());
+        addLift(lift);
+        incrementWeight();
     }
 
     /**
@@ -568,19 +530,9 @@ public class Participant {
      *
      */
     public void addFailedLift() throws InvalidParameterException {
-        if(isFirstSnatch()) {
-            validateLiftConditions();
-            Lift lift = Lift.failedLift(this, Lift.LiftType.SNATCH, getStartingSnatchWeight());
-            addLift(lift);
-        }else if(isFirstCleanAndJerk()){
-            validateLiftConditions();
-            Lift lift = Lift.failedLift(this, Lift.LiftType.CLEAN_AND_JERK, getStartingCleanAndJerkWeight());
-            addLift(lift);
-        }else {
-            validateLiftConditions();
-            Lift lift = Lift.failedLift(this, getCurrentLiftType(), getCurrentWeight());
-            addLift(lift);
-        }
+        validateLiftConditions();
+        Lift lift = Lift.failedLift(this, getCurrentLiftType(), getCurrentWeight());
+        addLift(lift);
     }
 
     /**
@@ -591,19 +543,9 @@ public class Participant {
      *
      */
     public void addAbstainedLift() throws InvalidParameterException {
-        if(isFirstSnatch()) {
-            validateLiftConditions();
-            Lift lift = Lift.abstainedLift(this, Lift.LiftType.SNATCH, getStartingSnatchWeight());
-            addLift(lift);
-        }else if(isFirstCleanAndJerk()){
-            validateLiftConditions();
-            Lift lift = Lift.abstainedLift(this, Lift.LiftType.CLEAN_AND_JERK, getStartingCleanAndJerkWeight());
-            addLift(lift);
-        }else {
-            validateLiftConditions();
-            Lift lift = Lift.abstainedLift(this, getCurrentLiftType(), getCurrentWeight());
-            addLift(lift);
-        }
+        validateLiftConditions();
+        Lift lift = Lift.abstainedLift(this, getCurrentLiftType(), getCurrentWeight());
+        addLift(lift);
     }
 
     /**
