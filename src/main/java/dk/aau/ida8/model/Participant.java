@@ -58,7 +58,7 @@ public class Participant {
     private int previousWeight;
 
     @OneToMany(cascade = {CascadeType.ALL})
-    private List<Lift> lifts;
+    private List<Lift> lifts = new ArrayList<>();
 
     private boolean weighedIn = false;
 
@@ -84,11 +84,6 @@ public class Participant {
     public Participant(Lifter lifter, Competition competition) {
         this.lifter = lifter;
         this.competition = competition;
-        this.startingSnatchWeight = startingSnatchWeight;
-        this.startingCleanAndJerkWeight = startingCleanAndJerkWeight;
-        this.currentWeight = startingSnatchWeight;
-        this.previousWeight = startingSnatchWeight;
-        this.lifts = new ArrayList<>();
         this.startNumber = generateStartNumber();
     }
 

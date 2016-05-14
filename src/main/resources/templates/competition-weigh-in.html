@@ -35,7 +35,7 @@
                                 <input th:id="'body-weight-' + ${p.id}"
                                        class="form-control"
                                        type="text"
-                                       name="body-weight"
+                                       th:name="'body-weight-' + ${p.id}"
                                        th:value="${p.bodyWeight}"
                                        maxlength="5"
                                        size="5"
@@ -45,8 +45,7 @@
                                 <input th:id="'starting-snatch-weight-' + ${p.id}"
                                        class="form-control"
                                        type="text"
-                                       name="starting-snatch-weight"
-                                       th:value="${p.startingSnatchWeight}"
+                                       th:name="'starting-snatch-weight-' + ${p.id}"
                                        maxlength="4"
                                        size="4"
                                 />
@@ -55,18 +54,16 @@
                                 <input th:id="'starting-clean-and-jerk-weight-' + ${p.id}"
                                        class="form-control"
                                        type="text"
-                                       name="starting-clean-and-jerk-weight"
-                                       th:value="${p.startingCleanAndJerkWeight}"
+                                       th:name="'starting-clean-and-jerk-weight-' + ${p.id}"
                                        maxlength="4"
                                        size="4"
                                 />
                             </td>
                             <td>
-                                <input class="checkbox"
+                                <input class="checkbox participant-checkbox-empty"
                                        th:id="'participant-checkbox-' + ${p.id}"
                                        type="checkbox"
                                        name="participantChecked"
-                                       th:checked="${p.weighedIn}"
                                 />
                             </td>
                         </tr>
@@ -118,6 +115,7 @@
         </form>
         <script>
             $(document).ready(function () {
+                $(".participant-checkbox-empty").attr('checked', false);
                 var currentURL = window.location.href;
 
                 /**
