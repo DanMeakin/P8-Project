@@ -63,7 +63,7 @@
                                 <input class="checkbox participant-checkbox-empty"
                                        th:id="'participant-checkbox-' + ${p.id}"
                                        type="checkbox"
-                                       name="participantChecked"
+                                       name="participantUnchecked"
                                 />
                             </td>
                         </tr>
@@ -116,8 +116,8 @@
         </form>
         <script>
             $(document).ready(function () {
-                $(".participant-checkbox-empty").attr('checked', false);
-                $(".participant-checkbox-checked").attr('checked', true);
+                $(".participant-checkbox-empty").prop('checked', false);
+                $(".participant-checkbox-checked").prop('checked', true);
                 var currentURL = window.location.href;
 
                 /**
