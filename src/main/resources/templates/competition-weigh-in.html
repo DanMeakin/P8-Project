@@ -28,7 +28,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="p : ${participants}" th:if="${!p.checkedIn}">
+                        <tr th:each="p : ${participants}" th:if="${p.notWeighedIn}">
                             <td th:text="${p.fullName}"></td>
                             <td th:text="${p.clubName}"></td>
                             <td>
@@ -66,7 +66,7 @@
                                        th:id="'participant-checkbox-' + ${p.id}"
                                        type="checkbox"
                                        name="participantChecked"
-                                       th:checked="${p.checkedIn}"
+                                       th:checked="${p.weighedIn}"
                                 />
                             </td>
                         </tr>
@@ -90,7 +90,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="p : ${participants}" th:if="${p.checkedIn}">
+                        <tr th:each="p : ${participants}" th:if="${p.weighedIn}">
                             <td th:text="${p.startNumber}"></td>
                             <td th:text="${p.fullName}"></td>
                             <td th:text="${p.clubName}"></td>
@@ -102,7 +102,7 @@
                                 <input type="checkbox"
                                        th:id="'participant-checkbox-' + ${p.id}"
                                        name="participantChecked"
-                                       th:checked="${p.checkedIn}"
+                                       th:checked="${p.weighedIn}"
                                 />
                                     <label th:for="'participant-checkbox-' + ${p.id}" ></label>
                                 </div>

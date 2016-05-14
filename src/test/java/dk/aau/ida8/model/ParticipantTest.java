@@ -69,13 +69,16 @@ public class ParticipantTest {
     @Test
     public void testUpdateStartingWeight() throws Exception {
         Participant p = new Participant(lifter, competition);
+        // Weigh-in, starting at 50kg snatch & 100kg clean & jerk
         p.weighIn(80.3, 50, 100);
         p.addPassedLift();
         p.addFailedLift();
         p.addFailedLift();
+        // Passed snatch @ 50kg; weight now 100kg
         p.addPassedLift();
         p.addPassedLift();
         p.addFailedLift();
+        // Passed clean & jerk @ 101kg
         assertEquals(151, p.getTotalScore());
     }
 

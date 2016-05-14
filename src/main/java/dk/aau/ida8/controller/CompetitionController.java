@@ -175,7 +175,7 @@ public class CompetitionController {
 
         HashMap<String, String> map = new HashMap<>();
 
-        participant.setCheckedIn(false);
+        participant.setWeighedIn(false);
         map.put("code", "200");
         map.put("msg", "All good, participant checked out!");
 

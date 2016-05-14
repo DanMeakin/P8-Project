@@ -60,8 +60,7 @@ public class Participant {
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Lift> lifts;
 
-    private boolean checkedIn = false;
-
+    private boolean weighedIn = false;
 
     public long getId() {
         return id;
@@ -143,7 +142,7 @@ public class Participant {
         // Set current and previous weights to initial snatch weight
         this.currentWeight = startingSnatchWeight;
         this.previousWeight = startingSnatchWeight;
-        setCheckedIn(true);
+        setWeighedIn(true);
     }
 
     /**
@@ -518,8 +517,8 @@ public class Participant {
     public void addPassedLift() throws InvalidParameterException {
         validateLiftConditions();
         Lift lift = Lift.passedLift(this, getCurrentLiftType(), getCurrentWeight());
-        addLift(lift);
         incrementWeight();
+        addLift(lift);
     }
 
     /**
@@ -620,20 +619,16 @@ public class Participant {
      * PARTICIPANT ATTRIBUTE GETTERS *
      *********************************/
 
-    public boolean isCheckedIn() {
-        return checkedIn;
+    public boolean isWeighedIn() {
+        return weighedIn;
     }
 
-    public boolean isNotCheckedIn() {
-        return !isCheckedIn();
+    public boolean isNotWeighedIn() {
+        return !isWeighedIn();
     }
 
-    public void checkIn() {
-        setCheckedIn(true);
-    }
-
-    public void setCheckedIn(boolean checkedIn) {
-        this.checkedIn = checkedIn;
+    public void setWeighedIn(boolean weighedIn) {
+        this.weighedIn = weighedIn;
     }
 
     public Lifter.Gender getGender() {

@@ -1,10 +1,8 @@
 package dk.aau.ida8.model;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.awt.datatransfer.FlavorEvent;
 import java.util.Date;
 
 import static dk.aau.ida8.model.Lifter.Gender.FEMALE;
@@ -33,12 +31,12 @@ public class CompetitionTest {
             Participant p = mock(Participant.class);
             when(p.getGender()).thenReturn(Lifter.Gender.MALE);
             when(p.getStartingSnatchWeight()).thenReturn(50+i*10);
-            when(p.isCheckedIn()).thenReturn(true);
+            when(p.isWeighedIn()).thenReturn(true);
 
             Participant p2 = mock(Participant.class);
             when(p2.getGender()).thenReturn(FEMALE);
             when(p2.getStartingSnatchWeight()).thenReturn(40+i*3);
-            when(p.isCheckedIn()).thenReturn(true);
+            when(p.isWeighedIn()).thenReturn(true);
 
             competition.addParticipant(p);
             competition.addParticipant(p2);
@@ -62,7 +60,7 @@ public class CompetitionTest {
         assertTrue(competition.getRankingGroups().isEmpty());
 
         Participant p = mock(Participant.class);
-        when(p.isNotCheckedIn()).thenReturn(true);
+        when(p.isNotWeighedIn()).thenReturn(true);
 
         int numParticipantsBeforeAdd = competition.getParticipants().size();
         competition.addParticipant(p);

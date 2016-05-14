@@ -1,6 +1,5 @@
 package dk.aau.ida8.model;
 
-import org.hibernate.annotations.Cascade;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -29,7 +28,7 @@ import java.util.stream.IntStream;
  * date and before the {@link #competitionDate} has been reached.
  *
  * It is at stage three on the day of the competition. At this point, it is
- * possible to {@link Participant#setCheckedIn(boolean) check-in} participants
+ * possible to {@link Participant#setWeighedIn(boolean) check-in} participants
  * to the competition. Once weight-in ends, the user will
  * {@link #finishWeighIn() finish weight-in} and the tournament can begin.
  *
@@ -525,7 +524,7 @@ public class Competition {
      */
     public void finishWeighIn() {
         List<Participant> ps = getParticipants().stream()
-                .filter(Participant::isNotCheckedIn)
+                .filter(Participant::isNotWeighedIn)
                 .collect(Collectors.toList());
         ps.forEach(this::removeParticipant);
         allocateGroups();
