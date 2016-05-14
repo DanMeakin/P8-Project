@@ -97,6 +97,7 @@
                             <td>
                                 <div class="checkbox">
                                 <input type="checkbox"
+                                       class="checkbox participant-checkbox-checked"
                                        th:id="'participant-checkbox-' + ${p.id}"
                                        name="participantChecked"
                                        th:checked="${p.weighedIn}"
@@ -116,6 +117,7 @@
         <script>
             $(document).ready(function () {
                 $(".participant-checkbox-empty").attr('checked', false);
+                $(".participant-checkbox-checked").attr('checked', true);
                 var currentURL = window.location.href;
 
                 /**
