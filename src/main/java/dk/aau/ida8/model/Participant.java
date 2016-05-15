@@ -1,5 +1,8 @@
 package dk.aau.ida8.model;
 
+import dk.aau.ida8.util.SinclairCalculator;
+import dk.aau.ida8.util.WeightClass;
+
 import javax.persistence.*;
 import java.security.InvalidParameterException;
 import java.text.SimpleDateFormat;
@@ -41,7 +44,6 @@ public class Participant {
     /**
      * used to calculate the starting groups for a sinclair competition
      */
-    private int startingWeight;
     private int startingSnatchWeight;
     private int startingCleanAndJerkWeight;
 
@@ -67,14 +69,14 @@ public class Participant {
     }
 
     /**
-     * Default constructor required for Hibernate.
+     * Empty constructor required for Hibernate.
      */
     public Participant() {
 
     }
 
     /**
-     * Creates a participation instance.
+     * Creates a participant instance.
      *
      * @param lifter                     the lifter participating in a
      *                                   competition
@@ -87,22 +89,31 @@ public class Participant {
         this.startNumber = generateStartNumber();
     }
 
+    /**
+     * Determines the equality of two objects.
+     *
+     * A participant is equal to another object only if that other object is
+     * a participant, and it is equal in terms of the
+     * {@link #equals(Participant)} method.
+     *
+     * @param o the other object to test for equality
+     * @return true, if this is equal to o, else false
+     */
     @Override
     public boolean equals(Object o) {
-        if (o instanceof Participant) {
-            return equals((Participant) o);
-        } else {
-            return false;
-        }
+        return o instanceof Participant && equals((Participant) o);
     }
 
+    /**
+     * Determines the equality of two participants.
+     *
+     * Two participants are equal only if they both share the same ID.
+     *
+     * @param p the other participant to test for equality
+     * @return true, if this is equal to p, else false
+     */
     public boolean equals(Participant p) {
         return getId() == p.getId();
-    }
-
-    @Override
-    public String toString() {
-        return "Participant #" + getId() + ": " + getFullName();
     }
 
     /**
@@ -116,18 +127,29 @@ public class Participant {
         return nums.get(new Random().nextInt(nums.size()));
     }
 
+    /**
+     * Gets the lifter object to which this participant relates.
+     *
+     * @return the lifter object to which this participant relates
+     */
     public Lifter getLifter() {
         return lifter;
     }
 
+    /**
+     * Gets the competition in which this participant takes place.
+     *
+     * @return the competition for this participant
+     */
     public Competition getCompetition() {
         return competition;
     }
 
     /**
-     * Weighs in a participant which allows him to compete in the competition
-     * @param bodyWeight this participant's body weight
-     * @param startingSnatchWeight this participant's starting Snatch weight
+     * Weighs in a participant which allows him to compete in the competition.
+     *
+     * @param bodyWeight                 this participant's body weight
+     * @param startingSnatchWeight       this participant's starting Snatch weight
      * @param startingCleanAndJerkWeight this participant's starting Clean & Jerk weight
      */
     public void weighIn(double bodyWeight, int startingSnatchWeight, int startingCleanAndJerkWeight){
@@ -178,6 +200,7 @@ public class Participant {
     public boolean allLiftsComplete() {
         return getLiftsRemaining() == 0;
     }
+
     /**
      * Gets a count of the number of snatch lifts yet to be completed
      * by the participant.
@@ -229,14 +252,29 @@ public class Participant {
         return previousWeight;
     }
 
+    /**
+     * Gets the forename of this participant.
+     *
+     * @return the forename of this participant
+     */
     public String getForename() {
         return getLifter().getForename();
     }
 
+    /**
+     * Gets the surname of this participant.
+     *
+     * @return the surname of this participant
+     */
     public String getSurname() {
         return getLifter().getSurname();
     }
 
+    /**
+     * Gets the full name of this participant.
+     *
+     * @return the full name of this participant
+     */
     public String getFullName() {
         return getLifter().getFullName();
     }
@@ -276,7 +314,6 @@ public class Participant {
      * Sets the number of weight changes made by a participant since the
      * immediately previous lift (or before the first lift).
      *
-     *
      * @param weightChanges the number of weight changes made
      */
     private void setWeightChanges(int weightChanges) {
@@ -294,7 +331,6 @@ public class Participant {
     private void incrementWeight() {
         setCurrentWeight(getCurrentWeight() + 1);
     }
-
 
     /**
      * A participant may only increase the weight to be lifted (not decrease
@@ -368,7 +404,6 @@ public class Participant {
         setCurrentWeight(getPreviousWeight());
         setWeightChanges(getWeightChanges() - 1);
     }
-
 
     /**
      * Gets the combined total value of the best snatch and best clean & jerk
@@ -608,8 +643,6 @@ public class Participant {
         return getLiftsCount() == 3;
     }
 
-
-
     /*********************************
      * PARTICIPANT ATTRIBUTE GETTERS *
      *********************************/
@@ -666,15 +699,6 @@ public class Participant {
         getLifter().setBodyWeight(weight);
     }
 
-    // added getter and setter for the new startingWeight value
-    public int getStartingWeight() {
-        return startingWeight;
-    }
-
-    public void setStartingWeight(int startingWeight) {
-        this.startingWeight = startingWeight;
-    }
-
     public int getStartingSnatchWeight() {
         return startingSnatchWeight;
     }
@@ -683,21 +707,49 @@ public class Participant {
         return startingCleanAndJerkWeight;
     }
 
+    /**
+     * Set this participant's starting snatch weight.
+     *
+     * Validates the selected weight before attempting to set (see
+     * {@link #validateStartingLiftWeight(int)} for details of this validation).
+     *
+     * @param startingSnatchWeight the starting snatch weight for this
+     *                             participant
+     */
     public void setStartingSnatchWeight(int startingSnatchWeight) {
-        if (startingSnatchWeight < 1) {
-            String msg = "First Snatch must be greater than 0";
-            throw new InvalidParameterException(msg);
-        }
+        validateStartingLiftWeight(startingSnatchWeight);
         this.startingSnatchWeight = startingSnatchWeight;
-        this.currentWeight = getStartingSnatchWeight();
     }
 
+    /**
+     * Set this participant's starting clean & jerk weight.
+     *
+     * Validates the selected weight before attempting to set (see
+     * {@link #validateStartingLiftWeight(int)} for details of this validation).
+     *
+     * @param startingCleanAndJerkWeight the starting clean & jerk weight for
+     *                                   this participant
+     */
     public void setStartingCleanAndJerkWeight(int startingCleanAndJerkWeight) {
-        if (startingCleanAndJerkWeight < 1) {
-            String msg = "First Clean & Jerk must be greater than 0";
+        validateStartingLiftWeight(startingCleanAndJerkWeight);
+        this.startingCleanAndJerkWeight = startingCleanAndJerkWeight;
+    }
+
+    /**
+     * Validates an input starting lift weight.
+     *
+     * A starting lift weight must be a non-negative integer. This method
+     * validates that this is the case. If it is not the case, an exception
+     * is thrown.
+     *
+     * @param weight the starting lift weight value to validate
+     * @throws InvalidParameterException where the passed weight is invalid
+     */
+    private void validateStartingLiftWeight(int weight) throws InvalidParameterException {
+        if (weight < 1) {
+            String msg = "weight must be greater than 0 kg";
             throw new InvalidParameterException(msg);
         }
-        this.startingCleanAndJerkWeight = startingCleanAndJerkWeight;
     }
 
     /**
@@ -726,10 +778,20 @@ public class Participant {
         return new SinclairCalculator().apply(this);
     }
 
+    /**
+     * Gets this participant's starting number.
+     *
+     * @return this participant's starting number
+     */
     public int getStartNumber() {
         return startNumber;
     }
 
+    /**
+     * Sets this participant's starting number.
+     *
+     * @param startNumber the value to set as the participant's starting number
+     */
     public void setStartNumber(int startNumber) {
         this.startNumber = startNumber;
     }

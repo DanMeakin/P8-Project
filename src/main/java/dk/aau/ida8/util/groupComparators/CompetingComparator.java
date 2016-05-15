@@ -1,4 +1,4 @@
-package dk.aau.ida8.model.groupComparators;
+package dk.aau.ida8.util.groupComparators;
 
 import dk.aau.ida8.model.Lift;
 import dk.aau.ida8.model.Participant;
@@ -7,6 +7,15 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * This class represents a comparator to be used to compare participants within
+ * a competing group in a competition.
+ *
+ * This class implements the Comparator interface, implementing the compare
+ * method to provide a custom comparison between participants within a group.
+ * See {@link #compare(Participant, Participant)} for details of this
+ * comparison.
+ */
 public class CompetingComparator implements Comparator<Participant> {
 
     private Participant p1;
@@ -16,9 +25,26 @@ public class CompetingComparator implements Comparator<Participant> {
      * Compares two participants based on a number of comparison
      * factors.
      *
-     * The factors are listed in order within the "comparators" list,
-     * and this list is iterated through to find the first non-zero
-     * value. This is then returned by this method.
+     * The participants are compared on the following factors, in the following
+     * order:-
+     *
+     * <ol>
+     *     <li>Completion of all lifts;</li>
+     *     <li>Next weight to be lifted;</li>
+     *     <li>Number of completed attempts;</li>
+     *     <li>Timestamp of the first snatch / clean & jerk lift; and</li>
+     *     <li>The start numbers of the participants.</li>
+     * </ol>
+     *
+     * As soon as one factor indicates a distinction between participants, this
+     * is the relevant comparison and its value will be returned. For example,
+     * if both lifters have completed two lifts, then the next weight of their
+     * lifts will be considered, with lowest first. If they are the same, then
+     * the number of completed attempts will be compared, again with lowest
+     * going first. Then, if these are the same, timestamps of the first snatch
+     * or clean & jerk lifts will be compared. If these are the same (this
+     * should not be possible, but it is included for completeness) then start
+     * numbers are compared.
      *
      * @param p1 The first participant to compare
      * @param p2 The second participant to compare
@@ -50,10 +76,9 @@ public class CompetingComparator implements Comparator<Participant> {
      * Compares two Participants based on the timestamps of their first
      * completed lifts for snatch or C&J.
      *
-     * If both have completed no lifts, then neither comes
-     * first.
+     * If both have completed no lifts, then neither comes first.
      *
-     * If one of the participants has less than three completed lifts, that is
+     * If one of the participants has fewer than three completed lifts, that is
      * he is doing snatch lifts, then the timestamps for the first completed snatch
      * lifts will be compared.
      *
@@ -165,5 +190,4 @@ public class CompetingComparator implements Comparator<Participant> {
     private int compareStartNumbers() {
         return p1.getStartNumber() - p2.getStartNumber();
     }
-
 }

@@ -1,4 +1,7 @@
-package dk.aau.ida8.model;
+package dk.aau.ida8.util;
+
+import dk.aau.ida8.model.Lifter;
+import dk.aau.ida8.model.Participant;
 
 import java.util.function.Function;
 

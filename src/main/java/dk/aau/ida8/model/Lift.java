@@ -89,10 +89,27 @@ public class Lift {
         return new Lift(participant, liftType, weight, LiftOutcome.ABSTAIN);
     }
 
+    /**
+     * Empty constructor required for Hibernate.
+     */
     public Lift() {
 
     }
 
+    /**
+     * Creates a new Lift object.
+     *
+     * This private constructor is not intended to be used to create Lift
+     * instances. See {@link #passedLift(Participant, LiftType, int)},
+     * {@link #failedLift(Participant, LiftType, int)} and
+     * {@link #abstainedLift(Participant, LiftType, int)} for constructors to be
+     * used.
+     *
+     * @param participant the participant undertaking the lift
+     * @param liftType    the type of lift: snatch or clean & jerk
+     * @param weight      the weight in kg of the lift
+     * @param outcome     the outcome, whether successful, failed or abstained
+     */
     private Lift(Participant participant, LiftType liftType, int weight, LiftOutcome outcome) {
         this.participant = participant;
         this.liftType = liftType;
@@ -103,15 +120,21 @@ public class Lift {
         this.timestamp = LocalDateTime.now();
     }
 
-    @Override
-    public String toString() {
-        return "Lift: " + getLiftType() + " - " + getWeight() + " (" + getOutcome() + ")";
-    }
 
+    /**
+     * Gets the type of this lift.
+     *
+     * @return the type of this lift
+     */
     public LiftType getLiftType() {
         return liftType;
     }
 
+    /**
+     * Gets the participant for this lift.
+     *
+     * @return the participant for this lift
+     */
     public Participant getParticipant() {
         return participant;
     }
@@ -132,10 +155,20 @@ public class Lift {
         }
     }
 
+    /**
+     * Determines whether this is a clean & jerk lift.
+     *
+     * @return true if clean & jerk, else false
+     */
     public boolean isCleanAndJerk() {
         return getLiftType().equals(LiftType.CLEAN_AND_JERK);
     }
 
+    /**
+     * Determines whether this is a snatch lift.
+     *
+     * @return true if snatch, else false
+     */
     public boolean isSnatch() {
         return getLiftType().equals(LiftType.SNATCH);
     }
@@ -144,6 +177,11 @@ public class Lift {
         return id;
     }
 
+    /**
+     * Gets the weight of this lift, in kg.
+     *
+     * @return the weight of this lift in kg
+     */
     public int getWeight() {
         return weight;
     }
@@ -163,22 +201,47 @@ public class Lift {
         this.weight = weight;
     }
 
+    /**
+     * Gets the outcome for this lift: pass, fail or abstain.
+     *
+     * @return the outcome for this lift
+     */
     public LiftOutcome getOutcome() {
         return outcome;
     }
 
+    /**
+     * Determines whether this is a passed lift.
+     *
+     * @return true, if this is a passed lift, else false
+     */
     public boolean isPassed() {
         return (getOutcome().equals(LiftOutcome.PASS));
     }
 
+    /**
+     * Determines whether this is a failed lift.
+     *
+     * @return true, if a failed lift, else false
+     */
     public boolean isFailed() {
         return (getOutcome().equals(LiftOutcome.FAIL));
     }
 
+    /**
+     * Determines whether this is an abstained lift.
+     *
+     * @return true, if an abstained lift, else false
+     */
     public boolean isAbstained() {
         return (getOutcome().equals(LiftOutcome.ABSTAIN));
     }
 
+    /**
+     * Gets the timestamp for this lift.
+     *
+     * @return the timestamp for this lift
+     */
     public LocalDateTime getTimestamp() {
         return timestamp;
     }

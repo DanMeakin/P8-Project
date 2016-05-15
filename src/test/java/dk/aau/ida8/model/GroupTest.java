@@ -1,15 +1,12 @@
 package dk.aau.ida8.model;
 
-import dk.aau.ida8.model.groupComparators.CompetingComparator;
-import dk.aau.ida8.model.groupComparators.SinclairRankingComparator;
+import dk.aau.ida8.util.groupComparators.CompetingComparator;
+import dk.aau.ida8.util.groupComparators.SinclairRankingComparator;
 import dk.aau.ida8.util.Tuple;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -93,7 +90,7 @@ public class GroupTest {
             when(l.getId()).thenReturn((long) i);
             when(p.getCurrentWeight()).thenReturn(snatchWeights.get(i));
             when(p.getStartingSnatchWeight()).thenReturn(snatchWeights.get(i));
-            when(p.getStartingWeight()).thenReturn(snatchWeights.get(i));
+            when(p.getStartingSnatchWeight()).thenReturn(snatchWeights.get(i));
             when(p.getLifter()).thenReturn(l);
             // Create 30 male lifters
             if (i < 30) {
@@ -123,11 +120,11 @@ public class GroupTest {
         // Sort by starting weight
         Collections.sort(
                 maleParticipants,
-                (p1, p2) -> p1.getStartingWeight() - p2.getStartingWeight()
+                (p1, p2) -> p1.getStartingSnatchWeight() - p2.getStartingSnatchWeight()
         );
         Collections.sort(
                 femaleParticipants,
-                (p1, p2) -> p1.getStartingWeight() - p2.getStartingWeight()
+                (p1, p2) -> p1.getStartingSnatchWeight() - p2.getStartingSnatchWeight()
         );
 
         List<Group> expectedGs = new ArrayList<>();
@@ -144,11 +141,11 @@ public class GroupTest {
         // Sort by starting weight
         Collections.sort(
                 maleParticipants,
-                (p1, p2) -> p1.getStartingWeight() - p2.getStartingWeight()
+                (p1, p2) -> p1.getStartingSnatchWeight() - p2.getStartingSnatchWeight()
         );
         Collections.sort(
                 femaleParticipants,
-                (p1, p2) -> p1.getStartingWeight() - p2.getStartingWeight()
+                (p1, p2) -> p1.getStartingSnatchWeight() - p2.getStartingSnatchWeight()
         );
 
         List<Group> expectedGs = new ArrayList<>();

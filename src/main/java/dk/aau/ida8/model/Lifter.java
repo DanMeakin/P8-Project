@@ -53,10 +53,23 @@ public class Lifter {
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Participant> participants;
 
+    /**
+     * Empty constructor required by Hibernate.
+     */
     public Lifter() {
         this.active = true;
     }
 
+    /**
+     * Creates a lifter instance.
+     *
+     * @param forename    the lifter's forname
+     * @param surname     the lifter's surname
+     * @param club        the club of which the lifter is a member
+     * @param gender      the lifter's gender
+     * @param dateOfBirth the lifter's date of birth
+     * @param bodyWeight  the lifter's body weight in kilograms
+     */
     public Lifter(String forename, String surname, Club club, Gender gender, Date dateOfBirth, double bodyWeight) {
         this.forename = forename;
         this.surname = surname;
@@ -68,29 +81,31 @@ public class Lifter {
         this.active = true;
     }
 
+   /**
+     * Determines the equality of two objects.
+     *
+     * A lifter is equal to another object only if that other object is
+     * a lifter, and it is equal in terms of the
+     * {@link #equals(Lifter)} method.
+     *
+     * @param o the other object to test for equality
+     * @return true, if this is equal to o, else false
+     */
     @Override
     public boolean equals(Object o) {
-        if (o instanceof Lifter) {
-            return equals((Lifter) o);
-        } else {
-            return false;
-        }
-    }
-
-    public boolean equals(Lifter l) {
-        return getId() == l.getId();
+        return o instanceof Lifter && equals((Lifter) o);
     }
 
     /**
-     * Adds a Participant instance for this Lifter.
+     * Determines the equality of two lifters.
      *
-     * A Participant instance represents the participant of a lifter within
-     * a given competition. See {@link Participant Participant} for details.
+     * Two lifters are equal only if they both share the same ID.
      *
-     * @param participant the participant to aggregate to this lifter
+     * @param l the other lifter to test for equality
+     * @return true, if this is equal to p, else false
      */
-    public void addParticipation(Participant participant) {
-        participants.add(participant);
+    public boolean equals(Lifter l) {
+        return getId() == l.getId();
     }
 
     public long getId() {
@@ -126,13 +141,7 @@ public class Lifter {
     }
 
     public void setClub(Club club) {
-
-        if(club != null) {
-            this.club = club;
-        } else {
-            this.club = null;
-        }
-
+        this.club = club;
     }
 
     public String getClubName() {
@@ -178,12 +187,13 @@ public class Lifter {
         return active;
     }
 
+    /**
+     * Sets this lifter's active state.
+     *
+     * @param active the value to set this lifter's active state to
+     */
     public void setActive(boolean active) {
         this.active = active;
     }
 
-    @Override
-    public String toString() {
-        return forename;
-    }
 }

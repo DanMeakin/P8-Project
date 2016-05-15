@@ -1,4 +1,4 @@
-package dk.aau.ida8.model;
+package dk.aau.ida8.util;
 
 public class SinclairCoefficient {
 

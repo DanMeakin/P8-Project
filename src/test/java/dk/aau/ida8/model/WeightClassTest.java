@@ -1,5 +1,6 @@
 package dk.aau.ida8.model;
 
+import dk.aau.ida8.util.WeightClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

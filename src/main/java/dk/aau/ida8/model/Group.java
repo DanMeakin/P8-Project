@@ -1,9 +1,9 @@
 package dk.aau.ida8.model;
 
 
-import dk.aau.ida8.model.groupComparators.CompetingComparator;
-import dk.aau.ida8.model.groupComparators.SinclairRankingComparator;
-import dk.aau.ida8.model.groupComparators.TotalWeightRankingComparator;
+import dk.aau.ida8.util.groupComparators.CompetingComparator;
+import dk.aau.ida8.util.groupComparators.SinclairRankingComparator;
+import dk.aau.ida8.util.groupComparators.TotalWeightRankingComparator;
 import dk.aau.ida8.util.Tuple;
 
 import javax.persistence.*;
