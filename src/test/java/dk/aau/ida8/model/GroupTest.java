@@ -2,6 +2,8 @@ package dk.aau.ida8.model;
 
 import dk.aau.ida8.model.groupComparators.CompetingComparator;
 import dk.aau.ida8.model.groupComparators.SinclairRankingComparator;
+import dk.aau.ida8.util.Tuple;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -224,10 +226,10 @@ public class GroupTest {
 
     @Test
     public void tupleEquals() throws Exception {
-        Group.Tuple<Lifter.Gender, Integer> t1 = new Group.Tuple<>(FEMALE, 1);
-        Group.Tuple<Lifter.Gender, Integer> t2 = new Group.Tuple<>(FEMALE, 1);
-        Group.Tuple<Lifter.Gender, Integer> t3 = new Group.Tuple<>(FEMALE, 2);
-        Group.Tuple<Lifter.Gender, Integer> t4 = new Group.Tuple<>(MALE, 1);
+        Tuple<Lifter.Gender, Integer> t1 = new Tuple<>(FEMALE, 1);
+        Tuple<Lifter.Gender, Integer> t2 = new Tuple<>(FEMALE, 1);
+        Tuple<Lifter.Gender, Integer> t3 = new Tuple<>(FEMALE, 2);
+        Tuple<Lifter.Gender, Integer> t4 = new Tuple<>(MALE, 1);
 
         assertEquals(t1, t2);
         assertNotEquals(t1, t3);
