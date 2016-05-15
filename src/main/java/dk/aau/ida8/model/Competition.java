@@ -16,11 +16,13 @@ import java.util.stream.IntStream;
  *
  * There are essentially five stages to a competition:-
  *
- *  1. Creation & open for sign-up;
- *  2. Closed for sign-up, awaiting competition competitionDate;
- *  3. The weigh-in;
- *  4. The tournament itself; and
- *  5. Announcement of results.
+ * <ol>
+ *     <li>Creation & open for sign-up;</li>
+ *     <li>Closed for sign-up, awaiting competition competitionDate;</li>
+ *     <li>The weigh-in;</li>
+ *     <li>The tournament itself; and</li>
+ *     <li>Announcement of results.</li>
+ * </ol>
  *
  * The stage of a competition is dependent on the values contained within it.
  * A competition is at the first stage after creation and until after the
@@ -56,6 +58,9 @@ import java.util.stream.IntStream;
 @Entity
 public class Competition {
 
+    /**
+     * Defines an enumeration representing the type of a competition.
+     */
     public enum CompetitionType {
         SINCLAIR("Sinclair"),
         TOTAL_WEIGHT("Total weight");
@@ -111,14 +116,25 @@ public class Competition {
      * type and a competitionDate. These are required parameters for the creation of a
      * Competition.
      *
-     * @param competitionName the title/name of the competition
-     * @param host            the club hosting the competition
-     * @param location        the venue at which the competition takes place
-     * @param competitionType the type of the competition, i.e. Sinclair or
-     *                        total weight
-     * @param competitionDate            the competitionDate on which the competition is to take place
+     * @param competitionName      the title/name of the competition
+     * @param host                 the club hosting the competition
+     * @param location             the venue at which the competition takes
+     *                             place
+     * @param competitionType      the type of the competition, i.e. Sinclair
+     *                             or total weight
+     * @param competitionDate      the date on which the competition is to take
+     *                             place
+     * @param lastRegistrationDate the date on which sign-up closes
+     * @param maxNumParticipants   the maximum number of participants permitted
+     *                             in this competition
      */
-    public Competition(String competitionName, Club host, Address location, CompetitionType competitionType, Date competitionDate, Date lastRegistrationDate, int maxNumParticipants) {
+    public Competition(String competitionName,
+                       Club host,
+                       Address location,
+                       CompetitionType competitionType,
+                       Date competitionDate,
+                       Date lastRegistrationDate,
+                       int maxNumParticipants) {
         this.competitionName = competitionName;
         this.competitionType = competitionType;
         this.location = location;
@@ -128,9 +144,18 @@ public class Competition {
         this.host = host;
     }
 
-    /*******************************
-     * SETTERS REQUIRED FOR SPRING *
-     *******************************/
+    /**
+     * Creates an empty Competition object.
+     *
+     * An empty constructor is required by Hibernate.
+     */
+    public Competition(){
+        this.participants = new ArrayList<>();
+    }
+
+    /**********************************
+     * SETTERS REQUIRED FOR HIBERNATE *
+     **********************************/
 
     public void setCompetitionName(String competitionName) {
         this.competitionName = competitionName;
@@ -164,18 +189,9 @@ public class Competition {
         this.maxNumParticipants = maxNumParticipants;
     }
 
-    /*************************
-     * END OF SPRING SETTERS *
-     *************************/
-
-    /**
-     * Creates an empty Competition object.
-     *
-     * An empty constructor is required by Hibernate.
-     */
-    public Competition(){
-        this.participants = new ArrayList<>();
-    }
+    /****************************
+     * END OF HIBERNATE SETTERS *
+     ****************************/
 
     /**
      * Compares this against another object.
@@ -211,7 +227,7 @@ public class Competition {
      * instance and then creates and aggregates the required Participant
      * object to the competition.
      *
-     * @param lifter                     the lifter to add to the competition
+     * @param lifter the lifter to add to the competition
      */
     public void addParticipant(Lifter lifter) {
         Participant p = new Participant(lifter, this);
@@ -337,7 +353,7 @@ public class Competition {
     }
 
     /**
-     * Gets the competitionDate of this competition.
+     * Gets the date of this competition.
      *
      * @return the competitionDate of this competition
      */
@@ -346,7 +362,7 @@ public class Competition {
     }
 
     /**
-     * Gets the competitionDate on which registration for this competition closes.
+     * Gets the date on which registration for this competition closes.
      *
      * @return the competitionDate on which registration closes
      */
@@ -388,13 +404,19 @@ public class Competition {
     /**
      * Calculates a specific participant's rank within the competition.
      *
+     * Rank is reported on a per-ranking group basis. As such, there may be
+     * multiple participants with the same rank from different groups.
+     * Additionally, multiple participants may have the same rank at a given
+     * point in time, so there may be multiple participants with the same rank
+     * in one group.
+     *
      * @param participant                the participant for whom the ranking
      *                                   is being calculated
      * @return                           the passed participant's rank
      * @throws InvalidParameterException if participant cannot be found within
      *                                   any ranking group
      */
-    public int getRank(Participant participant){
+    public int getRank(Participant participant) throws InvalidParameterException {
         for (Group g : getRankingGroups()) {
             if (g.containsParticipant(participant)) {
                 return g.getRank(participant);

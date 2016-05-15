@@ -5,6 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * This class represents one club within the system.
+ *
+ * Each club has a number of lifters associated with it. These compete on behalf
+ * of the club in competitions.
+ */
 @Entity
 public class Club {
 
@@ -20,19 +26,38 @@ public class Club {
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Lifter> lifters;
 
+    /**
+     * Empty constructor required by Hibernate.
+     */
     public Club() {
     }
 
+    /**
+     * Creates a Club instance.
+     *
+     * @param name    the name of the club
+     * @param address the address of the club
+     */
     public Club(String name, Address address) {
         this.lifters = new ArrayList<Lifter>();
         this.name = name;
         this.address = address;
     }
 
+    /**
+     * Associates a lifter with this club.
+     *
+     * @param lifter the lifter to associate with the club
+     */
     public void addLifter(Lifter lifter) {
         lifters.add(lifter);
     }
 
+    /**
+     * Removes a lifter association with this club.
+     *
+     * @param lifter the lifter for whom to remove the club association
+     */
     public void removeLifter(Lifter lifter) {
         lifters.remove(lifter);
     }

@@ -4,53 +4,51 @@ package dk.aau.ida8.model;
 import dk.aau.ida8.model.groupComparators.CompetingComparator;
 import dk.aau.ida8.model.groupComparators.SinclairRankingComparator;
 import dk.aau.ida8.model.groupComparators.TotalWeightRankingComparator;
+import dk.aau.ida8.util.Tuple;
 
 import javax.persistence.*;
 import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * This class represents one group within a weightlifting competition.
+ *
+ * Once all participants are signed-up to a competition and weigh-in has been
+ * completed, the {@link Competition} generates a series of groups to represent
+ * the grouping of participants within the competition.
+ *
+ * There are two kinds of grouping within a competition:-
+ *
+ * <ol>
+ *     <li>Competing groups; and</li>
+ *     <li>Ranking groups.</li>
+ * </ol>
+ *
+ * The former are used to order lifters within groups for the purpose of their
+ * participation in the competition. Within the competition, each group carries-
+ * out all of their lifts before the next group begins. This process repeats
+ * until all groups have completed all lifts.
+ *
+ * The latter are used to determine the rankings of participants in the results
+ * of a competition. Depending on the type of competition, there will be one or
+ * more ranking groups for each competition. These are broken down by gender in
+ * every case, with separate groupings for male and female participants, and
+ * then may be broken down further into weight groups for that type of
+ * competition.
+ *
+ * Each group contains methods for getting, sorting and ranking participants.
+ * Where competing groups are concerned, methods for ranking relate only to the
+ * order in which participants participate in lifts.
+ */
 @Entity
 @Table(name="COMPETITION_GROUP")
 public class Group {
 
     /**
-     * Defines an immutable pair of values. To be used as the key to a map
-     * created for grouping participants.
+     * Defines a series of comparator types, each representing the way in which
+     * members of the group are compared.
      */
-    static class Tuple<T, U> {
-        private final T fst;
-        private final U snd;
-
-        public Tuple(T fst, U snd) {
-            this.fst = fst;
-            this.snd = snd;
-        }
-
-        public T getFst() {
-            return fst;
-        }
-
-        public U getSnd() {
-            return snd;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            return o instanceof Tuple && equals((Tuple) o);
-        }
-
-        public boolean equals(Tuple o) {
-            return this.getFst().equals(o.getFst()) &&
-                    this.getSnd().equals(o.getSnd());
-        }
-
-        @Override
-        public int hashCode() {
-            return 0;
-        }
-    }
-
     public enum ComparatorType {
         COMPETING,
         SINCLAIR_RANKING,
@@ -76,6 +74,13 @@ public class Group {
 
     }
 
+    /**
+     * Creates a new Group object.
+     *
+     * @param competition    the competition within which the group is situated
+     * @param participants   the participants within the group
+     * @param comparatorType the type of grouping this group represents
+     */
     private Group(Competition competition,
                   List<Participant> participants,
                   ComparatorType comparatorType) {
@@ -84,16 +89,37 @@ public class Group {
         this.comparatorType = comparatorType;
     }
 
+    /**
+     * Creates a new Group object for ranking in a Sinclair competition.
+     *
+     * @param competition  the competition within which the group is situated
+     * @param participants the participants within the group
+     * @return             a group object for ranking in a Sinclair competition
+     */
     public static Group sinclairRankingGroup(Competition competition,
                                              List<Participant> participants) {
         return new Group(competition, participants, ComparatorType.SINCLAIR_RANKING);
     }
 
+    /**
+     * Creates a new Group object for ranking in a total weight competition.
+     *
+     * @param competition  the competition within which the group is situated
+     * @param participants the participants within the group
+     * @return             a group object for ranking in a total weight competition
+     */
     public static Group totalWeightRankingGroup(Competition competition,
                                                 List<Participant> participants) {
         return new Group(competition, participants, ComparatorType.TOTAL_WEIGHT_RANKING);
     }
 
+    /**
+     * Creates a new competing Group object.
+     *
+     * @param competition  the competition within which the group is situated
+     * @param participants the participants within the group
+     * @return             a competing group object
+     */
     public static Group competingGroup(Competition competition,
                                        List<Participant> participants) {
         return new Group(competition, participants, ComparatorType.COMPETING);
@@ -106,12 +132,10 @@ public class Group {
      * competition. This method splits participants into a series of groups
      * based on the type of competition: Sinclair or Total Weight.
      *
-     * A Sinclair competition groups participants by gender, and then splits
-     * each gender group into sub-groups of no more than 10 participants.
+     * A Sinclair competition groups participants by gender.
      *
      * A Total Weight competition groups participants by gender and by weight
-     * group, and then splits each of these groups into sub-groups of no more
-     * than 10 participants.
+     * group.
      *
      * @param competition the competition for which to create groups
      * @return            a list of ranking groups generated from competition
@@ -127,6 +151,14 @@ public class Group {
         throw new UnsupportedOperationException(msg);
     }
 
+    /**
+     * Creates a series of ranking groups for a Sinclair competition.
+     *
+     * A Sinclair competition groups participants by gender.
+     *
+     * @param competition the competition for which to create groups
+     * @return            a list of ranking groups generated from competition
+     */
     private static List<Group> createSinclairRankingGroups(Competition competition) {
         List<Participant> ps = new ArrayList<>(competition.getParticipants());
         Map<Lifter.Gender, List<Participant>> pGrp = ps.stream()
@@ -148,6 +180,15 @@ public class Group {
         return groups;
     }
 
+    /**
+     * Creates a series of ranking groups for a total weight competition.
+     *
+     * A Total Weight competition groups participants by gender and by weight
+     * group.
+
+     * @param competition the competition for which to create groups
+     * @return            a list of ranking groups generated from competition
+     */
     private static List<Group> createTotalWeightRankingGroups(Competition competition) {
         List<Participant> ps = new ArrayList<>(competition.getParticipants());
         Map<Tuple<Lifter.Gender, Integer>, List<Participant>> pGrp = ps.stream()
@@ -172,36 +213,68 @@ public class Group {
         return groups;
     }
 
+    /**
+     * Creates a series of competing groups for a competition.
+     *
+     * Competing groups are generated from ranking groups, splitting each ranking
+     * group into no more than 10 participants.
+     *
+     * @param competition the competition for which to create groups
+     * @return            a list of competing groups generated from competition
+     */
     public static List<Group> createCompetingGroups(Competition competition) {
         List<Group> rankingGroups = createRankingGroups(competition);
         return chunkGroups(competition, rankingGroups, 10);
     }
 
-    @Override
-    public String toString() {
-        String s = "Group: " + getParticipantsCount() + " " +
-                getParticipants().get(0).getGender() + " participants (";
-        for (Participant p : getParticipants()) {
-            s += p.toString() + ", ";
-        }
-        return s;
-    }
-
+    /**
+     * Determines whether this is equal to another object.
+     *
+     * This method checks that the other object is a Group, and that it is
+     * equal according to the {@link #equals(Group) group equality} method.
+     *
+     * @param o the other object to compare for equality
+     * @return  true if equal, else false
+     */
     @Override
     public boolean equals(Object o) {
         return o instanceof Group && equals((Group) o);
     }
 
+    /**
+     * Determines whether this is equal to another group.
+     *
+     * Two groups are equal only if they contain the same participants, and they
+     * share the same comparator.
+     *
+     * @param g the other group to compare to this
+     * @return  true if equal, else false
+     */
     public boolean equals(Group g) {
         List<Participant> l1 = this.getParticipants();
         List<Participant> l2 = g.getParticipants();
-        return l1.equals(l2);
+        ComparatorType c1 = this.getComparatorType();
+        ComparatorType c2 = g.getComparatorType();
+        return l1.equals(l2) && c1.equals(c2);
     }
 
+    /**
+     * Gets the first participant within the group.
+     *
+     * This will represent the participant currently in the lead for a ranking
+     * group, or the participant next to lift in a competing group.
+     *
+     * @return the first participant within the group
+     */
     public Participant getFirstParticipant() {
         return getParticipants().get(0);
     }
 
+    /**
+     * Gets a sorted list of all participants.
+     *
+     * @return sorted list of all participants in the group
+     */
     public List<Participant> getParticipants() {
         sortParticipants();
         return participants;
@@ -211,10 +284,21 @@ public class Group {
         return participants;
     }
 
+    /**
+     * Determines whether the group contains a given participant.
+     *
+     * @param p participant to check for membership in group
+     * @return  true if participant is a member of the group, else false
+     */
     public boolean containsParticipant(Participant p) {
         return participants.contains(p);
     }
 
+    /**
+     * Counts the number of participants in group.
+     *
+     * @return number of participants in group
+     */
     public int getParticipantsCount() {
         return participants.size();
     }
@@ -231,6 +315,14 @@ public class Group {
         participants.sort(getGroupComparator());
     }
 
+    /**
+     * Gets the relevant group comparator object for this group.
+     *
+     * The group comparator object is determined by checking which ComparatorType
+     * is associated with this group.
+     *
+     * @return group comparator object for this group
+     */
     public Comparator<Participant> getGroupComparator() {
         if (getComparatorType() == ComparatorType.SINCLAIR_RANKING) {
             return new SinclairRankingComparator();
@@ -243,10 +335,20 @@ public class Group {
         throw new UnsupportedOperationException(msg);
     }
 
+    /**
+     * Determines the gender of the participants in this group.
+     *
+     * @return the gender of the participants in this group
+     */
     public Lifter.Gender getGroupGender() {
         return this.getParticipants().get(0).getGender();
     }
 
+    /**
+     * Adds a participant to this group.
+     *
+     * @param p participant to add
+     */
     public void addParticipant(Participant p){
         getParticipants().add(p);
     }
@@ -328,14 +430,31 @@ public class Group {
         return chunkedGroups;
     }
 
+    /**
+     * Gets the ID# of this group.
+     *
+     * Required for Hibernate.
+     *
+     * @return ID# of this group
+     */
     public long getId() {
         return id;
     }
 
+    /**
+     * Gets the comparator type applicable to this group.
+     *
+     * @return comparator type applicable to this group
+     */
     public ComparatorType getComparatorType() {
         return comparatorType;
     }
 
+    /**
+     * Gets the competition to which this group belongs.
+     *
+     * @return competition to which this group belongs
+     */
     public Competition getCompetition() {
         return competition;
     }
