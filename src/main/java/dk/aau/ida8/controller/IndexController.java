@@ -6,6 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+/**
+ * This class is the controller for the index page of the software.
+ */
 @Controller
 public class IndexController {
 
@@ -16,7 +19,13 @@ public class IndexController {
         this.competitionService = competitionService;
     }
 
-    @RequestMapping(value="/")
+    /**
+     * Display the index page view.
+     *
+     * @param model the Spring model to pass to the view
+     * @return      the index page view
+     */
+    @RequestMapping("/")
     public String index(Model model) {
         model.addAttribute("competitions", competitionService.findAll());
         return "index";

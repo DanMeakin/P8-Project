@@ -17,6 +17,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * This class is the controller for all participant-centric activities within
+ * this software.
+ *
+ * The ParticipantController exposes routes relating to the viewing of
+ * participants, registration of lifts made by a participant, increasing weight
+ * and other associated operations.
+ */
 @Controller
 @RequestMapping("/participant")
 public class ParticipantController {
@@ -24,24 +32,21 @@ public class ParticipantController {
     private ParticipantService participantService;
     private LiftService liftService;
 
+    /**
+     * Instantiates a ClubController.
+     *
+     * Uses the @Autowired annotation to automatically create instances of the
+     * required services. This allows ORM access as required without manually
+     * creating these services.
+     *
+     * @param participantService the service used to access Participant data
+     * @param liftService        the service used to access Lift data
+     */
     @Autowired
     public ParticipantController(ParticipantService participantService,
                                  LiftService liftService) {
         this.participantService = participantService;
         this.liftService = liftService;
-    }
-
-    /**
-     * Participant information partial view.
-     *
-     * @param model the Spring model to pass to the view
-     * @param participantID the ID# of the participant for whom to display info
-     * @return the participant's information
-     */
-    @RequestMapping(value = "/{participantID}", method = RequestMethod.GET)
-    public String displayParticipantInfo(Model model, @PathVariable long participantID){
-        model.addAttribute("participant", participantService.findOne(participantID));
-        return "fragments/participant-info";
     }
 
     /**
@@ -52,7 +57,9 @@ public class ParticipantController {
      *               FAIL or ABSTAIN
      * @param participantID the ID# of the participant for whom to register a
      *                      lift
-     * @return lift register form view
+     * @return redirects to the
+     *         {@link CompetitionController#competitionDashboard(Model, long)
+     *         competition dashboard} view
      */
     @RequestMapping(value = "/register-lift", method = RequestMethod.POST)
     public String registerLift(Model model,
