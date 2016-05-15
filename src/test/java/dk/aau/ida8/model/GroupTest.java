@@ -155,7 +155,12 @@ public class GroupTest {
         expectedGs.add(Group.competingGroup(sinclairCompetition, femaleParticipants));
         expectedGs.add(Group.competingGroup(sinclairCompetition, maleParticipants));
         List<Group> actualGs = Group.createRankingGroups(sinclairCompetition);
-        assertEquals(expectedGs, actualGs);
+        for (int i = 0; i < expectedGs.size(); i++) {
+            assertEquals(
+                    expectedGs.get(i).getParticipants(),
+                    actualGs.get(i).getParticipants()
+            );
+        }
     }
 
     @Test
@@ -189,7 +194,12 @@ public class GroupTest {
         expectedGs.add(Group.competingGroup(totalWeightCompetition, new ArrayList<>(maleParticipants.subList(15, 25))));
         expectedGs.add(Group.competingGroup(totalWeightCompetition, new ArrayList<>(maleParticipants.subList(25, 30))));
         List<Group> actualGs = Group.createCompetingGroups(totalWeightCompetition);
-        assertEquals(expectedGs, actualGs);
+        for (int i = 0; i < expectedGs.size(); i++) {
+            assertEquals(
+                    expectedGs.get(i).getParticipants(),
+                    actualGs.get(i).getParticipants()
+            );
+        }
     }
 
     @Test
@@ -221,7 +231,12 @@ public class GroupTest {
         expectedGs.add(Group.competingGroup(totalWeightCompetition, new ArrayList<>(maleParticipants.subList(0, 15))));
         expectedGs.add(Group.competingGroup(totalWeightCompetition, new ArrayList<>(maleParticipants.subList(15, 30))));
         List<Group> actualGs = Group.createRankingGroups(totalWeightCompetition);
-        assertEquals(expectedGs, actualGs);
+        for (int i = 0; i < expectedGs.size(); i++) {
+            assertEquals(
+                    expectedGs.get(i).getParticipants(),
+                    actualGs.get(i).getParticipants()
+            );
+        }
     }
 
     @Test
