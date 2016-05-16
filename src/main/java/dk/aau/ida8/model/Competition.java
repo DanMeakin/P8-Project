@@ -1,5 +1,8 @@
 package dk.aau.ida8.model;
 
+import dk.aau.ida8.util.GroupBuilder;
+import dk.aau.ida8.util.SinclairGroupBuilder;
+import dk.aau.ida8.util.TotalWeightGroupBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -110,6 +113,13 @@ public class Competition {
     private Club host;
 
     /**
+     * Contains the groupBuilder used to generate ranking and competing groups
+     * for this competition.
+     */
+    @Transient
+    private GroupBuilder groupBuilder;
+
+    /**
      * Creates a new Competition object.
      *
      * A competition requires a title, a host club, a location, a competition
@@ -142,6 +152,7 @@ public class Competition {
         this.lastRegistrationDate = lastRegistrationDate;
         this.maxNumParticipants = maxNumParticipants;
         this.host = host;
+        createGroupBuilder();
     }
 
     /**
@@ -277,6 +288,34 @@ public class Competition {
     }
 
     /**
+     * Creates and stores a GroupBuilder within this competition.
+     *
+     * The GroupBuilder is used to generate the participant groups required
+     * for this competition.
+     *
+     * @throws UnsupportedOperationException if competition type is unrecognised
+     */
+    private void createGroupBuilder() {
+        if (getCompetitionType() == CompetitionType.SINCLAIR) {
+            this.groupBuilder = new SinclairGroupBuilder(this);
+        } else if (getCompetitionType() == CompetitionType.TOTAL_WEIGHT) {
+            this.groupBuilder = new TotalWeightGroupBuilder(this);
+        } else {
+            String msg = "unrecognised CompetitionType: " + getCompetitionType();
+            throw new UnsupportedOperationException(msg);
+        }
+    }
+
+    /**
+     * Gets the groupBuilder associated with this competition.
+     *
+     * @return groupBuilder associated with this competition
+     */
+    private GroupBuilder getGroupBuilder() {
+        return groupBuilder;
+    }
+
+    /**
      * Allocates participants to competing and ranking groups.
      *
      * The competing and ranking groups are used to ensure the proper order
@@ -284,8 +323,8 @@ public class Competition {
      * after completion, respectively.
      */
     private void allocateGroups() {
-        setRankingGroups(Group.createRankingGroups(this));
-        setCompetingGroups(Group.createCompetingGroups(this));
+        setRankingGroups(getGroupBuilder().createRankingGroups());
+        setCompetingGroups(getGroupBuilder().createCompetingGroups());
     }
 
     /**

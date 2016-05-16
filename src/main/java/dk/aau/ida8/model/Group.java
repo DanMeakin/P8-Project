@@ -70,6 +70,12 @@ public class Group {
     @ManyToOne
     private Competition competition;
 
+    @Transient
+    private Comparator<Participant> groupComparator;
+
+    /**
+     * Empty constructor required by Hibernate.
+     */
     public Group() {
 
     }
@@ -87,6 +93,7 @@ public class Group {
         this.competition = competition;
         this.participants = participants;
         this.comparatorType = comparatorType;
+        createGroupComparator();
     }
 
     /**
@@ -126,108 +133,6 @@ public class Group {
     }
 
     /**
-     * Creates a series of ranking groups for a given competition.
-     *
-     * Ranking groups are used to determine the final scores within a
-     * competition. This method splits participants into a series of groups
-     * based on the type of competition: Sinclair or Total Weight.
-     *
-     * A Sinclair competition groups participants by gender.
-     *
-     * A Total Weight competition groups participants by gender and by weight
-     * group.
-     *
-     * @param competition the competition for which to create groups
-     * @return            a list of ranking groups generated from competition
-     */
-    public static List<Group> createRankingGroups(Competition competition) {
-        Competition.CompetitionType ct = competition.getCompetitionType();
-        if (ct.equals(Competition.CompetitionType.SINCLAIR)) {
-            return createSinclairRankingGroups(competition);
-        } else if (ct.equals(Competition.CompetitionType.TOTAL_WEIGHT)) {
-            return createTotalWeightRankingGroups(competition);
-        }
-        String msg = "unknown competition type: " + ct;
-        throw new UnsupportedOperationException(msg);
-    }
-
-    /**
-     * Creates a series of ranking groups for a Sinclair competition.
-     *
-     * A Sinclair competition groups participants by gender.
-     *
-     * @param competition the competition for which to create groups
-     * @return            a list of ranking groups generated from competition
-     */
-    private static List<Group> createSinclairRankingGroups(Competition competition) {
-        List<Participant> ps = new ArrayList<>(competition.getParticipants());
-        Map<Lifter.Gender, List<Participant>> pGrp = ps.stream()
-                .sorted((p1, p2) -> p1.getStartingSnatchWeight() - p2.getStartingSnatchWeight())
-                .collect(Collectors.groupingBy(Participant::getGender));
-        List<Group> groups = new ArrayList<>();
-        pGrp.values().forEach(grp -> groups.add(sinclairRankingGroup(competition, grp)));
-        Collections.sort(groups, (g1, g2) -> {
-            boolean g1Female = g1.getGroupGender().equals(Lifter.Gender.FEMALE);
-            boolean g2Female = g2.getGroupGender().equals(Lifter.Gender.FEMALE);
-            boolean oneFemale = g1Female ^ g2Female;
-            if (oneFemale) {
-                return g1Female ? -1 : 1;
-            } else {
-                return g1.getParticipants().get(0).getStartingSnatchWeight() -
-                        g2.getParticipants().get(0).getStartingSnatchWeight();
-            }
-        });
-        return groups;
-    }
-
-    /**
-     * Creates a series of ranking groups for a total weight competition.
-     *
-     * A Total Weight competition groups participants by gender and by weight
-     * group.
-
-     * @param competition the competition for which to create groups
-     * @return            a list of ranking groups generated from competition
-     */
-    private static List<Group> createTotalWeightRankingGroups(Competition competition) {
-        List<Participant> ps = new ArrayList<>(competition.getParticipants());
-        Map<Tuple<Lifter.Gender, Integer>, List<Participant>> pGrp = ps.stream()
-                .sorted((p1, p2) -> p1.getStartingSnatchWeight() - p2.getStartingSnatchWeight())
-                .collect(Collectors.groupingBy(p -> {
-                    return new Tuple<>(p.getGender(), p.getWeightClass());
-                }));
-        List<Group> groups = new ArrayList<>();
-        pGrp.values().forEach(grp -> groups.add(totalWeightRankingGroup(competition, grp)));
-        Collections.sort(groups, (g1, g2) -> {
-            boolean g1Female = g1.getGroupGender().equals(Lifter.Gender.FEMALE);
-            boolean g2Female = g2.getGroupGender().equals(Lifter.Gender.FEMALE);
-            boolean oneFemale = g1Female ^ g2Female;
-            if (oneFemale) {
-                return g1Female ? -1 : 1;
-            } else {
-                return (int)
-                        (g1.getParticipants().get(0).getWeightClass() -
-                        g2.getParticipants().get(0).getWeightClass());
-            }
-        });
-        return groups;
-    }
-
-    /**
-     * Creates a series of competing groups for a competition.
-     *
-     * Competing groups are generated from ranking groups, splitting each ranking
-     * group into no more than 10 participants.
-     *
-     * @param competition the competition for which to create groups
-     * @return            a list of competing groups generated from competition
-     */
-    public static List<Group> createCompetingGroups(Competition competition) {
-        List<Group> rankingGroups = createRankingGroups(competition);
-        return chunkGroups(competition, rankingGroups, 10);
-    }
-
-    /**
      * Determines whether this is equal to another object.
      *
      * This method checks that the other object is a Group, and that it is
@@ -251,11 +156,8 @@ public class Group {
      * @return  true if equal, else false
      */
     public boolean equals(Group g) {
-        List<Participant> l1 = this.getParticipants();
-        List<Participant> l2 = g.getParticipants();
-        ComparatorType c1 = this.getComparatorType();
-        ComparatorType c2 = g.getComparatorType();
-        return l1.equals(l2) && c1.equals(c2);
+        return this.getParticipants().equals(g.getParticipants()) &&
+                this.getComparatorType().equals(g.getComparatorType());
     }
 
     /**
@@ -316,23 +218,36 @@ public class Group {
     }
 
     /**
-     * Gets the relevant group comparator object for this group.
+     * Creates a group comparator object for this group.
      *
      * The group comparator object is determined by checking which ComparatorType
      * is associated with this group.
+     */
+    private void createGroupComparator() {
+        if (getComparatorType() == ComparatorType.SINCLAIR_RANKING) {
+            this.groupComparator = new SinclairRankingComparator();
+        } else if (getComparatorType() == ComparatorType.TOTAL_WEIGHT_RANKING) {
+            this.groupComparator = new TotalWeightRankingComparator();
+        } else if (getComparatorType() == ComparatorType.COMPETING) {
+            this.groupComparator =  new CompetingComparator();
+        } else {
+            String msg = "unknown competition type: " + getComparatorType();
+            throw new UnsupportedOperationException(msg);
+        }
+    }
+
+    /**
+     * Gets the group comparator for this group.
      *
-     * @return group comparator object for this group
+     * The group comparator object is used to compare different participants
+     * within this group, according to the comparison manner specified therein.
+     * A Sinclair ranking comparator, for example, will compare participants
+     * using their Sinclair score.
+     *
+     * @return the group comparator for this group
      */
     public Comparator<Participant> getGroupComparator() {
-        if (getComparatorType() == ComparatorType.SINCLAIR_RANKING) {
-            return new SinclairRankingComparator();
-        } else if (getComparatorType() == ComparatorType.TOTAL_WEIGHT_RANKING) {
-            return new TotalWeightRankingComparator();
-        } else if (getComparatorType() == ComparatorType.COMPETING) {
-            return new CompetingComparator();
-        }
-        String msg = "unknown competition type: " + getComparatorType();
-        throw new UnsupportedOperationException(msg);
+        return groupComparator;
     }
 
     /**

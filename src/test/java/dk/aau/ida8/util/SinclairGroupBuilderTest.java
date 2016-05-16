@@ -1,9 +1,9 @@
-package dk.aau.ida8.model;
+package dk.aau.ida8.util;
 
-import dk.aau.ida8.util.groupComparators.CompetingComparator;
-import dk.aau.ida8.util.groupComparators.SinclairRankingComparator;
-import dk.aau.ida8.util.Tuple;
-
+import dk.aau.ida8.model.Competition;
+import dk.aau.ida8.model.Group;
+import dk.aau.ida8.model.Lifter;
+import dk.aau.ida8.model.Participant;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -19,22 +19,19 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
-public class GroupTest {
+public class SinclairGroupBuilderTest {
 
     // Values used to create Competition.
-    private static Competition sinclairCompetition;
-    private static Competition totalWeightCompetition;
+    private static Competition competition;
     private static List<Participant> maleParticipants;
     private static List<Participant> femaleParticipants;
+    private static GroupBuilder builder;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         // instantiate the class under test
-        sinclairCompetition = mock(Competition.class);
-        when(sinclairCompetition.getCompetitionType()).thenReturn(Competition.CompetitionType.SINCLAIR);
-
-        totalWeightCompetition = mock(Competition.class);
-        when(totalWeightCompetition.getCompetitionType()).thenReturn(Competition.CompetitionType.TOTAL_WEIGHT);
+        competition = mock(Competition.class);
+        when(competition.getCompetitionType()).thenReturn(Competition.CompetitionType.SINCLAIR);
 
         List<Integer> snatchWeights = Arrays.asList(
                 50,
@@ -111,32 +108,52 @@ public class GroupTest {
             }
             allParticipants.add(p);
         }
-        when(sinclairCompetition.getParticipants()).thenReturn(allParticipants);
-        when(totalWeightCompetition.getParticipants()).thenReturn(allParticipants);
-    }
-
-
-    @Test
-    public void sortParticipants() throws Exception {
-        // Test competing group
-        Group g = Group.competingGroup(totalWeightCompetition, femaleParticipants);
-        femaleParticipants.sort(new CompetingComparator());
-        assertEquals(femaleParticipants, g.getParticipants());
-
-        // Test ranking group
-        Group h = Group.sinclairRankingGroup(totalWeightCompetition, femaleParticipants);
-        femaleParticipants.sort(new SinclairRankingComparator());
-        assertEquals(femaleParticipants, h.getParticipants());
+        when(competition.getParticipants()).thenReturn(allParticipants);
+        builder = new SinclairGroupBuilder(competition);
     }
 
     @Test
-    public void containsParticipant() throws Exception {
-        Group g = Group.competingGroup(totalWeightCompetition, maleParticipants);
-        for (Participant p : maleParticipants) {
-            assertTrue(g.containsParticipant(p));
+    public void createCompetingGroups() throws Exception {
+        // Sort by starting weight
+        Collections.sort(
+                maleParticipants,
+                (p1, p2) -> p1.getStartingSnatchWeight() - p2.getStartingSnatchWeight()
+        );
+        Collections.sort(
+                femaleParticipants,
+                (p1, p2) -> p1.getStartingSnatchWeight() - p2.getStartingSnatchWeight()
+        );
+
+        List<Group> expectedGs = new ArrayList<>();
+        expectedGs.add(Group.competingGroup(competition, femaleParticipants));
+        for (int i = 0; i < 3; i++) {
+            expectedGs.add(Group.competingGroup(competition, new ArrayList<>(maleParticipants.subList(i*10, (i+1)*10))));
         }
-        for (Participant p : femaleParticipants) {
-            assertFalse(g.containsParticipant(p));
+        List<Group> actualGs = builder.createCompetingGroups();
+        assertEquals(expectedGs, actualGs);
+    }
+
+    @Test
+    public void createRankingGroups() throws Exception {
+        // Sort by starting weight
+        Collections.sort(
+                maleParticipants,
+                (p1, p2) -> p1.getStartingSnatchWeight() - p2.getStartingSnatchWeight()
+        );
+        Collections.sort(
+                femaleParticipants,
+                (p1, p2) -> p1.getStartingSnatchWeight() - p2.getStartingSnatchWeight()
+        );
+
+        List<Group> expectedGs = new ArrayList<>();
+        expectedGs.add(Group.competingGroup(competition, femaleParticipants));
+        expectedGs.add(Group.competingGroup(competition, maleParticipants));
+        List<Group> actualGs = builder.createRankingGroups();
+        for (int i = 0; i < expectedGs.size(); i++) {
+            assertEquals(
+                    expectedGs.get(i).getParticipants(),
+                    actualGs.get(i).getParticipants()
+            );
         }
     }
 }
