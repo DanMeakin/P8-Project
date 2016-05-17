@@ -1,13 +1,11 @@
-package dk.aau.ida8.util;
+package dk.aau.ida8.util.groupbuilders;
 
 import dk.aau.ida8.model.Competition;
 import dk.aau.ida8.model.Group;
 import dk.aau.ida8.model.Participant;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
+import java.util.function.Function;
 
 public class SinclairGroupBuilder extends GroupBuilder {
 
@@ -15,12 +13,24 @@ public class SinclairGroupBuilder extends GroupBuilder {
         super(competition);
     }
 
-    public List<Group> createRankingGroups() {
-        List<Group> groups = new ArrayList<>();
-        groupParticipants(Participant::getGender)
-                .forEach(grp -> groups.add(Group.sinclairRankingGroup(getCompetition(), grp)));
-        Collections.sort(groups, compareFirstByGender(groupingComparator()));
-        return groups;
+    @Override
+    Function<Participant, Object> getRankingGrouper() {
+        return Participant::getGender;
+    }
+
+    @Override
+    Group.ComparatorType getRankingComparatorType() {
+        return Group.ComparatorType.SINCLAIR_RANKING;
+    }
+
+    @Override
+    Comparator<Group> getRankingGroupComparator() {
+        return compareFirstByGender(groupingComparator());
+    }
+
+    @Override
+    int getCompetingGroupMaxSize() {
+        return 10;
     }
 
     private Comparator<Group> groupingComparator() {

@@ -1,15 +1,13 @@
 package dk.aau.ida8.model;
 
 
-import dk.aau.ida8.util.groupComparators.CompetingComparator;
-import dk.aau.ida8.util.groupComparators.SinclairRankingComparator;
-import dk.aau.ida8.util.groupComparators.TotalWeightRankingComparator;
-import dk.aau.ida8.util.Tuple;
+import dk.aau.ida8.util.groupcomparators.CompetingComparator;
+import dk.aau.ida8.util.groupcomparators.SinclairRankingComparator;
+import dk.aau.ida8.util.groupcomparators.TotalWeightRankingComparator;
 
 import javax.persistence.*;
 import java.security.InvalidParameterException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * This class represents one group within a weightlifting competition.
@@ -87,49 +85,13 @@ public class Group {
      * @param participants   the participants within the group
      * @param comparatorType the type of grouping this group represents
      */
-    private Group(Competition competition,
+    public Group(Competition competition,
                   List<Participant> participants,
                   ComparatorType comparatorType) {
         this.competition = competition;
         this.participants = participants;
         this.comparatorType = comparatorType;
         createGroupComparator();
-    }
-
-    /**
-     * Creates a new Group object for ranking in a Sinclair competition.
-     *
-     * @param competition  the competition within which the group is situated
-     * @param participants the participants within the group
-     * @return             a group object for ranking in a Sinclair competition
-     */
-    public static Group sinclairRankingGroup(Competition competition,
-                                             List<Participant> participants) {
-        return new Group(competition, participants, ComparatorType.SINCLAIR_RANKING);
-    }
-
-    /**
-     * Creates a new Group object for ranking in a total weight competition.
-     *
-     * @param competition  the competition within which the group is situated
-     * @param participants the participants within the group
-     * @return             a group object for ranking in a total weight competition
-     */
-    public static Group totalWeightRankingGroup(Competition competition,
-                                                List<Participant> participants) {
-        return new Group(competition, participants, ComparatorType.TOTAL_WEIGHT_RANKING);
-    }
-
-    /**
-     * Creates a new competing Group object.
-     *
-     * @param competition  the competition within which the group is situated
-     * @param participants the participants within the group
-     * @return             a competing group object
-     */
-    public static Group competingGroup(Competition competition,
-                                       List<Participant> participants) {
-        return new Group(competition, participants, ComparatorType.COMPETING);
     }
 
     /**
@@ -320,29 +282,6 @@ public class Group {
             rankMap.put(ps.get(i), ranks.get(i));
         }
         return rankMap;
-    }
-
-    /**
-     * Divides a list of Groups of Participants into new Groupings of no larger
-     * than a certain size.
-     *
-     * @param groups    the original groups to sub-divide
-     * @param chunkSize the maximum size of the new groups
-     * @return          a list of groups sub-divided to no more than a certain
-     *                  size
-     */
-    private static List<Group> chunkGroups(Competition c, List<Group> groups, int chunkSize) {
-        List<Group> chunkedGroups = new ArrayList<>();
-        for (Group g : groups) {
-            for (int i = 0; i < g.getParticipantsCount(); i += chunkSize) {
-                List<Participant> subList = new ArrayList<>(g.getParticipants().subList(
-                                i,
-                                Math.min(i+chunkSize, g.getParticipantsCount())
-                        ));
-                chunkedGroups.add(competingGroup(c, subList));
-            }
-        }
-        return chunkedGroups;
     }
 
     /**

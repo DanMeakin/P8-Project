@@ -1,8 +1,7 @@
 package dk.aau.ida8.model;
 
-import dk.aau.ida8.util.groupComparators.CompetingComparator;
-import dk.aau.ida8.util.groupComparators.SinclairRankingComparator;
-import dk.aau.ida8.util.Tuple;
+import dk.aau.ida8.util.groupcomparators.CompetingComparator;
+import dk.aau.ida8.util.groupcomparators.SinclairRankingComparator;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -119,19 +118,19 @@ public class GroupTest {
     @Test
     public void sortParticipants() throws Exception {
         // Test competing group
-        Group g = Group.competingGroup(totalWeightCompetition, femaleParticipants);
+        Group g = new Group(totalWeightCompetition, femaleParticipants, Group.ComparatorType.COMPETING);
         femaleParticipants.sort(new CompetingComparator());
         assertEquals(femaleParticipants, g.getParticipants());
 
         // Test ranking group
-        Group h = Group.sinclairRankingGroup(totalWeightCompetition, femaleParticipants);
+        Group h = new Group(totalWeightCompetition, femaleParticipants, Group.ComparatorType.SINCLAIR_RANKING);
         femaleParticipants.sort(new SinclairRankingComparator());
         assertEquals(femaleParticipants, h.getParticipants());
     }
 
     @Test
     public void containsParticipant() throws Exception {
-        Group g = Group.competingGroup(totalWeightCompetition, maleParticipants);
+        Group g = new Group(totalWeightCompetition, maleParticipants, Group.ComparatorType.COMPETING);
         for (Participant p : maleParticipants) {
             assertTrue(g.containsParticipant(p));
         }

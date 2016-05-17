@@ -1,8 +1,8 @@
 package dk.aau.ida8.model;
 
-import dk.aau.ida8.util.GroupBuilder;
-import dk.aau.ida8.util.SinclairGroupBuilder;
-import dk.aau.ida8.util.TotalWeightGroupBuilder;
+import dk.aau.ida8.util.groupbuilders.GroupBuilder;
+import dk.aau.ida8.util.groupbuilders.SinclairGroupBuilder;
+import dk.aau.ida8.util.groupbuilders.TotalWeightGroupBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;

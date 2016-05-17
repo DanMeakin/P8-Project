@@ -1,4 +1,4 @@
-package dk.aau.ida8.util.groupComparators;
+package dk.aau.ida8.util.groupcomparators;
 
 import dk.aau.ida8.model.Lift;
 import dk.aau.ida8.model.Participant;

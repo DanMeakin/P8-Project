@@ -1,9 +1,10 @@
-package dk.aau.ida8.util;
+package dk.aau.ida8.util.groupbuilders;
 
 import dk.aau.ida8.model.Competition;
 import dk.aau.ida8.model.Group;
 import dk.aau.ida8.model.Lifter;
 import dk.aau.ida8.model.Participant;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -125,9 +126,9 @@ public class SinclairGroupBuilderTest {
         );
 
         List<Group> expectedGs = new ArrayList<>();
-        expectedGs.add(Group.competingGroup(competition, femaleParticipants));
+        expectedGs.add(new Group(competition, femaleParticipants, Group.ComparatorType.COMPETING));
         for (int i = 0; i < 3; i++) {
-            expectedGs.add(Group.competingGroup(competition, new ArrayList<>(maleParticipants.subList(i*10, (i+1)*10))));
+            expectedGs.add(new Group(competition, new ArrayList<>(maleParticipants.subList(i*10, (i+1)*10)), Group.ComparatorType.COMPETING));
         }
         List<Group> actualGs = builder.createCompetingGroups();
         assertEquals(expectedGs, actualGs);
@@ -146,8 +147,8 @@ public class SinclairGroupBuilderTest {
         );
 
         List<Group> expectedGs = new ArrayList<>();
-        expectedGs.add(Group.competingGroup(competition, femaleParticipants));
-        expectedGs.add(Group.competingGroup(competition, maleParticipants));
+        expectedGs.add(new Group(competition, femaleParticipants, Group.ComparatorType.SINCLAIR_RANKING));
+        expectedGs.add(new Group(competition, maleParticipants, Group.ComparatorType.SINCLAIR_RANKING));
         List<Group> actualGs = builder.createRankingGroups();
         for (int i = 0; i < expectedGs.size(); i++) {
             assertEquals(

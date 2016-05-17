@@ -1,9 +1,10 @@
-package dk.aau.ida8.util;
+package dk.aau.ida8.util.groupbuilders;
 
 import dk.aau.ida8.model.Competition;
 import dk.aau.ida8.model.Group;
 import dk.aau.ida8.model.Lifter;
 import dk.aau.ida8.model.Participant;
+import dk.aau.ida8.util.groupcomparators.CompetingComparator;
 import org.junit.Test;
 
 import org.junit.BeforeClass;
@@ -135,9 +136,9 @@ public class TotalWeightGroupBuilderTest {
         );
 
         List<Group> expectedGs = new ArrayList<>();
-        expectedGs.add(Group.competingGroup(competition, new ArrayList<>(femaleParticipants)));
-        expectedGs.add(Group.competingGroup(competition, new ArrayList<>(maleParticipants.subList(0, 15))));
-        expectedGs.add(Group.competingGroup(competition, new ArrayList<>(maleParticipants.subList(15, 30))));
+        expectedGs.add(new Group(competition, new ArrayList<>(femaleParticipants), Group.ComparatorType.TOTAL_WEIGHT_RANKING));
+        expectedGs.add(new Group(competition, new ArrayList<>(maleParticipants.subList(0, 15)), Group.ComparatorType.TOTAL_WEIGHT_RANKING));
+        expectedGs.add(new Group(competition, new ArrayList<>(maleParticipants.subList(15, 30)), Group.ComparatorType.TOTAL_WEIGHT_RANKING));
         List<Group> actualGs = builder.createRankingGroups();
         for (int i = 0; i < expectedGs.size(); i++) {
             assertEquals(
@@ -172,11 +173,11 @@ public class TotalWeightGroupBuilderTest {
         );
 
         List<Group> expectedGs = new ArrayList<>();
-        expectedGs.add(Group.competingGroup(competition, new ArrayList<>(femaleParticipants)));
-        expectedGs.add(Group.competingGroup(competition, new ArrayList<>(maleParticipants.subList(0, 10))));
-        expectedGs.add(Group.competingGroup(competition, new ArrayList<>(maleParticipants.subList(10, 15))));
-        expectedGs.add(Group.competingGroup(competition, new ArrayList<>(maleParticipants.subList(15, 25))));
-        expectedGs.add(Group.competingGroup(competition, new ArrayList<>(maleParticipants.subList(25, 30))));
+        expectedGs.add(new Group(competition, new ArrayList<>(femaleParticipants), Group.ComparatorType.COMPETING));
+        expectedGs.add(new Group(competition, new ArrayList<>(maleParticipants.subList(0, 8)), Group.ComparatorType.COMPETING));
+        expectedGs.add(new Group(competition, new ArrayList<>(maleParticipants.subList(8, 15)), Group.ComparatorType.COMPETING));
+        expectedGs.add(new Group(competition, new ArrayList<>(maleParticipants.subList(15, 23)), Group.ComparatorType.COMPETING));
+        expectedGs.add(new Group(competition, new ArrayList<>(maleParticipants.subList(23, 30)), Group.ComparatorType.COMPETING));
         List<Group> actualGs = builder.createCompetingGroups();
         for (int i = 0; i < expectedGs.size(); i++) {
             assertEquals(
