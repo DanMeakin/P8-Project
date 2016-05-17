@@ -19,7 +19,7 @@
         </tr>
         <tr>
             <td class="bold">Date &amp; starting Time</td>
-            <td th:class="${competition.isToday()}? 'text-danger' : ''"
+            <td th:class="${competition.isCompetitionToday()}? 'text-danger' : ''"
                 th:text="${#calendars.format(competition.competitionDate, 'dd-MM-yyyy HH:mm')}">01-01-2015</td>
         </tr>
         <tr>
