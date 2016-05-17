@@ -5,6 +5,7 @@ import dk.aau.ida8.util.groupbuilders.SinclairGroupBuilder;
 import dk.aau.ida8.util.groupbuilders.TotalWeightGroupBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.*;
 import java.security.InvalidParameterException;
 import java.util.*;
@@ -164,9 +165,35 @@ public class Competition {
         this.participants = new ArrayList<>();
     }
 
-    /**********************************
-     * SETTERS REQUIRED FOR HIBERNATE *
-     **********************************/
+    /**
+     * Compares this against another object.
+     *
+     * Competition is equal to another object only where it is a Competition,
+     * and the other object is equal to this as determined by the
+     * {@link Competition#equals(Competition)} method.
+     *
+     * @param o the other object to compare this against
+     * @return true if the other object is a competition and satisfies the
+     *              {@link Competition#equals(Competition)} method
+     */
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Competition && equals((Competition) o);
+    }
+
+    /**
+     * Compares this competition against another for equality.
+     *
+     * @param c the other competition to compare this against
+     * @return true, if both competition have the same ID number, else false
+     */
+    public boolean equals(Competition c) {
+        return getId() == c.getId();
+    }
+
+    /***********
+     * SETTERS *
+     ***********/
 
     public void setCompetitionName(String competitionName) {
         this.competitionName = competitionName;
@@ -200,147 +227,32 @@ public class Competition {
         this.maxNumParticipants = maxNumParticipants;
     }
 
-    /****************************
-     * END OF HIBERNATE SETTERS *
-     ****************************/
-
     /**
-     * Compares this against another object.
+     * Sets the list of ranking groups for this competition.
      *
-     * Competition is equal to another object only where it is a Competition,
-     * and the other object is equal to this as determined by the
-     * {@link Competition#equals(Competition)} method.
-     *
-     * @param o the other object to compare this against
-     * @return true if the other object is a competition and satisfies the
-     *              {@link Competition#equals(Competition)} method
+     * @param rankingGroups the new list of ranking groups for this competition
      */
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof Competition && equals((Competition) o);
+    private void setRankingGroups(List<Group> rankingGroups) {
+        this.rankingGroups = rankingGroups;
     }
 
     /**
-     * Compares this competition against another for equality.
+     * Sets the list of competing groups for this competition.
      *
-     * @param c the other competition to compare this against
-     * @return true, if both competition have the same ID number, else false
+     * @param competingGroups the new list of competing groups for this
+     *                        competition
      */
-    public boolean equals(Competition c) {
-        return getId() == c.getId();
+    private void setCompetingGroups(List<Group> competingGroups) {
+        this.competingGroups = competingGroups;
     }
 
-    /**
-     * Adds a new participant to the competition.
-     *
-     * The participation of a lifter in a competition is encapsulated within a
-     * {@link Participant Participant} object. This method accepts a lifter
-     * instance and then creates and aggregates the required Participant
-     * object to the competition.
-     *
-     * @param lifter the lifter to add to the competition
-     */
-    public void addParticipant(Lifter lifter) {
-        Participant p = new Participant(lifter, this);
-        addParticipant(p);
-    }
+    /******************
+     * END OF SETTERS *
+     ******************/
 
-    /**
-     * Adds a new participant to the competition.
-     *
-     * @param p the participant to add to the competition
-     */
-    public void addParticipant(Participant p) {
-        participants.add(p);
-    }
-
-    /**
-     * Removes a participant from the list of participants.
-     *
-     * @param lifter who is to be removed
-     */
-    public void removeParticipant(Lifter lifter){
-        Participant p = selectParticipantByLifter(lifter);
-        removeParticipant(p);
-    }
-
-    /**
-     * Removes a participant from the participants list.
-     *
-     * @param participant the participant object to remove
-     */
-    private void removeParticipant(Participant participant) {
-        participants.remove(participant);
-    }
-
-    /**
-     * Gets the participation object for the given lifter.
-     *
-     * @param lifter the lifter for which to obtain the participation
-     *               instance
-     * @return participation instance for the passed lifter
-     */
-    public Participant selectParticipantByLifter(Lifter lifter) {
-        List<Participant> ps = getParticipants().stream()
-                .filter(p -> p.getLifter().equals(lifter))
-                .collect(Collectors.toList());
-        return ps.get(0);
-    }
-
-    /**
-     * Creates and stores a GroupBuilder within this competition.
-     *
-     * The GroupBuilder is used to generate the participant groups required
-     * for this competition.
-     *
-     * @throws UnsupportedOperationException if competition type is unrecognised
-     */
-    private void createGroupBuilder() {
-        if (getCompetitionType() == CompetitionType.SINCLAIR) {
-            this.groupBuilder = new SinclairGroupBuilder(this);
-        } else if (getCompetitionType() == CompetitionType.TOTAL_WEIGHT) {
-            this.groupBuilder = new TotalWeightGroupBuilder(this);
-        } else {
-            String msg = "unrecognised CompetitionType: " + getCompetitionType();
-            throw new UnsupportedOperationException(msg);
-        }
-    }
-
-    /**
-     * Gets the groupBuilder associated with this competition.
-     *
-     * @return groupBuilder associated with this competition
-     */
-    private GroupBuilder getGroupBuilder() {
-        return groupBuilder;
-    }
-
-    /**
-     * Allocates participants to competing and ranking groups.
-     *
-     * The competing and ranking groups are used to ensure the proper order
-     * of the competition, and to determine the winners of the competition
-     * after completion, respectively.
-     */
-    private void allocateGroups() {
-        setRankingGroups(getGroupBuilder().createRankingGroups());
-        setCompetingGroups(getGroupBuilder().createCompetingGroups());
-    }
-
-    /**
-     * Finds the participant who is to carry out a lift next. If the competing
-     * stage of the competition is complete, no value is returned.
-     *
-     * @return the participant next to left
-     */
-    public Optional<Participant> currentParticipant() {
-        Optional<Group> currentGroup = getCurrentCompetingGroup();
-        if (currentGroup.isPresent()) {
-            return Optional.of(currentGroup.get().getFirstParticipant());
-        } else {
-            return Optional.empty();
-        }
-    }
+    /***********
+     * GETTERS *
+     ***********/
 
     /**
      * Gets the ID# of this competition.
@@ -439,6 +351,155 @@ public class Competition {
             return host.getName();
         }
     }
+    /**
+     * Gets the list of ranking groups for this competition.
+     *
+     * Ranking groups are the divisions of participants based on the ranking
+     * method chosen for this competition. For example, in a Sinclair
+     * competition, participants are grouped into a maximum of two ranking
+     * groups, one for each gender. In such a competition, this method returns
+     * a list of up to two groups.
+     *
+     * @return the list of ranking groups for this competition
+     */
+    public List<Group> getRankingGroups() {
+        return rankingGroups;
+    }
+
+
+    /**
+     * Gets the list of competing groups for this competition.
+     *
+     * Competing groups are the divisions of participants into groups for the
+     * purpose of the competition proceedings. The grouping is done in
+     * accordance with the methods contained in the {@link Group} class. This
+     * will split participants into small groups which participate together in
+     * undertaking their lifts.
+     *
+     * @return the list of ranking groups for this competition
+     */
+    public List<Group> getCompetingGroups() {
+        return competingGroups;
+    }
+
+    /******************
+     * END OF GETTERS *
+     ******************/
+
+    /**
+     * Adds a new participant to the competition.
+     *
+     * The participation of a lifter in a competition is encapsulated within a
+     * {@link Participant Participant} object. This method accepts a lifter
+     * instance and then creates and aggregates the required Participant
+     * object to the competition.
+     *
+     * @param lifter the lifter to add to the competition
+     */
+    public void addParticipant(Lifter lifter) {
+        Participant p = new Participant(lifter, this);
+        addParticipant(p);
+    }
+
+    /**
+     * Adds a new participant to the competition.
+     *
+     * @param p the participant to add to the competition
+     */
+    void addParticipant(Participant p) {
+        participants.add(p);
+    }
+
+    /**
+     * Removes a participant from the list of participants.
+     *
+     * @param lifter who is to be removed
+     */
+    public void removeParticipant(Lifter lifter){
+        Participant p = selectParticipantByLifter(lifter);
+        removeParticipant(p);
+    }
+
+    /**
+     * Removes a participant from the participants list.
+     *
+     * @param participant the participant object to remove
+     */
+    void removeParticipant(Participant participant) {
+        participants.remove(participant);
+    }
+
+    /**
+     * Gets the participation object for the given lifter.
+     *
+     * @param lifter the lifter for which to obtain the participation
+     *               instance
+     * @return participation instance for the passed lifter
+     */
+    public Participant selectParticipantByLifter(Lifter lifter) {
+        List<Participant> ps = getParticipants().stream()
+                .filter(p -> p.getLifter().equals(lifter))
+                .collect(Collectors.toList());
+        return ps.get(0);
+    }
+
+    /**
+     * Creates and stores a GroupBuilder within this competition.
+     *
+     * The GroupBuilder is used to generate the participant groups required
+     * for this competition.
+     *
+     * @throws UnsupportedOperationException if competition type is unrecognised
+     */
+    private void createGroupBuilder() {
+        if (getCompetitionType() == CompetitionType.SINCLAIR) {
+            this.groupBuilder = new SinclairGroupBuilder(this);
+        } else if (getCompetitionType() == CompetitionType.TOTAL_WEIGHT) {
+            this.groupBuilder = new TotalWeightGroupBuilder(this);
+        } else {
+            String msg = "unrecognised CompetitionType: " + getCompetitionType();
+            throw new UnsupportedOperationException(msg);
+        }
+    }
+
+    /**
+     * Gets the groupBuilder associated with this competition.
+     *
+     * @return groupBuilder associated with this competition
+     */
+    private GroupBuilder getGroupBuilder() {
+        if (this.groupBuilder == null) {
+            createGroupBuilder();
+        }
+        return groupBuilder;
+    }
+
+    /**
+     * Allocates participants to competing and ranking groups.
+     *
+     * The competing and ranking groups are used to ensure the proper order
+     * of the competition, and to determine the winners of the competition
+     * after completion, respectively.
+     */
+    private void allocateGroups() {
+        setRankingGroups(getGroupBuilder().createRankingGroups());
+        setCompetingGroups(getGroupBuilder().createCompetingGroups());
+    }
+
+    /**
+     * Finds the participant who is to carry out a lift next. If the competing
+     * stage of the competition is complete, no value is returned.
+     *
+     * @return the participant next to left
+     */
+    public Optional<Participant> getCurrentParticipant() {
+        Optional<Group> currentGroup = getCurrentCompetingGroup();
+        if (currentGroup.isPresent()) {
+            return Optional.of(currentGroup.get().getFirstParticipant());
+        } else {
+            return Optional.empty();
+        }
+    }
 
     /**
      * Calculates a specific participant's rank within the competition.
@@ -506,54 +567,7 @@ public class Competition {
         return Optional.empty();
     }
 
-    /**
-     * Gets the list of ranking groups for this competition.
-     *
-     * Ranking groups are the divisions of participants based on the ranking
-     * method chosen for this competition. For example, in a Sinclair
-     * competition, participants are grouped into a maximum of two ranking
-     * groups, one for each gender. In such a competition, this method returns
-     * a list of up to two groups.
-     *
-     * @return the list of ranking groups for this competition
-     */
-    public List<Group> getRankingGroups() {
-        return rankingGroups;
-    }
 
-    /**
-     * Sets the list of ranking groups for this competition.
-     *
-     * @param rankingGroups the new list of ranking groups for this competition
-     */
-    private void setRankingGroups(List<Group> rankingGroups) {
-        this.rankingGroups = rankingGroups;
-    }
-
-    /**
-     * Gets the list of competing groups for this competition.
-     *
-     * Competing groups are the divisions of participants into groups for the
-     * purpose of the competition proceedings. The grouping is done in
-     * accordance with the methods contained in the {@link Group} class. This
-     * will split participants into small groups which participate together in
-     * undertaking their lifts.
-     *
-     * @return the list of ranking groups for this competition
-     */
-    public List<Group> getCompetingGroups() {
-        return competingGroups;
-    }
-
-    /**
-     * Sets the list of competing groups for this competition.
-     *
-     * @param competingGroups the new list of competing groups for this
-     *                        competition
-     */
-    private void setCompetingGroups(List<Group> competingGroups) {
-        this.competingGroups = competingGroups;
-    }
 
     /**
      * Lists all remaining available start numbers in the competition.
@@ -622,7 +636,7 @@ public class Competition {
      * @return true, if weigh-in started, else false
      */
     public boolean isWeighInStarted() {
-        return isToday() && !isWeighInComplete();
+        return isCompetitionToday() && !isWeighInComplete();
     }
 
     /**
@@ -677,7 +691,7 @@ public class Competition {
      *
      * @return true, if competition is to take place today, else false
      */
-    public boolean isToday() {
+    public boolean isCompetitionToday() {
         return areSameDay(new Date(), getCompetitionDate());
     }
 
