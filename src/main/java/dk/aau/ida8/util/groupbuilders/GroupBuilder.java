@@ -28,24 +28,50 @@ import java.util.stream.Stream;
  * groups into sub-groups of up to 10 participants. This can be overridden by
  * implementing classes.
  *
- * The GroupBuilder requires that inheriting classes implement four methods:
+ * The GroupBuilder requires that inheriting classes implement five methods:
  *
  * <ol>
  *     <li>{@link #getRankingGrouper()};</li>
  *     <li>{@link #getRankingComparatorType()};</li>
- *     <li>{@link #getRankingGroupComparator()}; and</li>
+ *     <li>{@link #getRankingGroupComparator()};</li>
+ *     <li>{@link #getCompetingGroupComparator()}; and</li>
  *     <li>{@link #getCompetingGroupMaxSize()}.</li>
  * </ol>
  *
  * The first three relate to the (default) method by which ranking groups
  * are created. See {@link #createRankingGroups()} for details.
  *
+ * The fourth relstes to how competing groups are sorted after creation. See
+ * {@link #createCompetingGroups()} for details.
+ *
  * The last method sets the maximum size for a competing group. These groups
  * will be no larger than this size.
+ *
+ * This abstract class provides a declarative way to define group builders.
+ * The way in which groups are built is provided by the
+ * {@link #createRankingGroups()} and {@link #createCompetingGroups()} methods
+ * which use the four abstract methods described above. Thus, overriding the
+ * four abstract methods will declare how groups are to be formed.
+ *
+ * An inheriting class can override the {@link #createRankingGroups()} and
+ * {@link #createCompetingGroups()} methods, however the default implementation
+ * provides a good basis for creating new concrete builders.
  */
 public abstract class GroupBuilder {
 
+    /**
+     * Contains the competition associated with this builder.
+     */
     private final Competition competition;
+
+    /**
+     * Constructs a GroupBuilder instance.
+     *
+     * @param competition the competition for which to build groups
+     */
+    public GroupBuilder(Competition competition) {
+        this.competition = competition;
+    }
 
     /**
      * Gets the ranking grouper for this builder.
@@ -92,6 +118,17 @@ public abstract class GroupBuilder {
     abstract Comparator<Group> getRankingGroupComparator();
 
     /**
+     * Gets the competing group comparator for this builder.
+     *
+     * The competing group comparator is used to sort the list of competing
+     * groups created by {@link #createCompetingGroups()} after they have been
+     * generated.
+     *
+     * @return competing group comparator for this builder
+     */
+    abstract Comparator<Group> getCompetingGroupComparator();
+
+    /**
      * Gets the maximum competing group size for this builder.
      *
      * The size of competing groups requires to be limited. This method returns
@@ -100,15 +137,6 @@ public abstract class GroupBuilder {
      * @return maximum competing group size for this builder
      */
     abstract int getCompetingGroupMaxSize();
-
-    /**
-     * Constructs a GroupBuilder instance.
-     *
-     * @param competition the competition for which to build groups
-     */
-    public GroupBuilder(Competition competition) {
-        this.competition = competition;
-    }
 
     /**
      * Gets the competition to which this builder relates.
@@ -185,6 +213,7 @@ public abstract class GroupBuilder {
                 .stream()
                 .flatMap(g -> chunkParticipants(g.getParticipants()))
                 .map(ps -> new Group(getCompetition(), ps, Group.ComparatorType.COMPETING))
+                .sorted(getCompetingGroupComparator())
                 .collect(Collectors.toList());
     };
 
@@ -196,7 +225,7 @@ public abstract class GroupBuilder {
      * @return a comparator which compares two groups by gender and then by
      *         another factor
      */
-    protected static Comparator<Group> compareFirstByGender(Comparator<Group> secondComparator) {
+    static Comparator<Group> compareFirstByGender(Comparator<Group> secondComparator) {
         return (g1, g2) -> {
             boolean g1Female = g1.getGroupGender().equals(Lifter.Gender.FEMALE);
             boolean g2Female = g2.getGroupGender().equals(Lifter.Gender.FEMALE);
@@ -225,7 +254,7 @@ public abstract class GroupBuilder {
      * @return             a stream containing lists of participants each no
      *                     larger than {@link #getCompetingGroupMaxSize()}.
      */
-    private Stream<List<Participant>> chunkParticipants(List<Participant> participants) {
+    Stream<List<Participant>> chunkParticipants(List<Participant> participants) {
         List<List<Participant>> result = new ArrayList<>();
         int numGroups = (int) Math.ceil(
                 (double) participants.size() / getCompetingGroupMaxSize()
