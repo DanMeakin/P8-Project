@@ -136,7 +136,7 @@ public class CompetitionController {
         if (competition.isCompetitionStarted()) {
             Optional<Group> currGroup = competition.getCurrentCompetingGroup();
             model.addAttribute("participants", currGroup.get().getParticipants());
-            model.addAttribute("currParticipant", competition.currentParticipant());
+            model.addAttribute("currParticipant", competition.getCurrentParticipant());
             return "competition-dashboard";
         } else if (competition.isCompetitionComplete()) {
             return "redirect:/competition/" + competitionID + "/results";

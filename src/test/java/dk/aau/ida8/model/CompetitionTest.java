@@ -75,9 +75,9 @@ public class CompetitionTest {
     @Test
     public void currentParticipant() throws Exception {
         competition.finishWeighIn();
-        assertTrue(competition.currentParticipant().isPresent());
+        assertTrue(competition.getCurrentParticipant().isPresent());
         Participant firstParticipant = competition.getCompetingGroups().get(0).getFirstParticipant();
-        assertEquals(firstParticipant, competition.currentParticipant().get());
+        assertEquals(firstParticipant, competition.getCurrentParticipant().get());
     }
 
     @Test
