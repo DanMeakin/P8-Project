@@ -144,6 +144,14 @@ public class Group {
         return participants;
     }
 
+    /**
+     * Gets an unsorted list of all participants.
+     *
+     * This should only be used where it is expressly desired that the
+     * participants in this group not be sorted.
+     *
+     * @return an unsorted list of all participants in the group
+     */
     public List<Participant> getUnsortedParticipants() {
         return participants;
     }
