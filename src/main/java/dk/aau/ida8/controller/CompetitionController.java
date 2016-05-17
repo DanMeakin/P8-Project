@@ -99,6 +99,20 @@ public class CompetitionController {
     }
 
     /**
+     * Displays the participants for a given competition.
+     *
+     * @param model         the Spring model object to pass to the view
+     * @param competitionID the ID# of the competition to view
+     * @return              the competition participants view
+     */
+    @RequestMapping("/{competitionID}/participants")
+    public String competitionParticipants(Model model, @PathVariable long competitionID) {
+        Competition competition = competitionService.findOne(competitionID);
+        model.addAttribute("competition", competition);
+        return "competition-participants";
+    }
+
+    /**
      * Displays the competition dashboard for a given competition.
      *
      * The dashboard is used to manage the conduct of the competition itself:

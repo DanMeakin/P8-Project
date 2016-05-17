@@ -23,7 +23,32 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="comp : ${competitions}">
+                <tr th:each="comp : ${futureCompetitions}">
+                    <td th:text="${comp.competitionName}" class="name">Comp name</td>
+                    <td th:text="${comp.competitionType}" class="type">Comp type</td>
+                    <td th:text="${#calendars.format(comp.competitionDate, 'dd-MM-yyyy HH:mm')}" class="date">Comp date</td>
+                    <td th:text="${#calendars.format(comp.lastRegistrationDate, 'dd-MM-yyyy HH:mm')}" class="date">Last reg date</td>
+                    <td><span class="label label-primary"><a th:href="|@{/competition/}${comp.id}|">View</a></span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+        <div class="row">
+        <div class="col-md-12">
+            <h2>Past Competitions</h2>
+            <table class="table table-front">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th class="date">Date &amp; starting time</th>
+                    <th class="date">Final date for registration</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="comp : ${pastCompetitions}">
                     <td th:text="${comp.competitionName}" class="name">Comp name</td>
                     <td th:text="${comp.competitionType}" class="type">Comp type</td>
                     <td th:text="${#calendars.format(comp.competitionDate, 'dd-MM-yyyy HH:mm')}" class="date">Comp date</td>

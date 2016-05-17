@@ -10,5 +10,39 @@
 
 <div layout:fragment="content">
 
+    <div class="row">
+        <div class="col-sm-12">
+            <h1>Participants</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Name</th>
+                    <th>Date of Birth</th>
+                    <th>Sex</th>
+                    <th>Club</th>
+                    <th>Body weight</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="p : ${competition.participants}">
+                    <td th:text="${p.startNumber}"></td>
+                    <td th:text="${p.fullName}"></td>
+                    <td th:text="${p.dateOfBirthString}"></td>
+                    <td th:text="${p.genderInitial}"></td>
+                    <td th:text="${p.clubName}"></td>
+                    <td th:text="${p.bodyWeight}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
