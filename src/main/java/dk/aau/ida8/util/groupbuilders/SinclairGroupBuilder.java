@@ -83,8 +83,8 @@ public class SinclairGroupBuilder extends GroupBuilder {
     @Override
     Comparator<Group> getCompetingGroupComparator() {
         return compareFirstByGender(
-                (g1, g2) -> g1.getParticipants().get(0).getStartingSnatchWeight() -
-                            g2.getParticipants().get(0).getStartingSnatchWeight()
+                (g1, g2) -> g1.getFirstParticipant().getStartingSnatchWeight() -
+                            g2.getFirstParticipant().getStartingSnatchWeight()
         );
     }
 

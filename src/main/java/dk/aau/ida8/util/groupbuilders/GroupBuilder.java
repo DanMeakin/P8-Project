@@ -191,7 +191,7 @@ public abstract class GroupBuilder {
      *         elsewhere;
      *     </li>
      *     <li>
-     *         {@link #chunkParticipants(List) Chunk} the participants within
+     *         {@link #chunkParticipants(List, int) Chunk} the participants within
      *         each group;
      *     </li>
      *     <li>
@@ -211,11 +211,11 @@ public abstract class GroupBuilder {
     public List<Group> createCompetingGroups() {
         return createRankingGroups()
                 .stream()
-                .flatMap(g -> chunkParticipants(g.getParticipants()))
+                .flatMap(g -> chunkParticipants(g.getParticipants(), getCompetingGroupMaxSize()))
                 .map(ps -> new Group(getCompetition(), ps, Group.ComparatorType.COMPETING))
                 .sorted(getCompetingGroupComparator())
                 .collect(Collectors.toList());
-    };
+    }
 
     /**
      * Creates a comparator which compares two groups first by gender, and then
@@ -251,13 +251,15 @@ public abstract class GroupBuilder {
      * participants by the maximum competing group size, and rounding up.
      *
      * @param participants the list of participants to sub-divide
+     * @param maxGroupSize the maximum size of a group of participants created
+     *                     by this method
      * @return             a stream containing lists of participants each no
      *                     larger than {@link #getCompetingGroupMaxSize()}.
      */
-    Stream<List<Participant>> chunkParticipants(List<Participant> participants) {
+    static Stream<List<Participant>> chunkParticipants(List<Participant> participants, int maxGroupSize) {
         List<List<Participant>> result = new ArrayList<>();
         int numGroups = (int) Math.ceil(
-                (double) participants.size() / getCompetingGroupMaxSize()
+                (double) participants.size() / maxGroupSize
         );
         for (int i = 0, j = 0; i < numGroups; i++) {
             int groupSize = (int) Math.floor(participants.size() / numGroups);

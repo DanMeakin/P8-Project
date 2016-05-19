@@ -91,37 +91,16 @@ public class CompetingComparator implements Comparator<Participant> {
     private int compareTimestamps() {
         int p1Count = p1.getLiftsCount();
         int p2Count = p2.getLiftsCount();
-        if (p1Count == 0 && p2Count == 0) {
-            return 0;
-        } else if (p1Count == 0) {
-            return -1;
-        } else if (p2Count == 0) {
-            return 1;
+
+        if (p1Count > 0 && p1Count < 3 && p2Count > 0 && p2Count < 3) {
+            Lift p1FirstSnatch = p1.getLifts().get(0);
+            Lift p2FirstSnatch = p2.getLifts().get(0);
+            return p1FirstSnatch.getTimestamp().compareTo(p2FirstSnatch.getTimestamp());
+        } else if (p1Count > 3 && p1Count < 6 && p2Count > 3 && p2Count < 6){
+            Lift p1FirstCJ = p1.getLifts().get(3);
+            Lift p2FirstCJ = p2.getLifts().get(3);
+            return p1FirstCJ.getTimestamp().compareTo(p2FirstCJ.getTimestamp());
         }
-
-        if (p1Count < 3 ^ p2Count < 3) {
-            if (p1.getLiftsCount() == 0) {
-                return -1;
-            } else if (p2.getLiftsCount() == 0) {
-                return 1;
-            } else {
-                Lift p1FirstSnatch = p1.getLifts().get(0);
-                Lift p2FirstSnatch = p2.getLifts().get(0);
-                return p1FirstSnatch.getTimestamp().compareTo(p2FirstSnatch.getTimestamp());
-            }
-
-        } else if (p1Count > 3 ^ p2Count > 3){
-            if (p1.getLiftsCount() <= 3) {
-                return -1;
-            } else if (p2.getLiftsCount() <= 3) {
-                return 1;
-            } else {
-                Lift p1FirstCJ = p1.getLifts().get(3);
-                Lift p2FirstCJ = p2.getLifts().get(3);
-                return p1FirstCJ.getTimestamp().compareTo(p2FirstCJ.getTimestamp());
-            }
-        }
-
         return 0;
     }
 
@@ -138,18 +117,31 @@ public class CompetingComparator implements Comparator<Participant> {
      * @return comparator value after carrying-out comparison
      */
     private int compareCompletions() {
+        int p1Count = p1.getLiftsCount();
+        int p2Count = p2.getLiftsCount();
+
+        // Check if both at 0 or 3 lifts
+        if (p1Count == 0 && p2Count == 0) {
+            return 0;
+        } else if (p1Count == 3 && p2Count == 3) {
+            return 0;
+        } else if (p1Count == 0) {
+            return -1;
+        } else if (p2Count == 0) {
+            return 1;
+        }
         // Compare for snatch completion first.
-        if (p1.getLiftsCount() < 3 ^ p2.getLiftsCount() < 3) {
-            if (p1.getLiftsCount() < 3) {
+        if (p1Count < 3 ^ p2Count < 3) {
+            if (p1Count < 3) {
                 return -1;
-            } else if (p2.getLiftsCount() < 3) {
+            } else if (p2Count < 3) {
                 return 1;
             }
         }
-        if (p1.liftsComplete() ^ p2.liftsComplete()) {
-            if (p1.liftsComplete()) {
+        if (p1Count == 6 ^ p2Count == 6) {
+            if (p1Count == 6) {
                 return 1;
-            } else if (p2.liftsComplete()) {
+            } else {
                 return -1;
             }
         }
