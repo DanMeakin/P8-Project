@@ -24,7 +24,7 @@ public class Club {
     private Address address;
 
     @OneToMany(cascade = {CascadeType.ALL})
-    private List<Lifter> lifters;
+    private List<Lifter> lifters = new ArrayList<Lifter>();
 
     /**
      * Empty constructor required by Hibernate.
