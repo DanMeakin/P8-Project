@@ -101,10 +101,10 @@ public class Competition {
     private CompetitionType competitionType;
     private int maxNumParticipants;
 
-    @DateTimeFormat(pattern = "dd-mm-yyyy HH:mm")
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm")
     private Date competitionDate;
 
-    @DateTimeFormat(pattern = "dd-mm-yyyy HH:mm")
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm")
     private Date lastRegistrationDate;
 
     @ManyToOne
