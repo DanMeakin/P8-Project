@@ -158,9 +158,13 @@ public class CompetitionController {
      * @return              the competition dashboard view
      */
     @RequestMapping("/{competitionID}/sign-up")
-    public String competitionSignup(@RequestParam(value = "id", required = false, defaultValue = "1") Long id, Model model, @PathVariable long competitionID) {
+    public String competitionSignup(@RequestParam(value = "id", required = false, defaultValue = null) Long id, Model model, @PathVariable long competitionID) {
         Competition competition = competitionService.findOne(competitionID);
-        Club currentClub = clubService.findOne(id);
+        if (id == null) {
+          Club currentClub = clubService.findAll().get(0);
+        } else {
+          Club currentClub = clubService.findOne(id);
+        }
 
         model.addAttribute("competition", competition);
         model.addAttribute("participants", competition.getParticipants());
@@ -179,7 +183,7 @@ public class CompetitionController {
      *                      view
      */
     @RequestMapping(value = "/{competitionID}/sign-up", method = RequestMethod.POST)
-    public String signupLifterToCompetition(@RequestParam(value = "id", required = false) Long id, @PathVariable long competitionID) {
+    public String signupLifterToCompetition(@RequestParam(value = "id", required = true) Long id, @PathVariable long competitionID) {
         Competition competition = competitionService.findOne(competitionID);
         Lifter lifter = lifterService.findOne(id);
         competition.addParticipant(lifter);
