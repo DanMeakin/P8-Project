@@ -158,7 +158,7 @@ public class CompetitionController {
      * @return              the competition dashboard view
      */
     @RequestMapping("/{competitionID}/sign-up")
-    public String competitionSignup(@RequestParam(value = "id", required = false, defaultValue = -1) Long id, Model model, @PathVariable long competitionID) {
+    public String competitionSignup(@RequestParam(value = "id", required = false, defaultValue = "-1") Long id, Model model, @PathVariable long competitionID) {
         Competition competition = competitionService.findOne(competitionID);
         Club currentClub;
         if (id == -1) {
