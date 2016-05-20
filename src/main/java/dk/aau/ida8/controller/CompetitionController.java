@@ -160,10 +160,11 @@ public class CompetitionController {
     @RequestMapping("/{competitionID}/sign-up")
     public String competitionSignup(@RequestParam(value = "id", required = false, defaultValue = null) Long id, Model model, @PathVariable long competitionID) {
         Competition competition = competitionService.findOne(competitionID);
+        Club currentClub;
         if (id == null) {
-          Club currentClub = clubService.findAll().iterator().next();
+          currentClub = clubService.findAll().iterator().next();
         } else {
-          Club currentClub = clubService.findOne(id);
+          currentClub = clubService.findOne(id);
         }
 
         model.addAttribute("competition", competition);
