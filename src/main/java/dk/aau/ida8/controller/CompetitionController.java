@@ -161,7 +161,7 @@ public class CompetitionController {
     public String competitionSignup(@RequestParam(value = "id", required = false, defaultValue = null) Long id, Model model, @PathVariable long competitionID) {
         Competition competition = competitionService.findOne(competitionID);
         if (id == null) {
-          Club currentClub = clubService.findAll().get(0);
+          Club currentClub = clubService.findAll().iterator().next();
         } else {
           Club currentClub = clubService.findOne(id);
         }
