@@ -39,7 +39,6 @@ public class Club {
      * @param address the address of the club
      */
     public Club(String name, Address address) {
-        this.lifters = new ArrayList<Lifter>();
         this.name = name;
         this.address = address;
     }
@@ -84,6 +83,10 @@ public class Club {
 
     public List<Lifter> getLifters() {
         return lifters;
+    }
+
+    public void setLifters(List<Lifter> lifters) {
+        this.lifters = lifters;
     }
 
     public String toString() {

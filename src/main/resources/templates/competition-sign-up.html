@@ -20,27 +20,27 @@
             <tbody>
             <tr>
                 <td>Club name</td>
-                <td>AK Jyden</td>
+                <td th:text="${competition.hostName}">AK Jyden</td>
             </tr>
             <tr>
                 <td>Address</td>
-                <td>Skydebanevej 12</td>
+                <td th:text="${competition.location}">Skydebanevej 12</td>
             </tr>
             <tr>
                 <td>Date</td>
-                <td>01-01-2015</td>
+                <td th:text="${competition.competitionDate}">01-01-2015</td>
             </tr>
             <tr>
                 <td>Registration date</td>
-                <td>01-01-2015</td>
+                <td th:text="${competition.lastRegistrationDate}">01-01-2015</td>
             </tr>
             <tr>
                 <td>No. participants</td>
-                <td>13/50</td>
+                <td th:text="${competition.participants.size()} + '/' + ${competition.maxNumParticipants}">13/50</td>
             </tr>
             <tr>
                 <td>Type</td>
-                <td>Sinclair</td>
+                <td th:text="${competition.competitionType}">Sinclair</td>
             </tr>
             </tbody>
         </table>
@@ -70,7 +70,7 @@
                 <select class="form-control" id="list-clubs">
                     <option th:each="club : ${clubs}"
                             th:value="${club.id}"
-                            th:text="${club.name}">AK Jyden</option>
+                                             th:text="${club.name} + ' (' + ${club.lifters.size()} + ')'">AK Jyden</option>
                 </select>
             </div>
             <div class="form-group">

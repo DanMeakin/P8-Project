@@ -51,7 +51,7 @@ public class Lifter {
     private Date dateOfBirth;
 
     @OneToMany(cascade = {CascadeType.ALL})
-    private List<Participant> participants;
+    private List<Participant> participants = new ArrayList<>();
 
     /**
      * Empty constructor required by Hibernate.
@@ -77,7 +77,6 @@ public class Lifter {
         this.gender = gender;
         this.dateOfBirth = dateOfBirth;
         this.bodyWeight = bodyWeight;
-        this.participants = new ArrayList<>();
         this.active = true;
     }
 
