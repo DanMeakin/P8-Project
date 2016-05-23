@@ -73,38 +73,6 @@ public class CompetingComparator implements Comparator<Participant> {
     }
 
     /**
-     * Compares two Participants based on the timestamps of their first
-     * completed lifts for snatch or C&J.
-     *
-     * If both have completed no lifts, then neither comes first.
-     *
-     * If one of the participants has fewer than three completed lifts, that is
-     * he is doing snatch lifts, then the timestamps for the first completed snatch
-     * lifts will be compared.
-     *
-     * If one of the participants has more than three completed lifts, that is he is
-     * doing C&J lifts, then the timestamps for the first completed C&J lifts
-     * will be compared.
-     *
-     * @return comparator value after carrying-out comparison
-     */
-    private int compareTimestamps() {
-        int p1Count = p1.getLiftsCount();
-        int p2Count = p2.getLiftsCount();
-
-        if (p1Count > 0 && p1Count < 3 && p2Count > 0 && p2Count < 3) {
-            Lift p1FirstSnatch = p1.getLifts().get(0);
-            Lift p2FirstSnatch = p2.getLifts().get(0);
-            return p1FirstSnatch.getTimestamp().compareTo(p2FirstSnatch.getTimestamp());
-        } else if (p1Count > 3 && p1Count < 6 && p2Count > 3 && p2Count < 6){
-            Lift p1FirstCJ = p1.getLifts().get(3);
-            Lift p2FirstCJ = p2.getLifts().get(3);
-            return p1FirstCJ.getTimestamp().compareTo(p2FirstCJ.getTimestamp());
-        }
-        return 0;
-    }
-
-    /**
      * Compares two participants based on whether they have completed
      * all snatches, or all lifts.
      *
@@ -121,9 +89,7 @@ public class CompetingComparator implements Comparator<Participant> {
         int p2Count = p2.getLiftsCount();
 
         // Check if both at 0 or 3 lifts
-        if (p1Count == 0 && p2Count == 0) {
-            return 0;
-        } else if (p1Count == 3 && p2Count == 3) {
+        if (p1Count == 0 && p2Count == 0 || p1Count == 3 && p2Count == 3)  {
             return 0;
         } else if (p1Count == 0) {
             return -1;
@@ -138,6 +104,7 @@ public class CompetingComparator implements Comparator<Participant> {
                 return 1;
             }
         }
+        // Then check for clean & jerk completion
         if (p1Count == 6 ^ p2Count == 6) {
             if (p1Count == 6) {
                 return 1;
@@ -170,6 +137,38 @@ public class CompetingComparator implements Comparator<Participant> {
      */
     private int compareAttempts() {
         return p1.getLiftsCount() - p2.getLiftsCount();
+    }
+
+    /**
+     * Compares two Participants based on the timestamps of their first
+     * completed lifts for snatch or C&J.
+     *
+     * If both have completed no lifts, then neither comes first.
+     *
+     * If one of the participants has fewer than three completed lifts, that is
+     * he is doing snatch lifts, then the timestamps for the first completed snatch
+     * lifts will be compared.
+     *
+     * If one of the participants has more than three completed lifts, that is he is
+     * doing C&J lifts, then the timestamps for the first completed C&J lifts
+     * will be compared.
+     *
+     * @return comparator value after carrying-out comparison
+     */
+    private int compareTimestamps() {
+        int p1Count = p1.getLiftsCount();
+        int p2Count = p2.getLiftsCount();
+
+        if (p1Count > 0 && p1Count < 3 && p2Count > 0 && p2Count < 3) {
+            Lift p1FirstSnatch = p1.getLifts().get(0);
+            Lift p2FirstSnatch = p2.getLifts().get(0);
+            return p1FirstSnatch.getTimestamp().compareTo(p2FirstSnatch.getTimestamp());
+        } else if (p1Count > 3 && p1Count < 6 && p2Count > 3 && p2Count < 6){
+            Lift p1FirstCJ = p1.getLifts().get(3);
+            Lift p2FirstCJ = p2.getLifts().get(3);
+            return p1FirstCJ.getTimestamp().compareTo(p2FirstCJ.getTimestamp());
+        }
+        return 0;
     }
 
     /**
