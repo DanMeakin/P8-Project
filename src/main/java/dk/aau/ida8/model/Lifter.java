@@ -47,7 +47,7 @@ public class Lifter {
     private Gender gender;
     private double bodyWeight;
 
-    @DateTimeFormat(pattern = "dd-mm-yyyy")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date dateOfBirth;
 
     @OneToMany(cascade = {CascadeType.ALL})
