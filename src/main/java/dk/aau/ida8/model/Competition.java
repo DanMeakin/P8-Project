@@ -89,12 +89,15 @@ public class Competition {
     private long id;
 
     @OneToMany(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "competition_id")
     private List<Participant> participants = new ArrayList<>();
 
     @OneToMany(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "competition_id")
     private List<Group> competingGroups = new ArrayList<>();
 
     @OneToMany(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "competition_id")
     private List<Group> rankingGroups = new ArrayList<>();
 
     private String competitionName;

@@ -60,6 +60,7 @@ public class Participant {
     private int previousWeight;
 
     @OneToMany(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "participant_id")
     private List<Lift> lifts = new ArrayList<>();
 
     private boolean weighedIn = false;

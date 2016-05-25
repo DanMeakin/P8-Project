@@ -51,6 +51,7 @@ public class Lifter {
     private Date dateOfBirth;
 
     @OneToMany(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "lifter_id")
     private List<Participant> participants = new ArrayList<>();
 
     /**
