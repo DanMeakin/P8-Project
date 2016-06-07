@@ -316,6 +316,25 @@ public class Group {
     }
 
     /**
+     * Determines whether this group is a competing group.
+     *
+     * @return true if competing group, else false
+     */
+    public boolean isCompetingGroup() {
+      return comparatorType == COMPETING;
+    }
+
+    /**
+     * Determines whether this group is a ranking group.
+     *
+     * @return true if ranking group, else false
+     */
+    public boolean isRankingGroup() {
+      return comparatorType == SINCLAIR_RANKING
+          || comparatorType == TOTAL_WEIGHT_RANKING;
+    }
+
+    /**
      * Gets the competition to which this group belongs.
      *
      * @return competition to which this group belongs
