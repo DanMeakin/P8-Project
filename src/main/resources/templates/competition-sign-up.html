@@ -57,7 +57,7 @@
             <tr th:each="p : ${participants}">
                 <td th:text="${p.startNumber}">1</td>
                 <td th:text="${p.forename}">Lotte</td>
-                <td>AK Jyden</td>
+                <td th:text="${p.clubName}">AK Jyden</td>
             </tr>
             </tbody>
         </table>
