@@ -217,6 +217,9 @@ public class Group {
      * @return the group comparator for this group
      */
     public Comparator<Participant> getGroupComparator() {
+        if (groupComparator == null) {
+          createGroupComparator();
+        }
         return groupComparator;
     }
 
