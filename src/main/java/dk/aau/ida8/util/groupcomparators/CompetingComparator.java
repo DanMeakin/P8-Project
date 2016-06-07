@@ -88,14 +88,6 @@ public class CompetingComparator implements Comparator<Participant> {
         int p1Count = p1.getLiftsCount();
         int p2Count = p2.getLiftsCount();
 
-        // Check if both at 0 or 3 lifts
-        if (p1Count == 0 && p2Count == 0 || p1Count == 3 && p2Count == 3)  {
-            return 0;
-        } else if (p1Count == 0) {
-            return -1;
-        } else if (p2Count == 0) {
-            return 1;
-        }
         // Compare for snatch completion first.
         if (p1Count < 3 ^ p2Count < 3) {
             if (p1Count < 3) {
