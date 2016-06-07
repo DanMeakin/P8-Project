@@ -366,7 +366,7 @@ public class Competition {
      * @return the list of ranking groups for this competition
      */
     public List<Group> getRankingGroups() {
-        return rankingGroups.stream
+        return rankingGroups.stream()
                 .filter(Group::isRankingGroup)
                 .collect(Collectors.toList());
     }
@@ -384,7 +384,7 @@ public class Competition {
      * @return the list of ranking groups for this competition
      */
     public List<Group> getCompetingGroups() {
-        return competingGroups.stream
+        return competingGroups.stream()
                 .filter(Group::isCompetingGroup)
                 .collect(Collectors.toList());
     }

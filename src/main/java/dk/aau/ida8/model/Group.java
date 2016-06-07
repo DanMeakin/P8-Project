@@ -8,6 +8,8 @@ import dk.aau.ida8.util.groupcomparators.TotalWeightRankingComparator;
 import javax.persistence.*;
 import java.security.InvalidParameterException;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This class represents one group within a weightlifting competition.
@@ -321,7 +323,7 @@ public class Group {
      * @return true if competing group, else false
      */
     public boolean isCompetingGroup() {
-      return comparatorType == COMPETING;
+      return comparatorType == ComparatorType.COMPETING;
     }
 
     /**
@@ -330,8 +332,8 @@ public class Group {
      * @return true if ranking group, else false
      */
     public boolean isRankingGroup() {
-      return comparatorType == SINCLAIR_RANKING
-          || comparatorType == TOTAL_WEIGHT_RANKING;
+      return comparatorType == ComparatorType.SINCLAIR_RANKING
+          || comparatorType == ComparatorType.TOTAL_WEIGHT_RANKING;
     }
 
     /**
